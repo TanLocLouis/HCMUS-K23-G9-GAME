@@ -105,6 +105,11 @@ while True:
         bg_1 = Img(bg_1_x, h - 250, "./Asset/BG3.png", (4000, 250))
         bg_1.draw()
 
+        btn_exit = Button(w - 500, 80, "./Asset/ExitGame.png", (100, 100))
+        btn_exit.draw()
+        if btn_exit.isClick():
+            exit()
+
         btn_play = Button(w / 2 - 150, h / 2 - 20, "./Asset/BTN-Play.png", (300, 100))
         btn_play.draw()
 
@@ -131,11 +136,14 @@ while True:
             pygame.mixer.music.play(-1, 0, 10000)
             collected_coin = 0
 
-            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_NO)
+            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
 
     # Minigame
     elif game_state == 2:
         mg_tick -= 1
+        mg_mouse_x = mg_mouse[0]
+        mg_mouse_x -= 3
+        mg_mouse = (mg_mouse_x, mg_mouse[1])
         if (mg_tick == 0):
             game_state = 0
             pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
@@ -159,7 +167,7 @@ while True:
         text = Txt(300, 50, "TIME: " + str(int(mg_tick / 30)), "#f06e4b")
         text.render()
 
-        bg_grass = Img(0, h - 192, "./Minigame/MG-Grass.png", (3200, 192))
+        bg_grass = Img(0, h - 1000, "./Minigame/MG-Grass.png", (5000, 1000))
         bg_grass.draw()
 
         bg_sun = Img(300, 200, "./Minigame/MG-Sun.png", (100, 100))
@@ -180,7 +188,7 @@ while True:
                 collected_coin += 1
                 pygame.mixer.Sound("./Minigame/MG-Coin.mp3").play()
 
-                mg_mouse = (random.random() * 1200 + 250, h - 225)
+                mg_mouse = (random.random() * (w - 200), h - 500 + random.random() * 300)
 
     pygame.display.update()
     clock.tick(30)
