@@ -84,6 +84,8 @@ mg_tick = 0
 # Animation cho cloud trong minigame
 bg_sun_x = 0
 
+x_add = 0
+y_add = 0
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -126,7 +128,7 @@ while True:
 
         if (btn_minigame.isClick()):
             game_state = 2
-            mg_tick = 620
+            mg_tick = 460
 
             screen.fill("#96c3d7")
             pygame.mixer.music.stop()
@@ -141,9 +143,27 @@ while True:
     # Minigame
     elif game_state == 2:
         mg_tick -= 1
+
+        if mg_tick % 30 == 0:
+            x_add = random.random() * 40 - 20
+            y_add = random.random() * 40 - 20
         mg_mouse_x = mg_mouse[0]
-        mg_mouse_x -= 3
-        mg_mouse = (mg_mouse_x, mg_mouse[1])
+        mg_mouse_x += x_add
+        # xu li khi chuot chay ra bien
+        if mg_mouse_x <= 0:
+            mg_mouse_x = w
+        if mg_mouse_x >= w:
+            mg_mouse_x = 0
+        mg_mouse_y = mg_mouse[1]
+        mg_mouse_y += y_add
+        # xu li khi chuot chay ra bien
+        if mg_mouse_y <= h - 400:
+            mg_mouse_y = h
+        if mg_mouse_y >= h:
+            mg_mouse_y = h - 400
+        mg_mouse = (mg_mouse_x, mg_mouse_y)
+
+        # Het thoi gian choi game
         if (mg_tick == 0):
             game_state = 0
             pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
@@ -183,6 +203,10 @@ while True:
         bg_1.draw()
 
         mouse_input = pygame.mouse.get_pos()
+
+        mg_hammer = Img(mouse_input[0] - 50, mouse_input[1] - 50, "./Minigame/MG-Hammer.png", (100, 100))
+        mg_hammer.draw()
+
         if bg_1.isCollide(mouse_input[0], mouse_input[1]):
             if pygame.mouse.get_pressed()[0]:
                 collected_coin += 1
