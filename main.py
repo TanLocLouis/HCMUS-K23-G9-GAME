@@ -71,6 +71,8 @@ class Button():
     def draw(self):
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
+# Class textbox
+
 pygame.mixer.init()
 pygame.mixer.music.load("./Asset/BG-Music.mp3")
 pygame.mixer.music.play(-1, 0, 10000)
@@ -107,27 +109,27 @@ while True:
         bg_1 = Img(bg_1_x, h - 250, "./Asset/BG3.png", (4000, 250))
         bg_1.draw()
 
-        btn_exit = Button(w - 500, 80, "./Asset/ExitGame.png", (100, 100))
+        btn_exit = Button(w - 500, 100, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             exit()
 
-        btn_play = Button(w / 2 - 150, h / 2 - 20, "./Asset/BTN-Play.png", (300, 100))
+        btn_create_account = Button(w - 640, 45, "./Asset/BG-Create_account.png", (150, 150))
+        btn_create_account.draw()
+        if btn_create_account.isClick():
+            game_state = 1
+
+        btn_create_account = Button(w - 760, 45, "./Asset/BG-Login.png", (150, 150))
+        btn_create_account.draw()
+
+        btn_play = Button(w / 2 - 350, h / 2, "./Asset/BTN-Play.png", (150, 50))
         btn_play.draw()
 
-        btn_minigame = Button(w / 2 - 150, h / 2 + 100 , "./Asset/BTN-Minigame.png", (300, 100))
+        btn_minigame = Button(w / 2 - 350, h / 2 + 75 , "./Asset/BTN-Minigame.png", (150, 50))
         btn_minigame.draw()
 
-        data_file = open("Inventory.txt", "r")
-        data = data_file.readline()
-        coin = data
-        data_file.close()
-
-        text = Txt(300, 100, "COIN: " + str(coin), "#f06e4b")
-        text.render()
-
         if (btn_minigame.isClick()):
-            game_state = 2
+            game_state = 3
             mg_tick = 460
 
             screen.fill("#96c3d7")
@@ -140,8 +142,22 @@ while True:
 
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
 
+        data_file = open("Inventory.txt", "r")
+        data = data_file.readline()
+        coin = data
+        data_file.close()
+        text = Txt(450, 110, "COIN: " + str(coin), "#f06e4b")
+        text.render()
+
+    # Tao tai khoan
+    elif game_state == 1:
+        screen.fill("#96c3d7")
+
+        text = Txt(400, 200, "ENTER YOUR NAME: ", "#f06e4b")
+        text.render()
+
     # Minigame
-    elif game_state == 2:
+    elif game_state == 3:
         mg_tick -= 1
 
         if mg_tick % 30 == 0:
