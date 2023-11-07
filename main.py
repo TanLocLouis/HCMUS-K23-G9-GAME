@@ -123,6 +123,7 @@ y_add = 0
 
 name = ""
 email = ""
+password = ""
 info = []
 while True:
     for event in pygame.event.get():
@@ -142,7 +143,12 @@ while True:
             else: 
                 email += event.unicode
     
-    print(name)            
+        if event.type == pygame.KEYDOWN and game_state == 12:
+            if event.key == pygame.K_BACKSPACE: 
+                password = password[:-1] 
+            else: 
+                password += event.unicode
+
     w, h = pygame.display.get_surface().get_size()
 
     # Tai main menu
@@ -224,6 +230,17 @@ while True:
     elif game_state == 12:
         screen.fill("#96c3d7")
 
+        text = Txt(w / 2 - 600, 200, "ENTER YOUR PASSWORD: " + password, "WHITE")
+        text.render()
+
+        text = Txt(w / 2 + 300, 200, "NEXT", "WHITE")
+        text.render()
+        if text.isClick():
+            game_state = 13
+
+    elif game_state == 13:
+        screen.fill("#96c3d7")
+
         text = Txt(w / 2 - 400, 200, "Take your picture", "WHITE")
         text.render()
 
@@ -244,6 +261,7 @@ while True:
                 info.append(name)
                 info.append(email)
                 info.append(name + ".png")
+                info.append(password)
 
                 wb = load_workbook("player.xlsx")
                 sheet = wb.active
@@ -252,7 +270,7 @@ while True:
 
                 sendMail("ltloc05samsunggalaxyj3pro@gmail.com", "rodq twhi tmme gypg", info[1]
                 , "Welcome to my game"
-                , "Chuc mung ban tao tai khoan game ca cuoc thanh cong :)) From Nhom 9 - 23CTT1 - NMCNTT - HCMUS with love")
+                , "Chuc mung ban " + info[0] + " tao tai khoan game ca cuoc thanh cong :)) From Nhom 9 - 23CTT1 - NMCNTT - HCMUS with love")
     # Minigame
     elif game_state == 3:
         mg_tick -= 1
