@@ -1,6 +1,17 @@
 import pygame
 import random
 
+from cv2 import VideoCapture
+from cv2 import imshow
+from cv2 import imwrite
+
+from openpyxl import Workbook
+from openpyxl import load_workbook
+
+from email.message import EmailMessage
+import ssl
+import smtplib
+
 # Khoi tao chuong trinh
 pygame.init()
 screen = pygame.display.set_mode((1600, 900), pygame.RESIZABLE)
@@ -42,6 +53,14 @@ class Txt():
     def render(self):
         screen.blit(self.text, self.rect)
 
+    def isClick(self):
+        pos = pygame.mouse.get_pos()
+
+        if self.rect.collidepoint(pos) and pygame.mouse.get_pressed()[0] == 1:
+            return True
+        else:
+            return False  
+
 # Class hien thi hinh anh
 class Img():
     def __init__(self, x, y, image, scale):
@@ -71,7 +90,20 @@ class Button():
     def draw(self):
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
-# Class textbox
+# Gui mail
+def sendMail(sender, password, receiver, subject, body):
+    mail = EmailMessage()
+    mail['From'] = sender
+    mail['To'] = receiver
+    mail['Subject'] = subject
+    mail.set_content(body)
+
+    context = ssl.create_default_context()
+    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+        smtp.login(sender, password)
+        smtp.sendmail(sender, receiver, mail.as_string())
+
+
 
 pygame.mixer.init()
 pygame.mixer.music.load("./Asset/BG-Music.mp3")
@@ -88,12 +120,29 @@ bg_sun_x = 0
 
 x_add = 0
 y_add = 0
+
+name = ""
+email = ""
+info = []
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit
-            
+
+        if event.type == pygame.KEYDOWN and game_state == 1:
+            if event.key == pygame.K_BACKSPACE: 
+                name = name[:-1] 
+            else: 
+                name += event.unicode
+
+        if event.type == pygame.KEYDOWN and game_state == 11:
+            if event.key == pygame.K_BACKSPACE: 
+                email = email[:-1] 
+            else: 
+                email += event.unicode
+    
+    print(name)            
     w, h = pygame.display.get_surface().get_size()
 
     # Tai main menu
@@ -153,9 +202,57 @@ while True:
     elif game_state == 1:
         screen.fill("#96c3d7")
 
-        text = Txt(400, 200, "ENTER YOUR NAME: ", "#f06e4b")
+        text = Txt(w / 2 - 600, 200, "ENTER YOUR NAME: " + name, "WHITE")
         text.render()
 
+        text = Txt(w / 2 + 200, 200, "NEXT", "WHITE")
+        text.render()
+        if text.isClick():
+            game_state = 11
+
+    elif game_state == 11:
+        screen.fill("#96c3d7")
+
+        text = Txt(w / 2 - 600, 200, "ENTER YOUR EMAIL: " + email, "WHITE")
+        text.render()
+
+        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE")
+        text.render()
+        if text.isClick():
+            game_state = 12
+    
+    elif game_state == 12:
+        screen.fill("#96c3d7")
+
+        text = Txt(w / 2 - 400, 200, "Take your picture", "WHITE")
+        text.render()
+
+        text = Txt(w / 2 + 100, 200, "TAKE", "WHITE")
+        text.render()
+
+        if text.isClick():
+            game_state = 0
+
+            cam_port = 0
+            cam = VideoCapture(cam_port)
+
+            result, image = cam.read()
+            if result:
+                imshow("Taken Picture", image)
+                imwrite("./player_img/" + name + ".png", image)
+
+                info.append(name)
+                info.append(email)
+                info.append(name + ".png")
+
+                wb = load_workbook("player.xlsx")
+                sheet = wb.active
+                sheet.append(info)
+                wb.save("player.xlsx")
+
+                sendMail("ltloc05samsunggalaxyj3pro@gmail.com", "rodq twhi tmme gypg", info[1]
+                , "Welcome to my game"
+                , "Chuc mung ban tao tai khoan game ca cuoc thanh cong :)) From Nhom 9 - 23CTT1 - NMCNTT - HCMUS with love")
     # Minigame
     elif game_state == 3:
         mg_tick -= 1
