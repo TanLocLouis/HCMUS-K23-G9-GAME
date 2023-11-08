@@ -48,13 +48,21 @@ class Player():
 
 # Class hien thi chu
 class Txt():
-    def __init__(self, x, y, content, color):
+    def __init__(self, x, y, content, color, isBorder = False):
         font = pygame.font.Font(None, 50)
         self.text = font.render(content, True, color)
         self.rect = self.text.get_rect()
         self.rect.topleft = (x, y)
+        self.isBorder = isBorder
 
     def render(self):
+        if self.isBorder:
+            rect_color = "#726f6f"
+            rect_position = self.rect.topleft
+            rect_size = (self.text.get_width() + 3, self.text.get_height() + 3)
+            
+            pygame.draw.rect(screen, rect_color, (rect_position, rect_size))
+
         screen.blit(self.text, self.rect)
 
     def isClick(self):
@@ -83,6 +91,8 @@ class Button():
         self.image = pygame.transform.scale(self.image, scale)
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
+        self.scale = scale
+
     def isClick(self):
         pos = pygame.mouse.get_pos()
 
@@ -92,6 +102,11 @@ class Button():
             return False  
 
     def draw(self):
+        pos = pygame.mouse.get_pos()
+
+        if self.rect.collidepoint(pos):
+            self.image = pygame.transform.scale(self.image, (self.image.get_width() * 1.1, self.image.get_height() * 1.1))
+
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
 # Gui mail
@@ -200,7 +215,7 @@ while True:
 
             exit()
 
-        btn_create_account = Button(w - 640, 45, "./Asset/BG-Create_account.png", (150, 150))
+        btn_create_account = Button(w - 630, 45, "./Asset/BG-Create_account.png", (150, 150))
         btn_create_account.draw()
         if btn_create_account.isClick():
             game_state = 1
@@ -242,10 +257,10 @@ while True:
 
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
 
-        text = Txt(450, 110, "Player: " + player, "#f06e4b")
+        text = Txt(450, 110, "Player: " + player, "#f06e4b", True)
         text.render()
 
-        text = Txt(450, 150, "COIN: " + str(coin), "#f06e4b")
+        text = Txt(450, 150, "COIN: " + str(coin), "#f06e4b", True)
         text.render()
 
     # Tao tai khoan
@@ -255,7 +270,7 @@ while True:
         text = Txt(w / 2 - 600, 200, "ENTER YOUR NAME: " + name, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 200, 200, "NEXT", "WHITE")
+        text = Txt(w / 2 + 200, 200, "NEXT", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 11
@@ -266,7 +281,7 @@ while True:
         text = Txt(w / 2 - 600, 200, "ENTER YOUR EMAIL: " + email, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE")
+        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 12
@@ -277,7 +292,7 @@ while True:
         text = Txt(w / 2 - 600, 200, "ENTER YOUR PASSWORD: " + password, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 300, 200, "NEXT", "WHITE")
+        text = Txt(w / 2 + 300, 200, "NEXT", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 13
@@ -326,7 +341,7 @@ while True:
         text = Txt(w / 2 - 600, 200, "Create account successfully", "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 300, 200, "NEXT", "WHITE")
+        text = Txt(w / 2 + 300, 200, "NEXT", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 0
@@ -337,7 +352,7 @@ while True:
         text = Txt(w / 2 - 600, 200, "ENTER YOUR NAME: " + log_name, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE")
+        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 21 
@@ -361,7 +376,7 @@ while True:
         text = Txt(w / 2 - 600, 200, "ENTER YOUR PASSWORD: " + log_password, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE")
+        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
         text.render()
 
         if text.isClick():
@@ -391,7 +406,7 @@ while True:
         text = Txt(w / 2 - 600, 200, "Log in Successfully!!!", "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE")
+        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 0 
@@ -402,7 +417,7 @@ while True:
         text = Txt(w / 2 - 600, 200, "Log in Fail!!!", "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE")
+        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 0 
@@ -470,10 +485,10 @@ while True:
             coin += collected_coin
 
         screen.fill("#96c3d7")
-        text = Txt(300, 100, "COLLECTED COIN: " + str(collected_coin), "#f06e4b")
+        text = Txt(300, 100, "COLLECTED COIN: " + str(collected_coin), "#f06e4b", True)
         text.render()
 
-        text = Txt(300, 50, "TIME: " + str(int(mg_tick / 30)), "#f06e4b")
+        text = Txt(300, 50, "TIME: " + str(int(mg_tick / 30)), "#f06e4b", True)
         text.render()
 
         bg_grass = Img(0, h - 1000, "./Minigame/MG-Grass.png", (5000, 1000))
