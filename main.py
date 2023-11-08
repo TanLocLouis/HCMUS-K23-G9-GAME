@@ -7,6 +7,7 @@ from cv2 import imwrite
 
 from openpyxl import Workbook
 from openpyxl import load_workbook
+import openpyxl
 
 from email.message import EmailMessage
 import ssl
@@ -19,7 +20,6 @@ pygame.display.set_caption("Et Bi 99 - NHA CAI DEN TU CHAU A")
 clock = pygame.time.Clock()
 
 # Hien thi Coin hien co
-coin = 0
 collected_coin = 0
 font = pygame.font.Font(None, 50)
 text = font.render("COIN: ", True,  "#f06e4b")
@@ -41,6 +41,10 @@ class Player():
 
     def isCollide(self, x, y):
         return self.rect.collidepoint(x, y)
+    
+    def dir_animate(self, value):
+        if (value >= 0):
+            self.image = pygame.transform.flip(self.image, 1, 0)
 
 # Class hien thi chu
 class Txt():
@@ -106,7 +110,7 @@ def sendMail(sender, password, receiver, subject, body):
 
 
 pygame.mixer.init()
-pygame.mixer.music.load("./Asset/BG-Music.mp3")
+pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
 pygame.mixer.music.play(-1, 0, 10000)
 
 # Animation cho background chinh
@@ -124,7 +128,16 @@ y_add = 0
 name = ""
 email = ""
 password = ""
+
 info = []
+
+log_name = ""
+log_password = ""
+
+player = ""
+coin = 0
+
+pos = 1
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -149,6 +162,18 @@ while True:
             else: 
                 password += event.unicode
 
+        if event.type == pygame.KEYDOWN and game_state == 2:
+            if event.key == pygame.K_BACKSPACE: 
+                log_name = log_name[:-1] 
+            else: 
+                log_name += event.unicode
+        
+        if event.type == pygame.KEYDOWN and game_state == 22:
+            if event.key == pygame.K_BACKSPACE: 
+                log_password = log_password[:-1] 
+            else: 
+                log_password += event.unicode
+
     w, h = pygame.display.get_surface().get_size()
 
     # Tai main menu
@@ -158,15 +183,21 @@ while True:
         bg_text = Img(w / 2 - 500, h / 5, "./Asset/BG-Title.png", (1000, 200))
         bg_text.draw()
 
+
         bg_1_x -= 2
         if bg_1_x <= -1000:
             bg_1_x = 0 
         bg_1 = Img(bg_1_x, h - 250, "./Asset/BG3.png", (4000, 250))
         bg_1.draw()
 
-        btn_exit = Button(w - 500, 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w - 480, 97, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
+            wb = load_workbook("player.xlsx")
+            sheet = wb.active
+            sheet['E' + chr(pos + 48)] = coin
+            wb.save("player.xlsx")
+
             exit()
 
         btn_create_account = Button(w - 640, 45, "./Asset/BG-Create_account.png", (150, 150))
@@ -174,8 +205,22 @@ while True:
         if btn_create_account.isClick():
             game_state = 1
 
-        btn_create_account = Button(w - 760, 45, "./Asset/BG-Login.png", (150, 150))
-        btn_create_account.draw()
+            pygame.mixer.music.stop()
+            pygame.mixer.music.unload()
+
+            pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
+            pygame.mixer.music.play(-1, 0, 10000)
+
+        btn_login = Button(w - 760, 45, "./Asset/BG-Login.png", (150, 150))
+        btn_login.draw()
+        if btn_login.isClick():
+            game_state = 2
+
+            pygame.mixer.music.stop()
+            pygame.mixer.music.unload()
+
+            pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
+            pygame.mixer.music.play(-1, 0, 10000)
 
         btn_play = Button(w / 2 - 350, h / 2, "./Asset/BTN-Play.png", (150, 50))
         btn_play.draw()
@@ -191,17 +236,16 @@ while True:
             pygame.mixer.music.stop()
             pygame.mixer.music.unload()
 
-            pygame.mixer.music.load("./Minigame/MG-Music.mp3")
+            pygame.mixer.music.load("./Minigame/MG-Music-1.mp3")
             pygame.mixer.music.play(-1, 0, 10000)
             collected_coin = 0
 
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
 
-        data_file = open("Inventory.txt", "r")
-        data = data_file.readline()
-        coin = data
-        data_file.close()
-        text = Txt(450, 110, "COIN: " + str(coin), "#f06e4b")
+        text = Txt(450, 110, "Player: " + player, "#f06e4b")
+        text.render()
+
+        text = Txt(450, 150, "COIN: " + str(coin), "#f06e4b")
         text.render()
 
     # Tao tai khoan
@@ -238,6 +282,7 @@ while True:
         if text.isClick():
             game_state = 13
 
+
     elif game_state == 13:
         screen.fill("#96c3d7")
 
@@ -255,6 +300,8 @@ while True:
 
             result, image = cam.read()
             if result:
+                game_state = 14
+
                 imshow("Taken Picture", image)
                 imwrite("./player_img/" + name + ".png", image)
 
@@ -262,6 +309,7 @@ while True:
                 info.append(email)
                 info.append(name + ".png")
                 info.append(password)
+                info.append(0)
 
                 wb = load_workbook("player.xlsx")
                 sheet = wb.active
@@ -271,11 +319,125 @@ while True:
                 sendMail("ltloc05samsunggalaxyj3pro@gmail.com", "rodq twhi tmme gypg", info[1]
                 , "Welcome to my game"
                 , "Chuc mung ban " + info[0] + " tao tai khoan game ca cuoc thanh cong :)) From Nhom 9 - 23CTT1 - NMCNTT - HCMUS with love")
+
+    elif game_state == 14:
+        screen.fill("#96c3d7")
+
+        text = Txt(w / 2 - 600, 200, "Create account successfully", "WHITE")
+        text.render()
+
+        text = Txt(w / 2 + 300, 200, "NEXT", "WHITE")
+        text.render()
+        if text.isClick():
+            game_state = 0
+
+    elif game_state == 2:
+        screen.fill("#96c3d7")
+
+        text = Txt(w / 2 - 600, 200, "ENTER YOUR NAME: " + log_name, "WHITE")
+        text.render()
+
+        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE")
+        text.render()
+        if text.isClick():
+            game_state = 21 
+
+    elif game_state == 21:
+        screen.fill("#96c3d7")
+
+        text = Txt(w / 2 - 600, 200, "USER NAME AND PASSWORD", "WHITE")
+        text.render()
+        if text.isClick():
+            game_state = 22
+
+        text = Txt(w / 2 - 600, 250, "FACE RECOGNITION", "WHITE")
+        text.render()
+        if text.isClick():
+            game_state = 25
+
+    elif game_state == 22:
+        screen.fill("#96c3d7")
+
+        text = Txt(w / 2 - 600, 200, "ENTER YOUR PASSWORD: " + log_password, "WHITE")
+        text.render()
+
+        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE")
+        text.render()
+
+        if text.isClick():
+            workbook = openpyxl.load_workbook("player.xlsx")
+            sheet = workbook.active
+            rows = []
+            for row in sheet.iter_rows(values_only=True):
+                rows.append(list(row))
+            
+            game_state = 24
+
+            i = 0
+            for row in rows:
+                i += 1
+                if (row[0] == log_name and row[3] == log_password):
+                    game_state = 23
+
+                    player = log_name
+                    coin = row[4]
+                    pos = i
+                    break
+            workbook.close()
+    
+    elif game_state == 23:
+        screen.fill("#96c3d7")
+
+        text = Txt(w / 2 - 600, 200, "Log in Successfully!!!", "WHITE")
+        text.render()
+
+        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE")
+        text.render()
+        if text.isClick():
+            game_state = 0 
+
+    elif game_state == 24:
+        screen.fill("#96c3d7")
+
+        text = Txt(w / 2 - 600, 200, "Log in Fail!!!", "WHITE")
+        text.render()
+
+        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE")
+        text.render()
+        if text.isClick():
+            game_state = 0 
+
+    elif game_state == 25:
+        screen.fill("#96c3d7")
+
+        text = Txt(w / 2 - 600, 200, "CHECKING YOUR FACE", "WHITE")
+        text.render()
+
+        workbook = openpyxl.load_workbook("player.xlsx")
+        sheet = workbook.active
+        rows = []
+        for row in sheet.iter_rows(values_only=True):
+            rows.append(list(row))
+        
+        i = 0
+        for row in rows:
+            i += 1
+            if (row[0] == log_name):
+
+
+                player = log_name
+                coin = row[4]
+                pos = i
+                break
+
+        workbook.close()
+
     # Minigame
     elif game_state == 3:
         mg_tick -= 1
 
-        if mg_tick % 30 == 0:
+        # Doi vi tri chuot chay sau 0.5s
+        if mg_tick % 15 == 0:
             x_add = random.random() * 40 - 20
             y_add = random.random() * 40 - 20
         mg_mouse_x = mg_mouse[0]
@@ -305,11 +467,7 @@ while True:
             data_file.close()
 
             # Cong voi diem roi luu vo file
-            cur_coin += collected_coin
-
-            data_file = open("Inventory.txt", "w")
-            data = data_file.write(str(cur_coin))
-            data_file.close()
+            coin += collected_coin
 
         screen.fill("#96c3d7")
         text = Txt(300, 100, "COLLECTED COIN: " + str(collected_coin), "#f06e4b")
@@ -331,6 +489,7 @@ while True:
         bg_sun.draw()
         
         bg_1 = Player(mg_mouse[0], mg_mouse[1], "./Minigame/MG-Mouse.png", (250, 250))
+        bg_1.dir_animate(x_add)
         bg_1.draw()
 
         mouse_input = pygame.mouse.get_pos()
