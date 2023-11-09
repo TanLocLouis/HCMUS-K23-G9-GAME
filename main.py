@@ -205,7 +205,7 @@ while True:
         bg_1 = Img(bg_1_x, h - 250, "./Asset/BG3.png", (4000, 250))
         bg_1.draw()
 
-        btn_exit = Button(w - 480, 97, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 325, 97, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             wb = load_workbook("player.xlsx")
@@ -215,7 +215,7 @@ while True:
 
             exit()
 
-        btn_create_account = Button(w - 630, 45, "./Asset/BG-Create_account.png", (150, 150))
+        btn_create_account = Button(w / 2 + 180, 45, "./Asset/BG-Create_account.png", (150, 150))
         btn_create_account.draw()
         if btn_create_account.isClick():
             game_state = 1
@@ -226,7 +226,7 @@ while True:
             pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
             pygame.mixer.music.play(-1, 0, 10000)
 
-        btn_login = Button(w - 760, 45, "./Asset/BG-Login.png", (150, 150))
+        btn_login = Button(w / 2 + 50, 45, "./Asset/BG-Login.png", (150, 150))
         btn_login.draw()
         if btn_login.isClick():
             game_state = 2
@@ -245,7 +245,7 @@ while True:
 
         if (btn_minigame.isClick()):
             game_state = 3
-            mg_tick = 460
+            mg_tick = 620
 
             screen.fill("#96c3d7")
             pygame.mixer.music.stop()
@@ -257,20 +257,20 @@ while True:
 
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
 
-        text = Txt(450, 110, "Player: " + player, "#f06e4b", True)
+        text = Txt(w / 2 - 300, 100, "Player: " + player, "#f06e4b", True)
         text.render()
 
-        text = Txt(450, 150, "COIN: " + str(coin), "#f06e4b", True)
+        text = Txt(w / 2 - 300, 150, "COIN: " + str(coin), "#f06e4b", True)
         text.render()
 
     # Tao tai khoan
     elif game_state == 1:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 600, 200, "ENTER YOUR NAME: " + name, "WHITE")
+        text = Txt(w / 2 - 450, 200, "ENTER YOUR NAME: " + name, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 200, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 11
@@ -278,10 +278,10 @@ while True:
     elif game_state == 11:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 600, 200, "ENTER YOUR EMAIL: " + email, "WHITE")
+        text = Txt(w / 2 - 450, 200, "ENTER YOUR EMAIL: " + email, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 12
@@ -289,10 +289,10 @@ while True:
     elif game_state == 12:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 600, 200, "ENTER YOUR PASSWORD: " + password, "WHITE")
+        text = Txt(w / 2 - 450, 200, "ENTER YOUR PASSWORD: " + password, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 300, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 13
@@ -301,10 +301,10 @@ while True:
     elif game_state == 13:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 400, 200, "Take your picture", "WHITE")
+        text = Txt(w / 2 - 450, 200, "Take your picture", "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 100, 200, "TAKE", "WHITE")
+        text = Txt(w / 2 + 250, 200, "TAKE", "WHITE")
         text.render()
 
         if text.isClick():
@@ -338,10 +338,10 @@ while True:
     elif game_state == 14:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 600, 200, "Create account successfully", "WHITE")
+        text = Txt(w / 2 - 450, 200, "Create account successfully", "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 300, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 0
@@ -349,10 +349,10 @@ while True:
     elif game_state == 2:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 600, 200, "ENTER YOUR NAME: " + log_name, "WHITE")
+        text = Txt(w / 2 - 450, 200, "ENTER YOUR NAME: " + log_name, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 21 
@@ -360,12 +360,12 @@ while True:
     elif game_state == 21:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 600, 200, "USER NAME AND PASSWORD", "WHITE")
+        text = Txt(w / 2 - 450, 200, "USER NAME AND PASSWORD", "WHITE")
         text.render()
         if text.isClick():
             game_state = 22
 
-        text = Txt(w / 2 - 600, 250, "FACE RECOGNITION", "WHITE")
+        text = Txt(w / 2 - 250, 250, "FACE RECOGNITION", "WHITE")
         text.render()
         if text.isClick():
             game_state = 25
@@ -403,10 +403,10 @@ while True:
     elif game_state == 23:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 600, 200, "Log in Successfully!!!", "WHITE")
+        text = Txt(w / 2 - 450, 200, "Log in Successfully!!!", "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 0 
@@ -414,10 +414,10 @@ while True:
     elif game_state == 24:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 600, 200, "Log in Fail!!!", "WHITE")
+        text = Txt(w / 2 - 450, 200, "Log in Fail!!!", "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 400, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 0 
@@ -425,7 +425,7 @@ while True:
     elif game_state == 25:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 600, 200, "CHECKING YOUR FACE", "WHITE")
+        text = Txt(w / 2 - 450, 200, "CHECKING YOUR FACE", "WHITE")
         text.render()
 
         workbook = openpyxl.load_workbook("player.xlsx")
