@@ -131,7 +131,7 @@ def sendMail(sender, password, receiver, subject, body):
 
 pygame.mixer.init()
 pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
-pygame.mixer.music.play(-1, 0, 10000)
+pygame.mixer.music.play(-1, 0, 2000)
 
 # Animation cho background chinh
 bg_1_x = 0
@@ -153,6 +153,7 @@ info = []
 
 log_name = ""
 log_password = ""
+isLogin = False
 
 player = ""
 coin = 0
@@ -212,10 +213,11 @@ while True:
         btn_exit = Button(w / 2 + 325, 97, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
-            wb = load_workbook("player.xlsx")
-            sheet = wb.active
-            sheet['E' + chr(pos + 48)] = coin
-            wb.save("player.xlsx")
+            if isLogin:
+                wb = load_workbook("player.xlsx")
+                sheet = wb.active
+                sheet['E' + chr(pos + 48)] = coin
+                wb.save("player.xlsx")
 
             exit()
 
@@ -228,7 +230,7 @@ while True:
             pygame.mixer.music.unload()
 
             pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
-            pygame.mixer.music.play(-1, 0, 10000)
+            pygame.mixer.music.play(-1, 0, 2000)
 
         btn_login = Button(w / 2 + 50, 45, "./Asset/BG-Login.png", (150, 150))
         btn_login.draw()
@@ -239,7 +241,7 @@ while True:
             pygame.mixer.music.unload()
 
             pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
-            pygame.mixer.music.play(-1, 0, 10000)
+            pygame.mixer.music.play(-1, 0, 2000)
 
         btn_play = Button(w / 2 - 350, h / 2, "./Asset/BTN-Play.png", (150, 50))
         btn_play.draw()
@@ -256,7 +258,7 @@ while True:
             pygame.mixer.music.unload()
 
             pygame.mixer.music.load("./Minigame/MG-Music-1.mp3")
-            pygame.mixer.music.play(-1, 0, 10000)
+            pygame.mixer.music.play(-1, 0, 2000)
             collected_coin = 0
 
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
@@ -364,12 +366,12 @@ while True:
     elif game_state == 21:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 450, 200, "USER NAME AND PASSWORD", "WHITE")
+        text = Txt(w / 2 - 450, 200, "USER NAME AND PASSWORD", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 22
 
-        text = Txt(w / 2 - 250, 250, "FACE RECOGNITION", "WHITE")
+        text = Txt(w / 2 - 450, 250, "FACE RECOGNITION", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 25
@@ -398,6 +400,7 @@ while True:
                 if (row[0] == log_name and row[3] == log_password):
                     game_state = 23
 
+                    isLogin = True
                     player = log_name
                     coin = row[4]
                     pos = i
@@ -467,12 +470,12 @@ while True:
                         i += 1
                         rows.append(list(row))
 
+                    isLogin = True
                     player = log_name
                     coin = row[4]
                     pos = i
 
                     founded = True
-
                 # Draw rectangle around the face
                 cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
 
@@ -482,7 +485,7 @@ while True:
 
             # Display the resulting frame
             cv2.imshow('Checking face', image)
-
+            
             if founded:
                 break
 
@@ -514,11 +517,6 @@ while True:
         if (mg_tick == 0):
             game_state = 0
             pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
-
-            # Doc du lieu coin tu file           
-            data_file = open("Inventory.txt", "r")
-            cur_coin = int(data_file.readline())
-            data_file.close()
 
             # Cong voi diem roi luu vo file
             coin += collected_coin
