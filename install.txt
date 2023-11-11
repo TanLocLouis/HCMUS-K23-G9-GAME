@@ -1,3 +1,0 @@
-pip install pygame
-pip install pygame-opencv
-pip install openpyxl

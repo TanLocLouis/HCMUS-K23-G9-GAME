@@ -13,6 +13,11 @@ from email.message import EmailMessage
 import ssl
 import smtplib
 
+import cv2
+import face_recognition
+
+import time
+
 # Khoi tao chuong trinh
 pygame.init()
 screen = pygame.display.set_mode((1600, 900), pygame.RESIZABLE)
@@ -198,7 +203,6 @@ while True:
         bg_text = Img(w / 2 - 500, h / 5, "./Asset/BG-Title.png", (1000, 200))
         bg_text.draw()
 
-
         bg_1_x -= 2
         if bg_1_x <= -1000:
             bg_1_x = 0 
@@ -281,7 +285,7 @@ while True:
         text = Txt(w / 2 - 450, 200, "ENTER YOUR EMAIL: " + email, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 350, 200, "NEXT", "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 12
@@ -301,10 +305,10 @@ while True:
     elif game_state == 13:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 450, 200, "Take your picture", "WHITE")
+        text = Txt(w / 2 - 450, 200, "Take your picture. Please point camera to your face", "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 250, 200, "TAKE", "WHITE")
+        text = Txt(w / 2 + 350, 275, "TAKE", "WHITE", True)
         text.render()
 
         if text.isClick():
@@ -428,24 +432,59 @@ while True:
         text = Txt(w / 2 - 450, 200, "CHECKING YOUR FACE", "WHITE")
         text.render()
 
-        workbook = openpyxl.load_workbook("player.xlsx")
-        sheet = workbook.active
-        rows = []
-        for row in sheet.iter_rows(values_only=True):
-            rows.append(list(row))
-        
-        i = 0
-        for row in rows:
-            i += 1
-            if (row[0] == log_name):
+        # Load player image path to check
+        known_image_path = "./player_img/" + log_name + ".png"
+        known_image = face_recognition.load_image_file(known_image_path)
+        known_face_encoding = face_recognition.face_encodings(known_image)[0]
 
+        # Open the video capture
+        cam_port = 0
+        cam = cv2.VideoCapture(cam_port)  # Use 0 for default camera
 
-                player = log_name
-                coin = row[4]
-                pos = i
+        founded = False
+        while True:
+            result, image = cam.read()
+
+            face_locations = face_recognition.face_locations(image)
+            face_encodings = face_recognition.face_encodings(image, face_locations)
+
+            # Loop through each face found in the frame
+            for (top, right, bottom, left), face_encoding in zip(face_locations, face_encodings):
+                # Check if the face matches the known face
+                matches = face_recognition.compare_faces([known_face_encoding], face_encoding)
+
+                name = "Cannot verified"
+                if matches[0]:
+                    name = "Verified. Please close this window"
+
+                    game_state = 23
+
+                    workbook = openpyxl.load_workbook("player.xlsx")
+                    sheet = workbook.active
+                    rows = []
+                    i = 0
+                    for row in sheet.iter_rows(values_only=True):
+                        i += 1
+                        rows.append(list(row))
+
+                    player = log_name
+                    coin = row[4]
+                    pos = i
+
+                    founded = True
+
+                # Draw rectangle around the face
+                cv2.rectangle(image, (left, top), (right, bottom), (0, 255, 0), 2)
+
+                # Display the name of the person
+                font = cv2.FONT_HERSHEY_DUPLEX
+                cv2.putText(image, name, (left + 6, bottom - 6), font, 0.5, (255, 255, 255), 1)
+
+            # Display the resulting frame
+            cv2.imshow('Checking face', image)
+
+            if founded:
                 break
-
-        workbook.close()
 
     # Minigame
     elif game_state == 3:

@@ -1,0 +1,8 @@
+python 3.12
+pip install pygame
+pip install pygame-opencv
+pip install openpyxl
+
+Visual Studio 2023
+pip install dlib
+pip install face_recognition
