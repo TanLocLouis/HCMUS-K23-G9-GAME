@@ -16,8 +16,6 @@ import smtplib
 import cv2
 import face_recognition
 
-import time
-
 # Khoi tao chuong trinh
 pygame.init()
 screen = pygame.display.set_mode((1600, 900), pygame.RESIZABLE)
@@ -54,7 +52,7 @@ class Player():
 # Class hien thi chu
 class Txt():
     def __init__(self, x, y, content, color, isBorder = False):
-        font = pygame.font.Font(None, 50)
+        font = pygame.font.Font('BDLifelessGrotesk-Bold.otf', 30)
         self.text = font.render(content, True, color)
         self.rect = self.text.get_rect()
         self.rect.topleft = (x, y)
@@ -197,8 +195,21 @@ while True:
 
     w, h = pygame.display.get_surface().get_size()
 
-    # Tai main menu
+    # Load main menu
     if game_state == 0:
+
+        # Language for game
+        workbook = openpyxl.load_workbook("languages.xlsx")
+        sheet = workbook.active
+        rows = []
+        for row in sheet.iter_rows(values_only=True):
+            rows.append(list(row))
+
+        lang = dict()
+        for row in rows:
+            lang[row[0]] = row[2]
+        # End Language for game
+
         bg = Img(0, 0, "./Asset/BG.png", (w, h))
         bg.draw()
         bg_text = Img(w / 2 - 500, h / 5, "./Asset/BG-Title.png", (1000, 200))
@@ -263,31 +274,31 @@ while True:
 
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
 
-        text = Txt(w / 2 - 300, 100, "Player: " + player, "#f06e4b", True)
+        text = Txt(w / 2 - 300, 100, lang['PLAYER'] + player, "#f06e4b", True)
         text.render()
 
-        text = Txt(w / 2 - 300, 150, "COIN: " + str(coin), "#f06e4b", True)
+        text = Txt(w / 2 - 300, 150, lang['COIN'] + str(coin), "#f06e4b", True)
         text.render()
 
     # Tao tai khoan
     elif game_state == 1:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 450, 200, "ENTER YOUR NAME: " + name, "WHITE")
+        text = Txt(w / 2 - 450, 200, lang['ENTERYOURNAME'] + name, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 11
-
+       
     elif game_state == 11:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 450, 200, "ENTER YOUR EMAIL: " + email, "WHITE")
+        text = Txt(w / 2 - 450, 200, lang['ENTERYOUREMAIL'] + email, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 350, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 350, 200, lang['NEXT'], "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 12
@@ -295,10 +306,10 @@ while True:
     elif game_state == 12:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 450, 200, "ENTER YOUR PASSWORD: " + password, "WHITE")
+        text = Txt(w / 2 - 450, 200, lang['ENTERYOURPASSWORD'] + password, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 13
@@ -307,10 +318,10 @@ while True:
     elif game_state == 13:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 450, 200, "Take your picture. Please point camera to your face", "WHITE")
+        text = Txt(w / 2 - 450, 200, lang['TAKEYOURPICTURE'], "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 350, 275, "TAKE", "WHITE", True)
+        text = Txt(w / 2 + 350, 275, lang["TAKE"], "WHITE", True)
         text.render()
 
         if text.isClick():
@@ -344,10 +355,10 @@ while True:
     elif game_state == 14:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 450, 200, "Create account successfully", "WHITE")
+        text = Txt(w / 2 - 450, 200, lang['CREATESUCCESSFULLY'], "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 0
@@ -355,10 +366,10 @@ while True:
     elif game_state == 2:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 450, 200, "ENTER YOUR NAME: " + log_name, "WHITE")
+        text = Txt(w / 2 - 450, 200, lang['ENTERYOURNAME'] + log_name, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 21 
@@ -366,12 +377,12 @@ while True:
     elif game_state == 21:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 450, 200, "USER NAME AND PASSWORD", "WHITE", True)
+        text = Txt(w / 2 - 450, 200, lang['USERANDPASSWORD'], "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 22
 
-        text = Txt(w / 2 - 450, 250, "FACE RECOGNITION", "WHITE", True)
+        text = Txt(w / 2 - 450, 250, lang['FACERECOGNITION'], "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 25
@@ -379,10 +390,10 @@ while True:
     elif game_state == 22:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 600, 200, "ENTER YOUR PASSWORD: " + log_password, "WHITE")
+        text = Txt(w / 2 - 600, 200, lang["ENTERYOURPASSWORD"] + log_password, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True)
         text.render()
 
         if text.isClick():
@@ -410,10 +421,10 @@ while True:
     elif game_state == 23:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 450, 200, "Log in Successfully!!!", "WHITE")
+        text = Txt(w / 2 - 450, 200, lang['LOGINSUCCESSFULLY'], "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 100, 200, lang['NEXT'], "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 0 
@@ -421,10 +432,10 @@ while True:
     elif game_state == 24:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 450, 200, "Log in Fail!!!", "WHITE")
+        text = Txt(w / 2 - 450, 200, lang['LOGINFAIL'], "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 250, 200, "NEXT", "WHITE", True)
+        text = Txt(w / 2 + 100, 200, lang['NEXT'], "WHITE", True)
         text.render()
         if text.isClick():
             game_state = 0 
@@ -458,22 +469,25 @@ while True:
 
                 name = "Cannot verified"
                 if matches[0]:
-                    name = "Verified. Please close this window"
+                    name = "Hi " + log_name +" welcome back to game. Please close this window"
 
-                    game_state = 23
 
                     workbook = openpyxl.load_workbook("player.xlsx")
                     sheet = workbook.active
                     rows = []
-                    i = 0
                     for row in sheet.iter_rows(values_only=True):
-                        i += 1
                         rows.append(list(row))
 
-                    isLogin = True
-                    player = log_name
-                    coin = row[4]
-                    pos = i
+                    game_state = 23
+
+                    i = 0
+                    for row in rows:
+                        i += 1
+                        if row[0] == log_name:
+                            isLogin = True
+                            player = log_name
+                            coin = row[4]
+                            pos = i
 
                     founded = True
                 # Draw rectangle around the face
@@ -522,10 +536,10 @@ while True:
             coin += collected_coin
 
         screen.fill("#96c3d7")
-        text = Txt(300, 100, "COLLECTED COIN: " + str(collected_coin), "#f06e4b", True)
+        text = Txt(300, 100, lang['COLLECTEDCOIN'] + str(collected_coin), "#f06e4b", True)
         text.render()
 
-        text = Txt(300, 50, "TIME: " + str(int(mg_tick / 30)), "#f06e4b", True)
+        text = Txt(300, 50, lang['TIME'] + str(int(mg_tick / 30)), "#f06e4b", True)
         text.render()
 
         bg_grass = Img(0, h - 1000, "./Minigame/MG-Grass.png", (5000, 1000))
