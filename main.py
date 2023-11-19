@@ -157,6 +157,20 @@ player = ""
 coin = 0
 
 pos = 1
+
+LANG = 1
+# Language for game
+workbook = openpyxl.load_workbook("languages.xlsx")
+sheet = workbook.active
+rows = []
+for row in sheet.iter_rows(values_only=True):
+    rows.append(list(row))
+
+lang = dict()
+for row in rows:
+    lang[row[0]] = row[LANG]
+#--------------------------------
+
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -197,18 +211,6 @@ while True:
 
     # Load main menu
     if game_state == 0:
-
-        # Language for game
-        workbook = openpyxl.load_workbook("languages.xlsx")
-        sheet = workbook.active
-        rows = []
-        for row in sheet.iter_rows(values_only=True):
-            rows.append(list(row))
-
-        lang = dict()
-        for row in rows:
-            lang[row[0]] = row[2]
-        # End Language for game
 
         bg = Img(0, 0, "./Asset/BG.png", (w, h))
         bg.draw()
@@ -279,6 +281,33 @@ while True:
 
         text = Txt(w / 2 - 300, 150, lang['COIN'] + str(coin), "#f06e4b", True)
         text.render()
+
+        text = Txt(w / 2 + 200, 550, lang['LANG'] + player, "WHITE")
+        text.render()
+
+        if text.isClick():
+            game_state = -1
+
+    # Doi ngon ngu
+    elif game_state == -1:
+        if LANG == 1:
+            LANG = 2
+        else:
+            LANG = 1
+
+        # Language for game
+        workbook = openpyxl.load_workbook("languages.xlsx")
+        sheet = workbook.active
+        rows = []
+        for row in sheet.iter_rows(values_only=True):
+            rows.append(list(row))
+
+        lang = dict()
+        for row in rows:
+            lang[row[0]] = row[LANG]
+        # End Language for game
+
+        game_state = 0
 
     # Tao tai khoan
     elif game_state == 1:
