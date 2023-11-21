@@ -16,22 +16,26 @@ import smtplib
 import cv2
 import face_recognition
 
-# Khoi tao chuong trinh
+# Initialize the game
 pygame.init()
 screen = pygame.display.set_mode((1600, 900), pygame.RESIZABLE)
 pygame.display.set_caption("Et Bi 99 - NHA CAI DEN TU CHAU A")
 clock = pygame.time.Clock()
 
-# Hien thi Coin hien co
+# Show coin
 collected_coin = 0
 font = pygame.font.Font(None, 50)
 text = font.render("COIN: ", True,  "#f06e4b")
 text_rect = text.get_rect(center = (100, 50))
 
-# Trang thai cua game 0: tai man hinh dang nhap 2: minigame 1, 3, 4 ... chua co :))
+# To switch between scence
+# 0: Main menu
+# 1: Create account
+# 2: Login
+# 3: Mini game 
 game_state = 0
 
-# Class nhan vat
+# Minigame Player class
 class Player():
     def __init__(self, x, y, image, scale):
         self.image = pygame.image.load(image)
@@ -49,22 +53,28 @@ class Player():
         if (value >= 0):
             self.image = pygame.transform.flip(self.image, 1, 0)
 
-# Class hien thi chu
+# Text Class
 class Txt():
-    def __init__(self, x, y, content, color, isBorder = False):
+    def __init__(self, x, y, content, color, isBorder = False, isClickable = False):
         font = pygame.font.Font('BDLifelessGrotesk-Bold.otf', 30)
         self.text = font.render(content, True, color)
         self.rect = self.text.get_rect()
         self.rect.topleft = (x, y)
         self.isBorder = isBorder
+        self.isClickable = isClickable
 
     def render(self):
         if self.isBorder:
             rect_color = "#726f6f"
             rect_position = self.rect.topleft
-            rect_size = (self.text.get_width() + 3, self.text.get_height() + 3)
+            rect_size = (self.text.get_width() + 5, self.text.get_height() + 5)
             
             pygame.draw.rect(screen, rect_color, (rect_position, rect_size))
+        
+        if self.isClickable:
+            pos = pygame.mouse.get_pos()
+            if self.rect.collidepoint(pos):
+                self.text = pygame.transform.scale(self.text, (self.text.get_width() * 1.1, self.text.get_height() * 1.1))
 
         screen.blit(self.text, self.rect)
 
@@ -76,7 +86,7 @@ class Txt():
         else:
             return False  
 
-# Class hien thi hinh anh
+# Image Class
 class Img():
     def __init__(self, x, y, image, scale):
         self.image = pygame.image.load(image)
@@ -87,7 +97,7 @@ class Img():
     def draw(self):
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
-# Class hien thi nut
+# Button Class
 class Button():
     def __init__(self, x, y, image, scale):
         self.image = pygame.image.load(image)
@@ -98,7 +108,6 @@ class Button():
 
     def isClick(self):
         pos = pygame.mouse.get_pos()
-
         if self.rect.collidepoint(pos) and pygame.mouse.get_pressed()[0] == 1:
             return True
         else:
@@ -112,7 +121,7 @@ class Button():
 
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
-# Gui mail
+# Send mail to player after create account
 def sendMail(sender, password, receiver, subject, body):
     mail = EmailMessage()
     mail['From'] = sender
@@ -125,19 +134,17 @@ def sendMail(sender, password, receiver, subject, body):
         smtp.login(sender, password)
         smtp.sendmail(sender, receiver, mail.as_string())
 
-
-
 pygame.mixer.init()
 pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
 pygame.mixer.music.play(-1, 0, 2000)
 
-# Animation cho background chinh
+# Main background Grass moving animation
 bg_1_x = 0
-# Random vi tri mouse trong minigame
+# Random mouse position in minigame
 mg_mouse = (random.random() * 1500, 720)
-# Dem so luong tick de tinh thoi gian choi minigame sau mot thoi gian tu don thoat
+# Game tick to calculate time in minigame
 mg_tick = 0
-# Animation cho cloud trong minigame
+# Cloud pos x to animate in minigame
 bg_sun_x = 0
 
 x_add = 0
@@ -214,7 +221,7 @@ while True:
 
         bg = Img(0, 0, "./Asset/BG.png", (w, h))
         bg.draw()
-        bg_text = Img(w / 2 - 500, h / 5, "./Asset/BG-Title.png", (1000, 200))
+        bg_text = Img(w / 2 - 500, h / 5 + 15, "./Asset/" + lang['BG-TITLE'], (1000, 200))
         bg_text.draw()
 
         bg_1_x -= 2
@@ -231,10 +238,9 @@ while True:
                 sheet = wb.active
                 sheet['E' + chr(pos + 48)] = coin
                 wb.save("player.xlsx")
-
             exit()
 
-        btn_create_account = Button(w / 2 + 180, 45, "./Asset/BG-Create_account.png", (150, 150))
+        btn_create_account = Button(w / 2 + 160, 98, "./Asset/" + lang['CREATE'], (150, 50))
         btn_create_account.draw()
         if btn_create_account.isClick():
             game_state = 1
@@ -245,7 +251,7 @@ while True:
             pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
             pygame.mixer.music.play(-1, 0, 2000)
 
-        btn_login = Button(w / 2 + 50, 45, "./Asset/BG-Login.png", (150, 150))
+        btn_login = Button(w / 2, 98, "./Asset/" + lang['LOGIN'], (150, 50))
         btn_login.draw()
         if btn_login.isClick():
             game_state = 2
@@ -256,10 +262,10 @@ while True:
             pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
             pygame.mixer.music.play(-1, 0, 2000)
 
-        btn_play = Button(w / 2 - 350, h / 2, "./Asset/BTN-Play.png", (150, 50))
+        btn_play = Button(w / 2 - 350, h / 2, "./Asset/" + lang['BTN-PLAY'], (150, 50))
         btn_play.draw()
 
-        btn_minigame = Button(w / 2 - 350, h / 2 + 75 , "./Asset/BTN-Minigame.png", (150, 50))
+        btn_minigame = Button(w / 2 - 350, h / 2 + 75 , "./Asset/" + lang['BTN-MINIGAME'], (150, 50))
         btn_minigame.draw()
 
         if (btn_minigame.isClick()):
@@ -282,13 +288,13 @@ while True:
         text = Txt(w / 2 - 300, 150, lang['COIN'] + str(coin), "#f06e4b", True)
         text.render()
 
-        text = Txt(w / 2 + 200, 550, lang['LANG'] + player, "WHITE")
+        text = Txt(w / 2 + 200, 550, lang['LANG'] + player, "WHITE", True, True)
         text.render()
 
         if text.isClick():
             game_state = -1
 
-    # Doi ngon ngu
+    # Change language state
     elif game_state == -1:
         if LANG == 1:
             LANG = 2
@@ -309,14 +315,14 @@ while True:
 
         game_state = 0
 
-    # Tao tai khoan
+    # Create account state
     elif game_state == 1:
         screen.fill("#96c3d7")
 
         text = Txt(w / 2 - 450, 200, lang['ENTERYOURNAME'] + name, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True)
+        text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
             game_state = 11
@@ -327,7 +333,7 @@ while True:
         text = Txt(w / 2 - 450, 200, lang['ENTERYOUREMAIL'] + email, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 350, 200, lang['NEXT'], "WHITE", True)
+        text = Txt(w / 2 + 350, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
             game_state = 12
@@ -338,7 +344,7 @@ while True:
         text = Txt(w / 2 - 450, 200, lang['ENTERYOURPASSWORD'] + password, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True)
+        text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
             game_state = 13
@@ -350,7 +356,7 @@ while True:
         text = Txt(w / 2 - 450, 200, lang['TAKEYOURPICTURE'], "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 350, 275, lang["TAKE"], "WHITE", True)
+        text = Txt(w / 2 + 350, 275, lang["TAKE"], "WHITE", True, True)
         text.render()
 
         if text.isClick():
@@ -387,7 +393,7 @@ while True:
         text = Txt(w / 2 - 450, 200, lang['CREATESUCCESSFULLY'], "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True)
+        text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
             game_state = 0
@@ -398,7 +404,7 @@ while True:
         text = Txt(w / 2 - 450, 200, lang['ENTERYOURNAME'] + log_name, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True)
+        text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
             game_state = 21 
@@ -406,12 +412,12 @@ while True:
     elif game_state == 21:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 450, 200, lang['USERANDPASSWORD'], "WHITE", True)
+        text = Txt(w / 2 - 450, 200, lang['USERANDPASSWORD'], "WHITE", True, True)
         text.render()
         if text.isClick():
             game_state = 22
 
-        text = Txt(w / 2 - 450, 250, lang['FACERECOGNITION'], "WHITE", True)
+        text = Txt(w / 2 - 450, 250, lang['FACERECOGNITION'], "WHITE", True, True)
         text.render()
         if text.isClick():
             game_state = 25
@@ -422,7 +428,7 @@ while True:
         text = Txt(w / 2 - 600, 200, lang["ENTERYOURPASSWORD"] + log_password, "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True)
+        text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
 
         if text.isClick():
@@ -453,7 +459,7 @@ while True:
         text = Txt(w / 2 - 450, 200, lang['LOGINSUCCESSFULLY'], "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 100, 200, lang['NEXT'], "WHITE", True)
+        text = Txt(w / 2 + 100, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
             game_state = 0 
@@ -464,7 +470,7 @@ while True:
         text = Txt(w / 2 - 450, 200, lang['LOGINFAIL'], "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 100, 200, lang['NEXT'], "WHITE", True)
+        text = Txt(w / 2 + 100, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
             game_state = 0 
@@ -536,39 +542,39 @@ while True:
     elif game_state == 3:
         mg_tick -= 1
 
-        # Doi vi tri chuot chay sau 0.5s
+        # change mouse pos after 0.5s
         if mg_tick % 15 == 0:
             x_add = random.random() * 40 - 20
             y_add = random.random() * 40 - 20
         mg_mouse_x = mg_mouse[0]
         mg_mouse_x += x_add
-        # xu li khi chuot chay ra bien
+        # when mouse go to screen border
         if mg_mouse_x <= 0:
             mg_mouse_x = w
         if mg_mouse_x >= w:
             mg_mouse_x = 0
         mg_mouse_y = mg_mouse[1]
         mg_mouse_y += y_add
-        # xu li khi chuot chay ra bien
+        # when mouse go to screen border
         if mg_mouse_y <= h - 400:
             mg_mouse_y = h
         if mg_mouse_y >= h:
             mg_mouse_y = h - 400
         mg_mouse = (mg_mouse_x, mg_mouse_y)
 
-        # Het thoi gian choi game
+        # time went off
         if (mg_tick == 0):
             game_state = 0
             pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
 
-            # Cong voi diem roi luu vo file
+            # plus gameplay coin to player's coin
             coin += collected_coin
 
         screen.fill("#96c3d7")
-        text = Txt(300, 100, lang['COLLECTEDCOIN'] + str(collected_coin), "#f06e4b", True)
+        text = Txt(300, 100, lang['COLLECTEDCOIN'] + str(collected_coin), "#f06e4b", True, True)
         text.render()
 
-        text = Txt(300, 50, lang['TIME'] + str(int(mg_tick / 30)), "#f06e4b", True)
+        text = Txt(300, 50, lang['TIME'] + str(int(mg_tick / 30)), "#f06e4b", True, True)
         text.render()
 
         bg_grass = Img(0, h - 1000, "./Minigame/MG-Grass.png", (5000, 1000))
