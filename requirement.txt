@@ -1,8 +1,9 @@
 python 3.12
 pip install pygame
-pip install pygame-opencv
+pip install opencv-python
 pip install openpyxl
 
-Visual Studio 2023
+Visual Studio 2023 -> Choose Desktop Development for C++
 pip install dlib
 pip install face_recognition
+pip install setuptools

@@ -97,6 +97,32 @@ class Img():
     def draw(self):
         screen.blit(self.image, (self.rect.x, self.rect.y))
 
+# Item Class
+class Item():
+    def __init__(self, x, y, image, scale, value):
+        self.image = pygame.image.load(image)
+        self.image = pygame.transform.scale(self.image, scale)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
+        self.value = value
+
+    def draw(self):
+        pos = pygame.mouse.get_pos()
+        if self.rect.collidepoint(pos):
+            self.image = pygame.transform.scale(self.image, (self.image.get_width() * 1.1, self.image.get_height() * 1.1))
+        screen.blit(self.image, (self.rect.x, self.rect.y))
+
+    
+    def isClick(self):
+        pos = pygame.mouse.get_pos()
+        if self.rect.collidepoint(pos) and pygame.mouse.get_pressed()[0] == 1:
+            return True
+        else:
+            return False  
+
+    def getValue(self):
+        return self.value
+
 # Button Class
 class Button():
     def __init__(self, x, y, image, scale):
@@ -166,6 +192,8 @@ coin = 0
 pos = 1
 
 LANG = 1
+
+prePlayItems = set()
 # Language for game
 workbook = openpyxl.load_workbook("languages.xlsx")
 sheet = workbook.active
@@ -262,6 +290,12 @@ while True:
             pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
             pygame.mixer.music.play(-1, 0, 2000)
 
+        text = Txt(w / 2 - 300, 100, lang['PLAYER'] + player, "#f06e4b", True)
+        text.render()
+
+        text = Txt(w / 2 - 300, 150, lang['COIN'] + str(coin), "#f06e4b", True)
+        text.render()
+
         btn_play = Button(w / 2 - 350, h / 2, "./Asset/" + lang['BTN-PLAY'], (150, 50))
         btn_play.draw()
 
@@ -282,14 +316,15 @@ while True:
 
             pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
 
-        text = Txt(w / 2 - 300, 100, lang['PLAYER'] + player, "#f06e4b", True)
+
+        text = Txt(w / 2 + 200, 550, lang['LANG'], "WHITE", True, True)
         text.render()
 
-        text = Txt(w / 2 - 300, 150, lang['COIN'] + str(coin), "#f06e4b", True)
-        text.render()
+        btn_shop = Button(w / 2 - 350, h / 2 + 150 , "./Asset/" + lang['STORE'], (150, 50))
+        btn_shop.draw()
 
-        text = Txt(w / 2 + 200, 550, lang['LANG'] + player, "WHITE", True, True)
-        text.render()
+        if btn_shop.isClick():
+            game_state = 4
 
         if text.isClick():
             game_state = -1
@@ -376,7 +411,7 @@ while True:
                 info.append(email)
                 info.append(name + ".png")
                 info.append(password)
-                info.append(0)
+                info.append(20) # Give 20 coin to new player
 
                 wb = load_workbook("player.xlsx")
                 sheet = wb.active
@@ -604,6 +639,50 @@ while True:
                 pygame.mixer.Sound("./Minigame/MG-Coin.mp3").play()
 
                 mg_mouse = (random.random() * (w - 200), h - 500 + random.random() * 300)
+    
+    elif game_state == 4:
+        screen.fill("#96c3d7")
 
+        text = Txt(w / 2 - 300, 100, lang['PLAYER'] + player, "#f06e4b", True)
+        text.render()
+
+        text = Txt(w / 2 - 300, 150, lang['COIN'] + str(coin), "#f06e4b", True)
+        text.render()
+
+        text = Txt(w / 2 - 300, 200, lang['BUYED'] + str(len(prePlayItems)), "WHITE", True)
+        text.render()
+
+        if lang['ITEM-1'] not in prePlayItems:
+            item_1 = Item(w / 2 - 300, 250, "./Asset/" + lang['ITEM-1'], (300, 100), 10)
+            item_1.draw()
+            if item_1.isClick():
+                value = item_1.getValue()
+                if coin >= value:
+                    coin -= value
+                    prePlayItems.add(lang['ITEM-1'])
+
+        if lang['ITEM-2'] not in prePlayItems:
+            item_2 = Item(w / 2 - 300, 350, "./Asset/" + lang['ITEM-2'], (300, 100), 10)
+            item_2.draw()
+            if item_2.isClick():
+                value = item_2.getValue()
+                if coin >= value:
+                    coin -= value
+                    prePlayItems.add(lang['ITEM-2'])
+
+        if lang['ITEM-3'] not in prePlayItems:
+            item_2 = Item(w / 2 - 300, 450, "./Asset/" + lang['ITEM-3'], (300, 100), 10)
+            item_2.draw()
+            if item_2.isClick():
+                value = item_2.getValue()
+                if coin >= value:
+                    coin -= value
+                    prePlayItems.add(lang['ITEM-3'])
+
+        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit.draw()
+        if btn_exit.isClick():
+            game_state = 0
+            
     pygame.display.update()
     clock.tick(30)
