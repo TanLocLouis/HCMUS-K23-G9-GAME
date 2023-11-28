@@ -116,6 +116,7 @@ class Item():
     def isClick(self):
         pos = pygame.mouse.get_pos()
         if self.rect.collidepoint(pos) and pygame.mouse.get_pressed()[0] == 1:
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
             return True
         else:
             return False  
@@ -326,6 +327,12 @@ while True:
         if btn_shop.isClick():
             game_state = 4
 
+            pygame.mixer.music.stop()
+            pygame.mixer.music.unload()
+
+            pygame.mixer.music.load("./Minigame/MG-Music-1.mp3")
+            pygame.mixer.music.play(-1, 0, 2000)
+
         if text.isClick():
             game_state = -1
 
@@ -348,6 +355,14 @@ while True:
             lang[row[0]] = row[LANG]
         # End Language for game
 
+        game_state = -2
+
+    elif game_state == -2:
+        pygame.mixer.music.stop()
+        pygame.mixer.music.unload()
+
+        pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
+        pygame.mixer.music.play(-1, 0, 2000)
         game_state = 0
 
     # Create account state
@@ -361,6 +376,11 @@ while True:
         text.render()
         if text.isClick():
             game_state = 11
+        
+        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit.draw()
+        if btn_exit.isClick():
+            game_state = -2
        
     elif game_state == 11:
         screen.fill("#96c3d7")
@@ -373,6 +393,11 @@ while True:
         if text.isClick():
             game_state = 12
     
+        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit.draw()
+        if btn_exit.isClick():
+            game_state = -2
+
     elif game_state == 12:
         screen.fill("#96c3d7")
 
@@ -384,6 +409,10 @@ while True:
         if text.isClick():
             game_state = 13
 
+        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit.draw()
+        if btn_exit.isClick():
+            game_state = -2
 
     elif game_state == 13:
         screen.fill("#96c3d7")
@@ -395,7 +424,7 @@ while True:
         text.render()
 
         if text.isClick():
-            game_state = 0
+            game_state = -2
 
             cam_port = 0
             cam = VideoCapture(cam_port)
@@ -422,6 +451,11 @@ while True:
                 , "Welcome to my game"
                 , "Chuc mung ban " + info[0] + " tao tai khoan game ca cuoc thanh cong :)) From Nhom 9 - 23CTT1 - NMCNTT - HCMUS with love")
 
+        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit.draw()
+        if btn_exit.isClick():
+            game_state = -2
+
     elif game_state == 14:
         screen.fill("#96c3d7")
 
@@ -431,7 +465,7 @@ while True:
         text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
-            game_state = 0
+            game_state = -2
 
     elif game_state == 2:
         screen.fill("#96c3d7")
@@ -443,6 +477,11 @@ while True:
         text.render()
         if text.isClick():
             game_state = 21 
+
+        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit.draw()
+        if btn_exit.isClick():
+            game_state = -2
 
     elif game_state == 21:
         screen.fill("#96c3d7")
@@ -456,6 +495,11 @@ while True:
         text.render()
         if text.isClick():
             game_state = 25
+
+        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit.draw()
+        if btn_exit.isClick():
+            game_state = -2
 
     elif game_state == 22:
         screen.fill("#96c3d7")
@@ -488,6 +532,11 @@ while True:
                     break
             workbook.close()
     
+        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit.draw()
+        if btn_exit.isClick():
+            game_state = -2
+
     elif game_state == 23:
         screen.fill("#96c3d7")
 
@@ -497,7 +546,7 @@ while True:
         text = Txt(w / 2 + 100, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
-            game_state = 0 
+            game_state = -2 
 
     elif game_state == 24:
         screen.fill("#96c3d7")
@@ -508,7 +557,7 @@ while True:
         text = Txt(w / 2 + 100, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
-            game_state = 0 
+            game_state = -2 
 
     elif game_state == 25:
         screen.fill("#96c3d7")
@@ -573,6 +622,11 @@ while True:
             if founded:
                 break
 
+        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit.draw()
+        if btn_exit.isClick():
+            game_state = -2
+
     # Minigame
     elif game_state == 3:
         mg_tick -= 1
@@ -599,13 +653,24 @@ while True:
 
         # time went off
         if (mg_tick == 0):
-            game_state = 0
+            game_state = -2
             pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
+
+            pygame.mixer.music.stop()
+            pygame.mixer.music.unload()
+
+            pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
+            pygame.mixer.music.play(-1, 0, 2000)
 
             # plus gameplay coin to player's coin
             coin += collected_coin
 
         screen.fill("#96c3d7")
+        btn_exit = Button(w / 2 + 300, 50, "./Asset/ExitGame.png", (50, 50))
+        btn_exit.draw()
+        if btn_exit.isClick():
+            game_state = -2
+
         text = Txt(300, 100, lang['COLLECTEDCOIN'] + str(collected_coin), "#f06e4b", True, True)
         text.render()
 
@@ -682,7 +747,7 @@ while True:
         btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
-            game_state = 0
+            game_state = -2
             
     pygame.display.update()
     clock.tick(30)
