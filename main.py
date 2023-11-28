@@ -44,7 +44,7 @@ log_password = ""
 isLogin = False
 
 player = ""
-coin = 0
+coin = 20
 
 pos = 1
 
@@ -227,6 +227,7 @@ while True:
 
         pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
         pygame.mixer.music.play(-1, 0, 2000)
+
         game_state = 0
 
     # Create account state
@@ -620,10 +621,18 @@ while True:
         car_4 = Car(100, 400, "./Minigame/MG-Mouse.png", (100, 100), 1)
         car_5 = Car(100, 500, "./Minigame/MG-Mouse.png", (100, 100), 1)
 
-        box_1 = Box(500, 150, "./Minigame/MG-Mouse.png", (100, 100))
-        box_2 = Box(500, 250, "./Minigame/MG-Mouse.png", (100, 100))
-        box_3 = Box(500, 350, "./Minigame/MG-Mouse.png", (100, 100))
+        random.seed(time.time())
+        pos = random.random() * 500 + 500
+        box_1 = Box(pos, 150, "./Minigame/MG-Hammer.png", (100, 100))
+        for value in prePlayItems:
+            if value == "ITEM-1.png":
+                car_1.itemSpeed(1)
+        pos = random.random() * 500 + 500
+        box_2 = Box(pos, 330, "./Minigame/MG-Hammer.png", (100, 100))
+        pos = random.random() * 500 + 500
+        box_3 = Box(pos, 420, "./Minigame/MG-Hammer.png", (100, 100))
         game_state = 51
+        mg_tick = 0
 
     elif game_state == 51:
         screen.fill("#96c3d7")
@@ -637,53 +646,94 @@ while True:
         box_2.draw()
         box_3.draw()
 
+        #bg_grass = Img(0, h - 1000, "./Minigame/MG-Grass.png", (5000, 1000))
+        #bg_grass.draw()
+
+        mg_tick += 1
+        text = Txt(300, 50, lang['TIME'] + str(int(mg_tick / 30)), "#f06e4b", True, True)
+        text.render()
+
         if car_1.isCollide(box_1.getRect()) and box_1.isShow():
-            car_1.plusSpeed(2)
+            car_1.plusSpeed(1)
             box_1.disable()
         if car_2.isCollide(box_1.getRect()) and box_1.isShow():
-            car_2.plusSpeed(2)
+            car_2.plusSpeed(1)
             box_1.disable()
         if car_3.isCollide(box_1.getRect()) and box_1.isShow():
-            car_3.plusSpeed(2)
+            car_3.plusSpeed(1)
             box_1.disable()
         if car_4.isCollide(box_1.getRect()) and box_1.isShow():
-            car_4.plusSpeed(2)
+            car_4.plusSpeed(1)
             box_1.disable()
         if car_5.isCollide(box_1.getRect()) and box_1.isShow():
-            car_4.plusSpeed(2)
+            car_4.plusSpeed(1)
             box_1.disable()
 
         if car_1.isCollide(box_2.getRect()) and box_2.isShow():
-            car_1.plusSpeed(2)
+            car_1.plusSpeed(1)
             box_2.disable()
-        if car_2.isCollide(box_2.getRect()) and box_1.isShow():
-            car_2.plusSpeed(2)
+        if car_2.isCollide(box_2.getRect()) and box_2.isShow():
+            car_2.plusSpeed(1)
             box_2.disable()
-        if car_3.isCollide(box_2.getRect()) and box_1.isShow():
-            car_3.plusSpeed(2)
+        if car_3.isCollide(box_2.getRect()) and box_2.isShow():
+            car_3.plusSpeed(1)
             box_2.disable()
-        if car_4.isCollide(box_2.getRect()) and box_1.isShow():
-            car_4.plusSpeed(2)
+        if car_4.isCollide(box_2.getRect()) and box_2.isShow():
+            car_4.plusSpeed(1)
             box_2.disable()
-        if car_5.isCollide(box_2.getRect()) and box_1.isShow():
-            car_4.plusSpeed(2)
+        if car_5.isCollide(box_2.getRect()) and box_2.isShow():
+            car_4.plusSpeed(1)
             box_2.disable()
 
-        if car_1.isCollide(box_3.getRect()) and box_1.isShow():
-            car_1.plusSpeed(2)
+        if car_1.isCollide(box_3.getRect()) and box_3.isShow():
+            car_1.plusSpeed(1)
             box_3.disable()
-        if car_2.isCollide(box_3.getRect()) and box_1.isShow():
-            car_2.plusSpeed(2)
+        if car_2.isCollide(box_3.getRect()) and box_3.isShow():
+            car_2.plusSpeed(1)
             box_3.disable()
-        if car_3.isCollide(box_3.getRect()) and box_1.isShow():
-            car_3.plusSpeed(2)
+        if car_3.isCollide(box_3.getRect()) and box_3.isShow():
+            car_3.plusSpeed(1)
             box_3.disable()
-        if car_4.isCollide(box_3.getRect()) and box_1.isShow():
-            car_4.plusSpeed(2)
+        if car_4.isCollide(box_3.getRect()) and box_3.isShow():
+            car_4.plusSpeed(1)
             box_3.disable()
-        if car_5.isCollide(box_3.getRect()) and box_1.isShow():
-            car_4.plusSpeed(2)
+        if car_5.isCollide(box_3.getRect()) and box_3.isShow():
+            car_4.plusSpeed(1)
             box_3.disable()
+
+        if car_1.isWin(w):
+            game_state = 52
+            coin += 30
+            pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
+
+        if car_2.isWin(w):
+            game_state = 52
+        if car_3.isWin(w):
+            game_state = 52
+        if car_4.isWin(w):
+            game_state = 52
+        if car_5.isWin(w):
+            game_state = 52
+
+    elif game_state == 52:
+        pygame.mixer.music.stop()
+        pygame.mixer.music.unload()
+
+        pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
+        pygame.mixer.music.play(-1, 0, 2000)
+
+        text = Txt(w / 2 - 400, h / 2 - 100, lang['WIN'], "#f06e4b", True)
+        text.render()
+        pygame.image.save(screen, str(time.time()) + ".png")
+
+        wb = load_workbook("result.xlsx")
+        sheet = wb.active
+        sheet.append([str(time.time()), player, 30])
+        wb.save("result.xlsx")
+
+        game_state = 53
+    elif game_state == 53:
+        prePlayItems.clear()
 
     pygame.display.update()
     clock.tick(30)

@@ -40,16 +40,24 @@ class Car():
 
     def isCollide(self, rect):
         return self.rect.collidepoint(rect.topleft[0], rect.topleft[1])
-    
-    def plusSpeed(self, speed):
-        option = int(random.random() * 5)
 
-        if option == 0:
+    def itemSpeed(self, speed):
+        self.speed += speed
+
+    def plusSpeed(self, speed):
+        option = random.random() * 50
+
+        if option <= 10:
             self.speed += speed
-        elif option == 1:
+        elif option <= 20:
             self.speed -= speed
-        elif option == 2:
-            self.rect.topleft = (200, self.rect.topleft[1]) 
+        elif option <= 25:
+            self.rect.topleft = (200, self.rect.topleft[1])
+        elif option <= 35:
+            self.speed *= -1
+
+    def isWin(self, border):
+        return self.rect.topleft[0] >= border - 400 
          
 class Box():
     def __init__(self, x, y, image, scale):
@@ -62,7 +70,7 @@ class Box():
 
     def draw(self):
         if not self.isActive:
-            if random.random() * 100 <= 2:
+            if random.random() * 1000 <= 10:
                 self.isActive = True
         
         if self.isActive:
