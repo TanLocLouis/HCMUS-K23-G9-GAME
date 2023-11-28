@@ -1,26 +1,6 @@
-import pygame
-import random
-
-from cv2 import VideoCapture
-from cv2 import imshow
-from cv2 import imwrite
-
-from openpyxl import Workbook
-from openpyxl import load_workbook
-import openpyxl
-
-from email.message import EmailMessage
-import ssl
-import smtplib
-
-import cv2
-import face_recognition
+from game_class import *
 
 # Initialize the game
-pygame.init()
-screen = pygame.display.set_mode((1600, 900), pygame.RESIZABLE)
-pygame.display.set_caption("Et Bi 99 - NHA CAI DEN TU CHAU A")
-clock = pygame.time.Clock()
 
 # Show coin
 collected_coin = 0
@@ -36,130 +16,6 @@ text_rect = text.get_rect(center = (100, 50))
 game_state = 0
 
 # Minigame Player class
-class Player():
-    def __init__(self, x, y, image, scale):
-        self.image = pygame.image.load(image)
-        self.image = pygame.transform.scale(self.image, scale)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
-
-    def draw(self):
-        screen.blit(self.image, (self.rect.x, self.rect.y))
-
-    def isCollide(self, x, y):
-        return self.rect.collidepoint(x, y)
-    
-    def dir_animate(self, value):
-        if (value >= 0):
-            self.image = pygame.transform.flip(self.image, 1, 0)
-
-# Text Class
-class Txt():
-    def __init__(self, x, y, content, color, isBorder = False, isClickable = False):
-        font = pygame.font.Font('BDLifelessGrotesk-Bold.otf', 30)
-        self.text = font.render(content, True, color)
-        self.rect = self.text.get_rect()
-        self.rect.topleft = (x, y)
-        self.isBorder = isBorder
-        self.isClickable = isClickable
-
-    def render(self):
-        if self.isBorder:
-            rect_color = "#726f6f"
-            rect_position = self.rect.topleft
-            rect_size = (self.text.get_width() + 5, self.text.get_height() + 5)
-            
-            pygame.draw.rect(screen, rect_color, (rect_position, rect_size))
-        
-        if self.isClickable:
-            pos = pygame.mouse.get_pos()
-            if self.rect.collidepoint(pos):
-                self.text = pygame.transform.scale(self.text, (self.text.get_width() * 1.1, self.text.get_height() * 1.1))
-
-        screen.blit(self.text, self.rect)
-
-    def isClick(self):
-        pos = pygame.mouse.get_pos()
-
-        if self.rect.collidepoint(pos) and pygame.mouse.get_pressed()[0] == 1:
-            return True
-        else:
-            return False  
-
-# Image Class
-class Img():
-    def __init__(self, x, y, image, scale):
-        self.image = pygame.image.load(image)
-        self.image = pygame.transform.scale(self.image, scale)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
-
-    def draw(self):
-        screen.blit(self.image, (self.rect.x, self.rect.y))
-
-# Item Class
-class Item():
-    def __init__(self, x, y, image, scale, value):
-        self.image = pygame.image.load(image)
-        self.image = pygame.transform.scale(self.image, scale)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
-        self.value = value
-
-    def draw(self):
-        pos = pygame.mouse.get_pos()
-        if self.rect.collidepoint(pos):
-            self.image = pygame.transform.scale(self.image, (self.image.get_width() * 1.1, self.image.get_height() * 1.1))
-        screen.blit(self.image, (self.rect.x, self.rect.y))
-
-    
-    def isClick(self):
-        pos = pygame.mouse.get_pos()
-        if self.rect.collidepoint(pos) and pygame.mouse.get_pressed()[0] == 1:
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
-            return True
-        else:
-            return False  
-
-    def getValue(self):
-        return self.value
-
-# Button Class
-class Button():
-    def __init__(self, x, y, image, scale):
-        self.image = pygame.image.load(image)
-        self.image = pygame.transform.scale(self.image, scale)
-        self.rect = self.image.get_rect()
-        self.rect.topleft = (x, y)
-        self.scale = scale
-
-    def isClick(self):
-        pos = pygame.mouse.get_pos()
-        if self.rect.collidepoint(pos) and pygame.mouse.get_pressed()[0] == 1:
-            return True
-        else:
-            return False  
-
-    def draw(self):
-        pos = pygame.mouse.get_pos()
-
-        if self.rect.collidepoint(pos):
-            self.image = pygame.transform.scale(self.image, (self.image.get_width() * 1.1, self.image.get_height() * 1.1))
-
-        screen.blit(self.image, (self.rect.x, self.rect.y))
-
-# Send mail to player after create account
-def sendMail(sender, password, receiver, subject, body):
-    mail = EmailMessage()
-    mail['From'] = sender
-    mail['To'] = receiver
-    mail['Subject'] = subject
-    mail.set_content(body)
-
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
-        smtp.login(sender, password)
-        smtp.sendmail(sender, receiver, mail.as_string())
 
 pygame.mixer.init()
 pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
@@ -300,14 +156,22 @@ while True:
         btn_play = Button(w / 2 - 350, h / 2, "./Asset/" + lang['BTN-PLAY'], (150, 50))
         btn_play.draw()
 
+        if btn_play.isClick():
+            game_state = 5
+
+            pygame.mixer.music.stop()
+            pygame.mixer.music.unload()
+
+            pygame.mixer.music.load("./Minigame/MG-Music-1.mp3")
+            pygame.mixer.music.play(-1, 0, 2000)
+
         btn_minigame = Button(w / 2 - 350, h / 2 + 75 , "./Asset/" + lang['BTN-MINIGAME'], (150, 50))
         btn_minigame.draw()
 
-        if (btn_minigame.isClick()):
+        if btn_minigame.isClick():
             game_state = 3
             mg_tick = 620
 
-            screen.fill("#96c3d7")
             pygame.mixer.music.stop()
             pygame.mixer.music.unload()
 
@@ -748,6 +612,78 @@ while True:
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
-            
+
+    elif game_state == 5:
+        car_1 = Car(100, 100, "./Minigame/MG-Mouse.png", (100, 100), 1)
+        car_2 = Car(100, 200, "./Minigame/MG-Mouse.png", (100, 100), 1)
+        car_3 = Car(100, 300, "./Minigame/MG-Mouse.png", (100, 100), 1)
+        car_4 = Car(100, 400, "./Minigame/MG-Mouse.png", (100, 100), 1)
+        car_5 = Car(100, 500, "./Minigame/MG-Mouse.png", (100, 100), 1)
+
+        box_1 = Box(500, 150, "./Minigame/MG-Mouse.png", (100, 100))
+        box_2 = Box(500, 250, "./Minigame/MG-Mouse.png", (100, 100))
+        box_3 = Box(500, 350, "./Minigame/MG-Mouse.png", (100, 100))
+        game_state = 51
+
+    elif game_state == 51:
+        screen.fill("#96c3d7")
+        car_1.draw()
+        car_2.draw()
+        car_3.draw()
+        car_4.draw()
+        car_5.draw()
+
+        box_1.draw()
+        box_2.draw()
+        box_3.draw()
+
+        if car_1.isCollide(box_1.getRect()) and box_1.isShow():
+            car_1.plusSpeed(2)
+            box_1.disable()
+        if car_2.isCollide(box_1.getRect()) and box_1.isShow():
+            car_2.plusSpeed(2)
+            box_1.disable()
+        if car_3.isCollide(box_1.getRect()) and box_1.isShow():
+            car_3.plusSpeed(2)
+            box_1.disable()
+        if car_4.isCollide(box_1.getRect()) and box_1.isShow():
+            car_4.plusSpeed(2)
+            box_1.disable()
+        if car_5.isCollide(box_1.getRect()) and box_1.isShow():
+            car_4.plusSpeed(2)
+            box_1.disable()
+
+        if car_1.isCollide(box_2.getRect()) and box_2.isShow():
+            car_1.plusSpeed(2)
+            box_2.disable()
+        if car_2.isCollide(box_2.getRect()) and box_1.isShow():
+            car_2.plusSpeed(2)
+            box_2.disable()
+        if car_3.isCollide(box_2.getRect()) and box_1.isShow():
+            car_3.plusSpeed(2)
+            box_2.disable()
+        if car_4.isCollide(box_2.getRect()) and box_1.isShow():
+            car_4.plusSpeed(2)
+            box_2.disable()
+        if car_5.isCollide(box_2.getRect()) and box_1.isShow():
+            car_4.plusSpeed(2)
+            box_2.disable()
+
+        if car_1.isCollide(box_3.getRect()) and box_1.isShow():
+            car_1.plusSpeed(2)
+            box_3.disable()
+        if car_2.isCollide(box_3.getRect()) and box_1.isShow():
+            car_2.plusSpeed(2)
+            box_3.disable()
+        if car_3.isCollide(box_3.getRect()) and box_1.isShow():
+            car_3.plusSpeed(2)
+            box_3.disable()
+        if car_4.isCollide(box_3.getRect()) and box_1.isShow():
+            car_4.plusSpeed(2)
+            box_3.disable()
+        if car_5.isCollide(box_3.getRect()) and box_1.isShow():
+            car_4.plusSpeed(2)
+            box_3.disable()
+
     pygame.display.update()
     clock.tick(30)
