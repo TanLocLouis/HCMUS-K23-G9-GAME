@@ -45,15 +45,15 @@ class Car():
         self.speed += speed
 
     def plusSpeed(self, speed):
-        option = random.random() * 50
+        option = random.random() * 50 
 
         if option <= 10:
             self.speed += speed
         elif option <= 20:
             self.speed -= speed
-        elif option <= 25:
+        elif option <= 30:
             self.rect.topleft = (200, self.rect.topleft[1])
-        elif option <= 35:
+        elif option <= 40:
             self.speed *= -1
 
     def isWin(self, border):
@@ -70,7 +70,7 @@ class Box():
 
     def draw(self):
         if not self.isActive:
-            if random.random() * 1000 <= 10:
+            if random.random() * 1000 <= 2:
                 self.isActive = True
         
         if self.isActive:
@@ -104,8 +104,8 @@ class Player():
 
 # Text Class
 class Txt():
-    def __init__(self, x, y, content, color, isBorder = False, isClickable = False):
-        font = pygame.font.Font('BDLifelessGrotesk-Bold.otf', 30)
+    def __init__(self, x, y, content, color, isBorder = False, isClickable = False, size = 30):
+        font = pygame.font.Font('BDLifelessGrotesk-Bold.otf', size)
         self.text = font.render(content, True, color)
         self.rect = self.text.get_rect()
         self.rect.topleft = (x, y)

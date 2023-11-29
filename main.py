@@ -614,6 +614,7 @@ while True:
         if btn_exit.isClick():
             game_state = -2
 
+    # Main game
     elif game_state == 5:
         car_1 = Car(100, 100, "./Minigame/MG-Mouse.png", (100, 100), 1)
         car_2 = Car(100, 200, "./Minigame/MG-Mouse.png", (100, 100), 1)
@@ -623,14 +624,14 @@ while True:
 
         random.seed(time.time())
         pos = random.random() * 500 + 500
-        box_1 = Box(pos, 150, "./Minigame/MG-Hammer.png", (100, 100))
+        box_1 = Box(pos, 150, "./Asset/MAIN-MYSTERY.png", (100, 100))
         for value in prePlayItems:
             if value == "ITEM-1.png":
                 car_1.itemSpeed(1)
         pos = random.random() * 500 + 500
-        box_2 = Box(pos, 330, "./Minigame/MG-Hammer.png", (100, 100))
+        box_2 = Box(pos, 330, "./Asset/MAIN-MYSTERY.png", (100, 100))
         pos = random.random() * 500 + 500
-        box_3 = Box(pos, 420, "./Minigame/MG-Hammer.png", (100, 100))
+        box_3 = Box(pos, 420, "./Asset/MAIN-MYSTERY.png", (100, 100))
         game_state = 51
         mg_tick = 0
 
@@ -649,10 +650,14 @@ while True:
         #bg_grass = Img(0, h - 1000, "./Minigame/MG-Grass.png", (5000, 1000))
         #bg_grass.draw()
 
-        mg_tick += 1
-        text = Txt(300, 50, lang['TIME'] + str(int(mg_tick / 30)), "#f06e4b", True, True)
+        text = Txt(300, 20, lang['PLAYER'] + player, "#f06e4b", True)
         text.render()
 
+        mg_tick += 1
+        text = Txt(300, 70, lang['TIME'] + str(int(mg_tick / 30)), "#f06e4b", True, True)
+        text.render()
+
+        
         if car_1.isCollide(box_1.getRect()) and box_1.isShow():
             car_1.plusSpeed(1)
             box_1.disable()
@@ -688,24 +693,27 @@ while True:
         if car_1.isCollide(box_3.getRect()) and box_3.isShow():
             car_1.plusSpeed(1)
             box_3.disable()
+            pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
         if car_2.isCollide(box_3.getRect()) and box_3.isShow():
             car_2.plusSpeed(1)
             box_3.disable()
+            pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
         if car_3.isCollide(box_3.getRect()) and box_3.isShow():
             car_3.plusSpeed(1)
             box_3.disable()
+            pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
         if car_4.isCollide(box_3.getRect()) and box_3.isShow():
             car_4.plusSpeed(1)
             box_3.disable()
+            pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
         if car_5.isCollide(box_3.getRect()) and box_3.isShow():
             car_4.plusSpeed(1)
             box_3.disable()
+            pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
 
         if car_1.isWin(w):
             game_state = 52
             coin += 30
-            pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
-
         if car_2.isWin(w):
             game_state = 52
         if car_3.isWin(w):
@@ -722,14 +730,18 @@ while True:
         pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
         pygame.mixer.music.play(-1, 0, 2000)
 
-        text = Txt(w / 2 - 400, h / 2 - 100, lang['WIN'], "#f06e4b", True)
+        pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
+        text = Txt(w / 2 - 200, 50, lang['WIN'], "WHITE", False)
         text.render()
-        pygame.image.save(screen, str(time.time()) + ".png")
 
-        wb = load_workbook("result.xlsx")
+        img_name = str(time.ctime(time.time()))
+        img_name = img_name.replace(" ", "_")
+        img_name = img_name.replace(":", "_")
+        pygame.image.save(screen, "./result/" + img_name + ".png")
+        wb = load_workbook("./result/result.xlsx")
         sheet = wb.active
-        sheet.append([str(time.time()), player, 30])
-        wb.save("result.xlsx")
+        sheet.append([img_name, player, 30])
+        wb.save("./result/result.xlsx")
 
         game_state = 53
     elif game_state == 53:
