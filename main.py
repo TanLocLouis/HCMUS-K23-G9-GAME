@@ -194,7 +194,7 @@ while True:
             pygame.mixer.music.stop()
             pygame.mixer.music.unload()
 
-            pygame.mixer.music.load("./Minigame/MG-Music-1.mp3")
+            pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
             pygame.mixer.music.play(-1, 0, 2000)
 
         if text.isClick():
@@ -569,7 +569,7 @@ while True:
                 pygame.mixer.Sound("./Minigame/MG-Coin.mp3").play()
 
                 mg_mouse = (random.random() * (w - 200), h - 500 + random.random() * 300)
-    
+    # Store 
     elif game_state == 4:
         screen.fill("#96c3d7")
 
@@ -657,59 +657,68 @@ while True:
         text = Txt(300, 70, lang['TIME'] + str(int(mg_tick / 30)), "#f06e4b", True, True)
         text.render()
 
-        
         if car_1.isCollide(box_1.getRect()) and box_1.isShow():
             car_1.plusSpeed(1)
             box_1.disable()
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_2.isCollide(box_1.getRect()) and box_1.isShow():
             car_2.plusSpeed(1)
             box_1.disable()
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_3.isCollide(box_1.getRect()) and box_1.isShow():
             car_3.plusSpeed(1)
             box_1.disable()
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_4.isCollide(box_1.getRect()) and box_1.isShow():
             car_4.plusSpeed(1)
             box_1.disable()
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_5.isCollide(box_1.getRect()) and box_1.isShow():
             car_4.plusSpeed(1)
             box_1.disable()
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
 
         if car_1.isCollide(box_2.getRect()) and box_2.isShow():
             car_1.plusSpeed(1)
             box_2.disable()
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_2.isCollide(box_2.getRect()) and box_2.isShow():
             car_2.plusSpeed(1)
             box_2.disable()
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_3.isCollide(box_2.getRect()) and box_2.isShow():
             car_3.plusSpeed(1)
             box_2.disable()
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_4.isCollide(box_2.getRect()) and box_2.isShow():
             car_4.plusSpeed(1)
             box_2.disable()
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_5.isCollide(box_2.getRect()) and box_2.isShow():
             car_4.plusSpeed(1)
             box_2.disable()
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
 
         if car_1.isCollide(box_3.getRect()) and box_3.isShow():
             car_1.plusSpeed(1)
             box_3.disable()
-            pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_2.isCollide(box_3.getRect()) and box_3.isShow():
             car_2.plusSpeed(1)
             box_3.disable()
-            pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_3.isCollide(box_3.getRect()) and box_3.isShow():
             car_3.plusSpeed(1)
             box_3.disable()
-            pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_4.isCollide(box_3.getRect()) and box_3.isShow():
             car_4.plusSpeed(1)
             box_3.disable()
-            pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_5.isCollide(box_3.getRect()) and box_3.isShow():
             car_4.plusSpeed(1)
             box_3.disable()
-            pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
+            pygame.mixer.Sound("./Asset/Buy.mp3").play()
 
         if car_1.isWin(w):
             game_state = 52
@@ -746,6 +755,12 @@ while True:
         game_state = 53
     elif game_state == 53:
         prePlayItems.clear()
+
+        btn_exit = Button(w / 2 + 325, 35, "./Asset/ExitGame.png", (50, 50))
+        btn_exit.draw()
+
+        if btn_exit.isClick():
+            game_state = -2
 
     pygame.display.update()
     clock.tick(30)

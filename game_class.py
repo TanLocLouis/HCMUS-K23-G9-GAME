@@ -70,7 +70,7 @@ class Box():
 
     def draw(self):
         if not self.isActive:
-            if random.random() * 1000 <= 2:
+            if random.random() * 1000 <= 4:
                 self.isActive = True
         
         if self.isActive:
