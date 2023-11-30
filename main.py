@@ -1,5 +1,5 @@
 from game_class import *
-#nigga nigga nigga
+
 # Initialize the game
 
 # Show coin
