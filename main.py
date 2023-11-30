@@ -125,7 +125,7 @@ while True:
                 wb.save("player.xlsx")
             exit()
 
-        btn_create_account = Button(w / 2 + 160, 98, "./Asset/" + lang['CREATE'], (150, 50))
+        btn_create_account = Button(w / 2 + 150, 98, "./Asset/" + lang['CREATE'], (160, 50))
         btn_create_account.draw()
         if btn_create_account.isClick():
             game_state = 1
@@ -136,7 +136,7 @@ while True:
             pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
             pygame.mixer.music.play(-1, 0, 2000)
 
-        btn_login = Button(w / 2, 98, "./Asset/" + lang['LOGIN'], (150, 50))
+        btn_login = Button(w / 2 - 20, 98, "./Asset/" + lang['LOGIN'], (160, 50))
         btn_login.draw()
         if btn_login.isClick():
             game_state = 2
@@ -153,7 +153,7 @@ while True:
         text = Txt(w / 2 - 300, 150, lang['COIN'] + str(coin), "#f06e4b", True)
         text.render()
 
-        btn_play = Button(w / 2 - 350, h / 2, "./Asset/" + lang['BTN-PLAY'], (150, 50))
+        btn_play = Button(w / 2 - 350, h / 2, "./Asset/" + lang['BTN-PLAY'], (160, 50))
         btn_play.draw()
 
         if btn_play.isClick():
@@ -165,7 +165,7 @@ while True:
             pygame.mixer.music.load("./Minigame/MG-Music-1.mp3")
             pygame.mixer.music.play(-1, 0, 2000)
 
-        btn_minigame = Button(w / 2 - 350, h / 2 + 75 , "./Asset/" + lang['BTN-MINIGAME'], (150, 50))
+        btn_minigame = Button(w / 2 - 350, h / 2 + 75 , "./Asset/" + lang['BTN-MINIGAME'], (160, 50))
         btn_minigame.draw()
 
         if btn_minigame.isClick():
@@ -185,7 +185,7 @@ while True:
         text = Txt(w / 2 + 200, 550, lang['LANG'], "WHITE", True, True)
         text.render()
 
-        btn_shop = Button(w / 2 - 350, h / 2 + 150 , "./Asset/" + lang['STORE'], (150, 50))
+        btn_shop = Button(w / 2 - 350, h / 2 + 150 , "./Asset/" + lang['STORE'], (160, 50))
         btn_shop.draw()
 
         if btn_shop.isClick():
@@ -583,7 +583,7 @@ while True:
         text.render()
 
         if lang['ITEM-1'] not in prePlayItems:
-            item_1 = Item(w / 2 - 300, 250, "./Asset/" + lang['ITEM-1'], (300, 100), 10)
+            item_1 = Item(w / 2 - 300, 250, "./Asset/" + lang['ITEM-1'], (100, 100), 10)
             item_1.draw()
             if item_1.isClick():
                 value = item_1.getValue()
