@@ -44,7 +44,7 @@ class Car():
     def itemSpeed(self, speed):
         self.speed += speed
 
-    def plusSpeed(self, speed):
+    def hitBox(self, speed):
         option = random.random() * 50 
 
         if option <= 10:

@@ -2,20 +2,22 @@ from game_class import *
 
 # Initialize the game
 
-# Show coin
+# Show coin at the beginning of the game
 collected_coin = 0
 font = pygame.font.Font(None, 50)
 text = font.render("COIN: ", True,  "#f06e4b")
 text_rect = text.get_rect(center = (100, 50))
 
-# To switch between scence
+# -----To switch between scence
 # 0: Main menu
 # 1: Create account
 # 2: Login
-# 3: Mini game 
+# 3: Mini game
+# 4: Store
+# 5: Main game
+# -----Each stage has sub stage
+# Ex: 11 12 13 14
 game_state = 0
-
-# Minigame Player class
 
 pygame.mixer.init()
 pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
@@ -39,6 +41,7 @@ password = ""
 
 info = []
 
+# variables for store players info
 log_name = ""
 log_password = ""
 isLogin = False
@@ -48,8 +51,12 @@ coin = 20
 
 pos = 1
 
+# Default language
+# 1: Eng
+# 2: Vie
 LANG = 1
 
+# set of items that buyed in Store
 prePlayItems = set()
 # Language for game
 workbook = openpyxl.load_workbook("languages.xlsx")
@@ -99,6 +106,7 @@ while True:
             else: 
                 log_password += event.unicode
 
+    # get game's windows width and height
     w, h = pygame.display.get_surface().get_size()
 
     # Load main menu
@@ -563,6 +571,7 @@ while True:
         mg_hammer = Img(mouse_input[0] - 50, mouse_input[1] - 50, "./Minigame/MG-Hammer.png", (100, 100))
         mg_hammer.draw()
 
+        # The hammer hit the mouse then plus coin and play sound
         if bg_1.isCollide(mouse_input[0], mouse_input[1]):
             if pygame.mouse.get_pressed()[0]:
                 collected_coin += 1
@@ -582,6 +591,7 @@ while True:
         text = Txt(w / 2 - 300, 200, lang['BUYED'] + str(len(prePlayItems)), "WHITE", True)
         text.render()
 
+        # buy ITEM-1
         if lang['ITEM-1'] not in prePlayItems:
             item_1 = Item(w / 2 - 300, 250, "./Asset/" + lang['ITEM-1'], (100, 100), 10)
             item_1.draw()
@@ -591,6 +601,7 @@ while True:
                     coin -= value
                     prePlayItems.add(lang['ITEM-1'])
 
+        # buy ITEM-2
         if lang['ITEM-2'] not in prePlayItems:
             item_2 = Item(w / 2 - 300, 350, "./Asset/" + lang['ITEM-2'], (300, 100), 10)
             item_2.draw()
@@ -600,6 +611,7 @@ while True:
                     coin -= value
                     prePlayItems.add(lang['ITEM-2'])
 
+        # buy ITEM-3
         if lang['ITEM-3'] not in prePlayItems:
             item_2 = Item(w / 2 - 300, 450, "./Asset/" + lang['ITEM-3'], (300, 100), 10)
             item_2.draw()
@@ -616,18 +628,17 @@ while True:
 
     # Main game
     elif game_state == 5:
+        # 5 cars
         car_1 = Car(100, 100, "./Minigame/MG-Mouse.png", (100, 100), 1)
         car_2 = Car(100, 200, "./Minigame/MG-Mouse.png", (100, 100), 1)
         car_3 = Car(100, 300, "./Minigame/MG-Mouse.png", (100, 100), 1)
         car_4 = Car(100, 400, "./Minigame/MG-Mouse.png", (100, 100), 1)
         car_5 = Car(100, 500, "./Minigame/MG-Mouse.png", (100, 100), 1)
 
+        # random position of mystery box
         random.seed(time.time())
         pos = random.random() * 500 + 500
         box_1 = Box(pos, 150, "./Asset/MAIN-MYSTERY.png", (100, 100))
-        for value in prePlayItems:
-            if value == "ITEM-1.png":
-                car_1.itemSpeed(1)
         pos = random.random() * 500 + 500
         box_2 = Box(pos, 330, "./Asset/MAIN-MYSTERY.png", (100, 100))
         pos = random.random() * 500 + 500
@@ -635,21 +646,27 @@ while True:
         game_state = 51
         mg_tick = 0
 
+        # Use items buyed in Store
+        # Items that buyed in store are in prePlayItems
+        for value in prePlayItems:
+            if value == "ITEM-1.png":
+                car_1.itemSpeed(1)
+
     elif game_state == 51:
         screen.fill("#96c3d7")
+        # 5 car in a race
         car_1.draw()
         car_2.draw()
         car_3.draw()
         car_4.draw()
         car_5.draw()
 
+        # 3 mystery box
         box_1.draw()
         box_2.draw()
         box_3.draw()
 
-        #bg_grass = Img(0, h - 1000, "./Minigame/MG-Grass.png", (5000, 1000))
-        #bg_grass.draw()
-
+        # Player name && Time
         text = Txt(300, 20, lang['PLAYER'] + player, "#f06e4b", True)
         text.render()
 
@@ -657,72 +674,78 @@ while True:
         text = Txt(300, 70, lang['TIME'] + str(int(mg_tick / 30)), "#f06e4b", True, True)
         text.render()
 
+        # 5 car hit box_1
         if car_1.isCollide(box_1.getRect()) and box_1.isShow():
-            car_1.plusSpeed(1)
-            box_1.disable()
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
+            car_1.hitBox(1) # Object take effect
+            box_1.disable() # Hide the box
+            pygame.mixer.Sound("./Asset/Buy.mp3").play() # Play sound effect
         if car_2.isCollide(box_1.getRect()) and box_1.isShow():
-            car_2.plusSpeed(1)
+            car_2.hitBox(1)
             box_1.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_3.isCollide(box_1.getRect()) and box_1.isShow():
-            car_3.plusSpeed(1)
+            car_3.hitBox(1)
             box_1.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_4.isCollide(box_1.getRect()) and box_1.isShow():
-            car_4.plusSpeed(1)
+            car_4.hitBox(1)
             box_1.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_5.isCollide(box_1.getRect()) and box_1.isShow():
-            car_4.plusSpeed(1)
+            car_4.hitBox(1)
             box_1.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
 
+        # 5 car hit box_2 
         if car_1.isCollide(box_2.getRect()) and box_2.isShow():
-            car_1.plusSpeed(1)
+            car_1.hitBox(1)
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_2.isCollide(box_2.getRect()) and box_2.isShow():
-            car_2.plusSpeed(1)
+            car_2.hitBox(1)
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_3.isCollide(box_2.getRect()) and box_2.isShow():
-            car_3.plusSpeed(1)
+            car_3.hitBox(1)
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_4.isCollide(box_2.getRect()) and box_2.isShow():
-            car_4.plusSpeed(1)
+            car_4.hitBox(1)
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_5.isCollide(box_2.getRect()) and box_2.isShow():
-            car_4.plusSpeed(1)
+            car_4.hitBox(1)
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
 
+        # 5 car hit box_3 
         if car_1.isCollide(box_3.getRect()) and box_3.isShow():
-            car_1.plusSpeed(1)
+            car_1.hitBox(1)
             box_3.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_2.isCollide(box_3.getRect()) and box_3.isShow():
-            car_2.plusSpeed(1)
+            car_2.hitBox(1)
             box_3.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_3.isCollide(box_3.getRect()) and box_3.isShow():
-            car_3.plusSpeed(1)
+            car_3.hitBox(1)
             box_3.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_4.isCollide(box_3.getRect()) and box_3.isShow():
-            car_4.plusSpeed(1)
+            car_4.hitBox(1)
             box_3.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_5.isCollide(box_3.getRect()) and box_3.isShow():
-            car_4.plusSpeed(1)
+            car_4.hitBox(1)
             box_3.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
 
+        # if car_n win
+        # plus coin
+        # stop play game and go to state 52 to show result
         if car_1.isWin(w):
-            game_state = 52
             coin += 30
+            game_state = 52
         if car_2.isWin(w):
             game_state = 52
         if car_3.isWin(w):
@@ -732,6 +755,7 @@ while True:
         if car_5.isWin(w):
             game_state = 52
 
+    # Show result at the end game stage then go to stage 53
     elif game_state == 52:
         pygame.mixer.music.stop()
         pygame.mixer.music.unload()
@@ -743,6 +767,7 @@ while True:
         text = Txt(w / 2 - 200, 50, lang['WIN'], "WHITE", False)
         text.render()
 
+        # Save result's image and xlsx file to result folder at main directory
         img_name = str(time.ctime(time.time()))
         img_name = img_name.replace(" ", "_")
         img_name = img_name.replace(":", "_")
@@ -753,12 +778,15 @@ while True:
         wb.save("./result/result.xlsx")
 
         game_state = 53
+
+    # Go to main menu
     elif game_state == 53:
         prePlayItems.clear()
 
         btn_exit = Button(w / 2 + 325, 35, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
 
+        # Stage -2 will jump to stage 0 (Main menu)
         if btn_exit.isClick():
             game_state = -2
 
