@@ -127,10 +127,10 @@ while True:
         btn_exit.draw()
         if btn_exit.isClick():
             if isLogin:
-                wb = load_workbook("player.xlsx")
+                wb = load_workbook("players.xlsx")
                 sheet = wb.active
                 sheet['E' + chr(pos + 48)] = coin
-                wb.save("player.xlsx")
+                wb.save("players.xlsx")
             exit()
 
         btn_create_account = Button(w / 2 + 150, 98, "./Asset/" + lang['CREATE'], (160, 50))
@@ -315,10 +315,10 @@ while True:
                 info.append(password)
                 info.append(20) # Give 20 coin to new player
 
-                wb = load_workbook("player.xlsx")
+                wb = load_workbook("players.xlsx")
                 sheet = wb.active
                 sheet.append(info)
-                wb.save("player.xlsx")
+                wb.save("players.xlsx")
 
                 sendMail("ltloc05samsunggalaxyj3pro@gmail.com", "rodq twhi tmme gypg", info[1]
                 , "Welcome to my game"
@@ -384,7 +384,7 @@ while True:
         text.render()
 
         if text.isClick():
-            workbook = openpyxl.load_workbook("player.xlsx")
+            workbook = openpyxl.load_workbook("players.xlsx")
             sheet = workbook.active
             rows = []
             for row in sheet.iter_rows(values_only=True):
@@ -464,7 +464,7 @@ while True:
                     name = "Hi " + log_name +" welcome back to game. Please close this window"
 
 
-                    workbook = openpyxl.load_workbook("player.xlsx")
+                    workbook = openpyxl.load_workbook("players.xlsx")
                     sheet = workbook.active
                     rows = []
                     for row in sheet.iter_rows(values_only=True):
@@ -629,20 +629,23 @@ while True:
     # Main game
     elif game_state == 5:
         # 5 cars
-        car_1 = Car(100, 100, "./Minigame/MG-Mouse.png", (100, 100), 1)
-        car_2 = Car(100, 200, "./Minigame/MG-Mouse.png", (100, 100), 1)
-        car_3 = Car(100, 300, "./Minigame/MG-Mouse.png", (100, 100), 1)
-        car_4 = Car(100, 400, "./Minigame/MG-Mouse.png", (100, 100), 1)
-        car_5 = Car(100, 500, "./Minigame/MG-Mouse.png", (100, 100), 1)
+        car_1 = Car(100, 175, "./Minigame/MG-Mouse.png", (100, 100), 1)
+        car_2 = Car(100, 275, "./Minigame/MG-Mouse.png", (100, 100), 1)
+        car_3 = Car(100, 375, "./Minigame/MG-Mouse.png", (100, 100), 1)
+        car_4 = Car(100, 475, "./Minigame/MG-Mouse.png", (100, 100), 1)
+        car_5 = Car(100, 575, "./Minigame/MG-Mouse.png", (100, 100), 1)
 
         # random position of mystery box
         random.seed(time.time())
-        pos = random.random() * 500 + 500
-        box_1 = Box(pos, 150, "./Asset/MAIN-MYSTERY.png", (100, 100))
-        pos = random.random() * 500 + 500
-        box_2 = Box(pos, 330, "./Asset/MAIN-MYSTERY.png", (100, 100))
-        pos = random.random() * 500 + 500
-        box_3 = Box(pos, 420, "./Asset/MAIN-MYSTERY.png", (100, 100))
+        pos_x = random.random() * 500 + 500
+        pos_y = random.random() * 600 + 175
+        box_1 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (100, 100))
+        pos_x = random.random() * 500 + 500
+        pos_y = random.random() * 600 + 175
+        box_2 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (100, 100))
+        pos_x = random.random() * 500 + 500
+        pos_y = random.random() * 600 + 175
+        box_3 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (100, 100))
         game_state = 51
         mg_tick = 0
 
@@ -667,11 +670,11 @@ while True:
         box_3.draw()
 
         # Player name && Time
-        text = Txt(300, 20, lang['PLAYER'] + player, "#f06e4b", True)
+        text = Txt(300, 70, lang['PLAYER'] + player, "#f06e4b", True)
         text.render()
 
         mg_tick += 1
-        text = Txt(300, 70, lang['TIME'] + str(int(mg_tick / 30)), "#f06e4b", True, True)
+        text = Txt(300, 120, lang['TIME'] + str(int(mg_tick / 30)), "#f06e4b", True, True)
         text.render()
 
         # 5 car hit box_1
@@ -772,10 +775,10 @@ while True:
         img_name = img_name.replace(" ", "_")
         img_name = img_name.replace(":", "_")
         pygame.image.save(screen, "./result/" + img_name + ".png")
-        wb = load_workbook("./result/result.xlsx")
+        wb = load_workbook("./result/results.xlsx")
         sheet = wb.active
         sheet.append([img_name, player, 30])
-        wb.save("./result/result.xlsx")
+        wb.save("./result/results.xlsx")
 
         game_state = 53
 
