@@ -57,7 +57,7 @@ pos = 1
 LANG = 1
 
 #-------------------------------
-# set of items that buyed in Store
+# set of items that bought in Store
 prePlayItems = set()
 # Language for game
 workbook = openpyxl.load_workbook("languages.xlsx")
@@ -186,7 +186,7 @@ while True:
 
         if btn_minigame.isClick():
             game_state = 3
-            mg_tick = 620
+            mg_tick = 410
 
             pygame.mixer.music.stop()
             pygame.mixer.music.unload()
@@ -258,7 +258,7 @@ while True:
         if text.isClick():
             game_state = 11
         
-        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
@@ -274,7 +274,7 @@ while True:
         if text.isClick():
             game_state = 12
     
-        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
@@ -290,7 +290,7 @@ while True:
         if text.isClick():
             game_state = 13
 
-        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
@@ -332,7 +332,7 @@ while True:
                 , "Welcome to my game"
                 , "Chuc mung ban " + info[0] + " tao tai khoan game ca cuoc thanh cong :)) From Nhom 9 - 23CTT1 - NMCNTT - HCMUS with love")
 
-        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
@@ -359,7 +359,7 @@ while True:
         if text.isClick():
             game_state = 21 
 
-        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
@@ -377,7 +377,7 @@ while True:
         if text.isClick():
             game_state = 25
 
-        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
@@ -413,7 +413,7 @@ while True:
                     break
             workbook.close()
     
-        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
@@ -467,9 +467,9 @@ while True:
                 # Check if the face matches the known face
                 matches = face_recognition.compare_faces([known_face_encoding], face_encoding)
 
-                name = "Cannot verified"
+                detected_name = "Cannot verified"
                 if matches[0]:
-                    name = "Hi " + log_name +" welcome back to game. Please close this window"
+                    detected_name = "Hi " + log_name +" welcome back to game. Please close this window"
 
 
                     workbook = openpyxl.load_workbook("players.xlsx")
@@ -503,7 +503,7 @@ while True:
             if founded:
                 break
 
-        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
@@ -547,7 +547,7 @@ while True:
             coin += collected_coin
 
         screen.fill("#96c3d7")
-        btn_exit = Button(w / 2 + 300, 50, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
@@ -555,7 +555,7 @@ while True:
         text = Txt(300, 100, lang['COLLECTEDCOIN'] + str(collected_coin), "#f06e4b", True, True)
         text.render()
 
-        text = Txt(300, 50, lang['TIME'] + str(int(mg_tick / 30)), "#f06e4b", True, True)
+        text = Txt(300, 50, lang['TIME'] + str(int(mg_tick / 20)), "#f06e4b", True, True)
         text.render()
 
         bg_grass = Img(0, h - 1000, "./Minigame/MG-Grass.png", (5000, 1000))
@@ -596,7 +596,7 @@ while True:
         text = Txt(w / 2 - 300, 150, lang['COIN'] + str(coin), "#f06e4b", True)
         text.render()
 
-        text = Txt(w / 2 - 300, 200, lang['BUYED'] + str(len(prePlayItems)), "WHITE", True)
+        text = Txt(w / 2 - 300, 200, lang['BOUGHT'] + str(len(prePlayItems)), "WHITE", True)
         text.render()
 
         # buy ITEM-1
@@ -671,8 +671,8 @@ while True:
         game_state = 52
         mg_tick = 0
 
-        # Use items buyed in Store
-        # Items that buyed in store are in prePlayItems
+        # Use items bought in Store
+        # Items that bought in store are in prePlayItems
         for value in prePlayItems:
             if value == "ITEM-1.png":
                 car_1.itemSpeed(1)
