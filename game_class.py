@@ -20,7 +20,7 @@ import face_recognition
 import time
 
 pygame.init()
-screen = pygame.display.set_mode((1600, 900), pygame.RESIZABLE)
+screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE)
 pygame.display.set_caption("Et Bi 99 - NHA CAI DEN TU CHAU A")
 clock = pygame.time.Clock()
 
@@ -57,7 +57,7 @@ class Car():
             self.speed *= -1
 
     def isWin(self, border):
-        return self.rect.topleft[0] >= border - 400 
+        return self.rect.topleft[0] >= border - 200 
          
 class Box():
     def __init__(self, x, y, image, scale):
@@ -65,6 +65,7 @@ class Box():
         self.image = pygame.transform.scale(self.image, scale)
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
+        self.rect = self.image.get_rect(center = self.rect.center)
         self.isActive = False
         random.seed(time.time())
 

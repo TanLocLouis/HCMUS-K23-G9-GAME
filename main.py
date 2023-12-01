@@ -56,6 +56,7 @@ pos = 1
 # 2: Vie
 LANG = 1
 
+#-------------------------------
 # set of items that buyed in Store
 prePlayItems = set()
 # Language for game
@@ -70,6 +71,8 @@ for row in rows:
     lang[row[0]] = row[LANG]
 #--------------------------------
 
+# Coin that you want to play
+bet_coin = "" 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -106,6 +109,11 @@ while True:
             else: 
                 log_password += event.unicode
 
+        if event.type == pygame.KEYDOWN and game_state == 5:
+            if event.key == pygame.K_BACKSPACE: 
+                bet_coin = bet_coin[:-1] 
+            else: 
+                bet_coin += event.unicode
     # get game's windows width and height
     w, h = pygame.display.get_surface().get_size()
 
@@ -626,8 +634,22 @@ while True:
         if btn_exit.isClick():
             game_state = -2
 
-    # Main game
     elif game_state == 5:
+        screen.fill("#96c3d7")
+        text = Txt(300, 145, lang['BETCOIN'] + bet_coin, "WHITE", False, True)
+        text.render()
+        btn_play = Button(700, 130, "./Asset/" + lang['BTN-PLAY'], (160, 50))
+        btn_play.draw()
+        btn_exit = Button(w / 2 + 240, 130, "./Asset/ExitGame.png", (50, 50))
+        btn_exit.draw()
+        if btn_exit.isClick():
+            game_state = -2
+
+        if btn_play.isClick():
+            game_state = 51
+
+    # Main game
+    elif game_state == 51:
         # 5 cars
         car_1 = Car(100, 175, "./Minigame/MG-Mouse.png", (100, 100), 1)
         car_2 = Car(100, 275, "./Minigame/MG-Mouse.png", (100, 100), 1)
@@ -638,15 +660,15 @@ while True:
         # random position of mystery box
         random.seed(time.time())
         pos_x = random.random() * 500 + 500
-        pos_y = random.random() * 600 + 175
+        pos_y = random.random() * 500 + 150
         box_1 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (100, 100))
         pos_x = random.random() * 500 + 500
-        pos_y = random.random() * 600 + 175
+        pos_y = random.random() * 500 + 150
         box_2 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (100, 100))
         pos_x = random.random() * 500 + 500
-        pos_y = random.random() * 600 + 175
+        pos_y = random.random() * 500 + 150
         box_3 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (100, 100))
-        game_state = 51
+        game_state = 52
         mg_tick = 0
 
         # Use items buyed in Store
@@ -655,7 +677,7 @@ while True:
             if value == "ITEM-1.png":
                 car_1.itemSpeed(1)
 
-    elif game_state == 51:
+    elif game_state == 52:
         screen.fill("#96c3d7")
         # 5 car in a race
         car_1.draw()
@@ -747,19 +769,19 @@ while True:
         # plus coin
         # stop play game and go to state 52 to show result
         if car_1.isWin(w):
-            coin += 30
-            game_state = 52
+            coin += int(bet_coin) 
+            game_state = 53
         if car_2.isWin(w):
-            game_state = 52
+            game_state = 53
         if car_3.isWin(w):
-            game_state = 52
+            game_state = 53
         if car_4.isWin(w):
-            game_state = 52
+            game_state = 53
         if car_5.isWin(w):
-            game_state = 52
+            game_state = 53
 
     # Show result at the end game stage then go to stage 53
-    elif game_state == 52:
+    elif game_state == 53:
         pygame.mixer.music.stop()
         pygame.mixer.music.unload()
 
@@ -780,10 +802,10 @@ while True:
         sheet.append([img_name, player, 30])
         wb.save("./result/results.xlsx")
 
-        game_state = 53
+        game_state = 54
 
     # Go to main menu
-    elif game_state == 53:
+    elif game_state == 54:
         prePlayItems.clear()
 
         btn_exit = Button(w / 2 + 325, 35, "./Asset/ExitGame.png", (50, 50))
