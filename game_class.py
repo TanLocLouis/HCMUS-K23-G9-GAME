@@ -115,15 +115,16 @@ class Txt():
     def render(self):
         if self.isBorder:
             rect_color = "#726f6f"
-            rect_position = self.rect.topleft
-            rect_size = (self.text.get_width() + 5, self.text.get_height() + 5)
+            rect_position = (self.rect.x - 5, self.rect.y - 5)
+            rect_size = (self.text.get_width() + 10, self.text.get_height() + 10)
             
             pygame.draw.rect(screen, rect_color, (rect_position, rect_size))
         
         if self.isClickable:
             pos = pygame.mouse.get_pos()
             if self.rect.collidepoint(pos):
-                self.text = pygame.transform.scale(self.text, (self.text.get_width() * 1.1, self.text.get_height() * 1.1))
+                self.text = pygame.transform.scale(self.text, (self.text.get_width() * 1.05, self.text.get_height() * 1.05))
+                self.rect = self.text.get_rect(center = self.rect.center)
 
         screen.blit(self.text, self.rect)
 
@@ -194,8 +195,9 @@ class Button():
 
         if self.rect.collidepoint(pos):
             self.image = pygame.transform.scale(self.image, (self.image.get_width() * 1.1, self.image.get_height() * 1.1))
+            self.rect = self.image.get_rect(center = self.rect.center)
 
-        screen.blit(self.image, (self.rect.x, self.rect.y))
+        screen.blit(self.image, self.rect)
 
 # Send mail to player after create account
 def sendMail(sender, password, receiver, subject, body):
