@@ -854,7 +854,7 @@ while True:
         # stop play game and go to state 52 to show result
         if car_1.isWin(w):
             coin += int(bet_coin)
-            if 'log_name' not in final:
+            if log_name not in final:
                 final[log_name] = mg_tick / 30
         if car_2.isWin(w):
             if 'car 2' not in final:
@@ -878,7 +878,7 @@ while True:
             game_state = 53
 
         keys = [car_1.getPos(), car_2.getPos(), car_3.getPos(), car_4.getPos(), car_5.getPos()]
-        values = [log_name, "car 2", "car 3", "car 4", "car 5"]
+        values = [log_name, "player 2", "player 3", "player 4", "player 5"]
         top = dict(zip(keys, values))
         top = sorted(top.items(), key=lambda x: x[0], reverse = True)
 
@@ -919,7 +919,7 @@ while True:
         prePlayItems.clear()
         final.clear()
 
-        btn_exit = Button(w / 2 - 200, 60, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 200, 60, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
 
         # Stage -2 will jump to stage 0 (Main menu)
