@@ -73,6 +73,9 @@ for row in rows:
 
 # Coin that you want to play
 bet_coin = "" 
+
+# Show time result after played
+final = {} 
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -807,20 +810,29 @@ while True:
         # if car_n win
         # plus coin
         # stop play game and go to state 52 to show result
-        final = {} 
         if car_1.isWin(w):
             coin += int(bet_coin)
-            final['car 1'] = mg_tick / 30
+            if 'car 1' not in final:
+                final['car 1'] = mg_tick / 30
         if car_2.isWin(w):
-            final['car 2'] = mg_tick / 30
+            if 'car 2' not in final:
+                final['car 2'] = mg_tick / 30
         if car_3.isWin(w):
-            final['car 3'] = mg_tick / 30
+            if 'car 3' not in final:
+                final['car 3'] = mg_tick / 30
         if car_4.isWin(w):
-            final['car 4'] = mg_tick / 30
+            if 'car 4' not in final:
+                final['car 4'] = mg_tick / 30
         if car_5.isWin(w):
-            final['car 5'] = mg_tick / 30
+            if 'car 5' not in final:
+                final['car 5'] = mg_tick / 30
 
         if len(final) == 5:
+            for val in enumerate(final.items()):
+                played_time = float("{:.2f}".format(val[1][1]))
+                text = Txt(w - 350, 30 * val[0] + 45, str(val[1][0]) + "---" + str(played_time), "BLACK", False)
+                text.render()
+
             game_state = 53
 
         keys = [car_1.getPos(), car_2.getPos(), car_3.getPos(), car_4.getPos(), car_5.getPos()]
@@ -828,12 +840,13 @@ while True:
         top = dict(zip(keys, values))
         top = sorted(top.items(), key=lambda x: x[0], reverse = True)
 
-        rank = Img(w - 250, -10, "./Asset/MAIN-Rank.png", (230, 230))
+        rank = Img(w - 400, -10, "./Asset/MAIN-Rank.png", (230, 230))
         rank.draw()
 
-        for val in enumerate(top):
-            text = Txt(w - 200, 30 * val[0] + 45, str(val[1][1]) + "---" + str(val[1][0]), "BLACK", False)
-            text.render()
+        if len(final) == 0:
+            for val in enumerate(top):
+                text = Txt(w - 350, 30 * val[0] + 45, str(val[1][1]) + "---" + str(val[1][0]), "BLACK", False)
+                text.render()
 
     # Show result at the end game stage then go to stage 53
     elif game_state == 53:
@@ -863,7 +876,7 @@ while True:
     elif game_state == 54:
         prePlayItems.clear()
 
-        btn_exit = Button(w / 2 + 325, 35, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 - 200, 60, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
 
         # Stage -2 will jump to stage 0 (Main menu)
