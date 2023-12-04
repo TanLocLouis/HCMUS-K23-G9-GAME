@@ -75,7 +75,10 @@ for row in rows:
 bet_coin = "" 
 
 # Show time result after played
-final = {} 
+final = {}
+
+# character set
+char_set = 1
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -653,20 +656,32 @@ while True:
 
     elif game_state == 5:
         screen.fill("#96c3d7")
-        text = Txt(300, 100, lang['COIN'] + str(coin), "WHITE", True, True)
+        text = Txt(300, 50, lang['COIN'] + str(coin), "WHITE", True, True)
         text.render()
-        text = Txt(300, 145, lang['BETCOIN'] + bet_coin, "WHITE", False, True)
+        text = Txt(300, 100, lang['BOUGHT'], "GREEN", True, True)
         text.render()
-        btn_play = Button(700, 130, "./Asset/" + lang['BTN-PLAY'], (160, 50))
+        text = Txt(300, 610, lang['BETCOIN'] + bet_coin, "WHITE", False, True)
+        text.render()
+
+        text = Txt(300, 200, lang['CHARSET'] + str(char_set), "WHITE", False, True)
+        text.render()
+
+        for i in range(1, 6):
+            set_i = Button(i * 150 + 200, 250, "./Asset/char_set_" + str(i) + "/set.png", (100, 100))
+            if set_i.isClick():
+                char_set = i
+            set_i.draw()
+
+        btn_play = Button(700, 600, "./Asset/" + lang['BTN-PLAY'], (160, 50))
         btn_play.draw()
-        btn_exit = Button(w / 2 + 240, 130, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 240, 600, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
 
         if btn_play.isClick():
             if bet_coin == "":
-                text = Txt(450, 90, lang['NOT-NULL'], "RED", True, True)
+                text = Txt(450, 675, lang['NOT-NULL'], "RED", True, True)
                 text.render()
             else:
                 if int(bet_coin) <= int(coin):
@@ -677,20 +692,18 @@ while True:
                     text.render()
                 
 
-        text = Txt(300, 200, lang['BOUGHT'], "GREEN", True, True)
-        text.render()
         for item in enumerate(prePlayItems):
-            item = Item(item[0] * 100 + 300, 250, "./Asset/" + item[1], (100, 100), 10)
+            item = Item(item[0] * 100 + 525, 50, "./Asset/" + item[1], (100, 100), 10)
             item.draw()
 
     # Main game
     elif game_state == 51:
         # 5 cars
-        car_1 = Car(100, 175, "./Minigame/MG-Mouse.png", (100, 100), 1)
-        car_2 = Car(100, 275, "./Minigame/MG-Mouse.png", (100, 100), 1)
-        car_3 = Car(100, 375, "./Minigame/MG-Mouse.png", (100, 100), 1)
-        car_4 = Car(100, 475, "./Minigame/MG-Mouse.png", (100, 100), 1)
-        car_5 = Car(100, 575, "./Minigame/MG-Mouse.png", (100, 100), 1)
+        car_1 = Car(100, 175, "./Asset/char_set_" + str(char_set) + "/background.png", (100, 100), 1)
+        car_2 = Car(100, 275, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1)
+        car_3 = Car(100, 375, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1)
+        car_4 = Car(100, 475, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1)
+        car_5 = Car(100, 575, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1)
 
         # random position of mystery box
         random.seed(time.time())
@@ -715,7 +728,7 @@ while True:
                 car_1.rect.x = 500
 
     elif game_state == 52:
-        bg_race = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg_race = Img(0, 0, "./Asset/char_set_" + str(char_set) + "/background.png", (w, h))
         bg_race.draw()
 
         # Racing lanes
@@ -731,11 +744,11 @@ while True:
         lane_5.draw()
 
         # 5 cars in a race
-        car_1.draw(car_1.isWin(w))
-        car_2.draw(car_2.isWin(w))
-        car_3.draw(car_3.isWin(w))
-        car_4.draw(car_4.isWin(w))
-        car_5.draw(car_5.isWin(w))
+        car_1.draw(car_1.isWin(w), "./Asset/char_set_" + str(char_set) + "/player_1_1.png", "./Asset/char_set_" + str(char_set) + "/player_1_2.png")
+        car_2.draw(car_2.isWin(w), "./Asset/char_set_" + str(char_set) + "/player_2_1.png", "./Asset/char_set_" + str(char_set) + "/player_2_2.png")
+        car_3.draw(car_3.isWin(w), "./Asset/char_set_" + str(char_set) + "/player_3_1.png", "./Asset/char_set_" + str(char_set) + "/player_3_2.png")
+        car_4.draw(car_4.isWin(w), "./Asset/char_set_" + str(char_set) + "/player_4_1.png", "./Asset/char_set_" + str(char_set) + "/player_4_2.png")
+        car_5.draw(car_5.isWin(w), "./Asset/char_set_" + str(char_set) + "/player_5_1.png", "./Asset/char_set_" + str(char_set) + "/player_5_2.png")
 
         # 3 mysteries box
         box_1.draw()
@@ -784,31 +797,31 @@ while True:
 
         # 5 cars hit box_2 
         if car_1.isCollide(box_2.getRect()) and box_2.isShow():
-            car_1.hitBox(1)
+            car_1.hitBox(2)
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
             unboost = Img(car_1.rect.x, car_1.rect.y, "./Asset/MAIN-UnBoost.png", (200, 200))
             unboost.draw()
         if car_2.isCollide(box_2.getRect()) and box_2.isShow():
-            car_2.hitBox(1)
+            car_2.hitBox(2)
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
             unboost = Img(car_2.rect.x, car_2.rect.y, "./Asset/MAIN-UnBoost.png", (200, 200))
             unboost.draw()
         if car_3.isCollide(box_2.getRect()) and box_2.isShow():
-            car_3.hitBox(1)
+            car_3.hitBox(2)
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
             unboost = Img(car_3.rect.x, car_3.rect.y, "./Asset/MAIN-UnBoost.png", (200, 200))
             unboost.draw()
         if car_4.isCollide(box_2.getRect()) and box_2.isShow():
-            car_4.hitBox(1)
+            car_4.hitBox(2)
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
             unboost = Img(car_4.rect.x, car_4.rect.y, "./Asset/MAIN-UnBoost.png", (200, 200))
             unboost.draw()
         if car_5.isCollide(box_2.getRect()) and box_2.isShow():
-            car_4.hitBox(1)
+            car_4.hitBox(2)
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
             unboost = Img(car_5.rect.x, car_5.rect.y, "./Asset/MAIN-UnBoost.png", (200, 200))
@@ -859,7 +872,7 @@ while True:
         if len(final) == 5:
             for val in enumerate(final.items()):
                 played_time = float("{:.2f}".format(val[1][1]))
-                text = Txt(w - 350, 30 * val[0] + 45, str(val[1][0]) + "---" + str(played_time), "BLACK", False)
+                text = Txt(w - 350, 30 * val[0] + 45, str(val[1][0]) + ": " + str(played_time) + " s", "BLACK", False)
                 text.render()
 
             game_state = 53

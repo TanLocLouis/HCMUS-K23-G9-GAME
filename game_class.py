@@ -32,14 +32,22 @@ class Car():
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.speed = speed
-        self.ani = True
+        self.ani = 0
 
         random.seed(time.time())
 
     def isWin(self, border):
         return self.rect.topleft[0] >= border - 200 
 
-    def draw(self, isWin):
+    def draw(self, isWin, img_1, img_2):
+        if int(self.ani / 10) % 2 == 0:
+            self.image = pygame.image.load(img_1)
+            self.image = pygame.transform.scale(self.image, (100, 100))
+        else:
+            self.image = pygame.image.load(img_2)
+            self.image = pygame.transform.scale(self.image, (100, 100))
+        self.ani += 1
+
         if not isWin:
             self.rect.topleft = (self.rect.topleft[0] + self.speed + random.random() * 2, self.rect.topleft[1])
         screen.blit(self.image, (self.rect.x, self.rect.y))
@@ -147,6 +155,8 @@ class Img():
 
     def draw(self):
         screen.blit(self.image, (self.rect.x, self.rect.y))
+
+    
 
 # Item Class
 class Item():
