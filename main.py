@@ -265,7 +265,7 @@ while True:
         if text.isClick():
             game_state = 11
         
-        btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 275, 250, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
@@ -281,7 +281,7 @@ while True:
         if text.isClick():
             game_state = 12
     
-        btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 275, 250, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
@@ -297,7 +297,7 @@ while True:
         if text.isClick():
             game_state = 13
 
-        btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 275, 250, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
@@ -308,7 +308,7 @@ while True:
         text = Txt(w / 2 - 450, 200, lang['TAKEYOURPICTURE'], "WHITE")
         text.render()
 
-        text = Txt(w / 2 + 350, 275, lang["TAKE"], "WHITE", True, True)
+        text = Txt(w / 2 + 350, 260, lang["TAKE"], "WHITE", True, True)
         text.render()
 
         if text.isClick():
@@ -339,7 +339,7 @@ while True:
                 , "Welcome to my game"
                 , "Chuc mung ban " + info[0] + " tao tai khoan game ca cuoc thanh cong :)) From Nhom 9 - 23CTT1 - NMCNTT - HCMUS with love")
 
-        btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 275, 250, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
@@ -392,7 +392,7 @@ while True:
     elif game_state == 22:
         screen.fill("#96c3d7")
 
-        text = Txt(w / 2 - 600, 200, lang["ENTERYOURPASSWORD"] + log_password, "WHITE")
+        text = Txt(w / 2 - 450, 200, lang["ENTERYOURPASSWORD"] + log_password, "WHITE")
         text.render()
 
         text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True, True)
@@ -898,7 +898,6 @@ while True:
     elif game_state == 54:
         prePlayItems.clear()
         final.clear()
-        played_time.clear()
 
         btn_exit = Button(w / 2 - 200, 60, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()

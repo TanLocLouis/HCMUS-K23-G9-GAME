@@ -32,6 +32,7 @@ class Car():
         self.rect = self.image.get_rect()
         self.rect.topleft = (x, y)
         self.speed = speed
+        self.ani = True
 
         random.seed(time.time())
 
