@@ -30,7 +30,7 @@ mg_mouse = (random.random() * 1500, 720)
 # Game tick to calculate time in minigame
 mg_tick = 0
 # Cloud pos x to animate in minigame
-bg_sun_x = 0
+bg_cloud_x = 0
 
 x_add = 0
 y_add = 0
@@ -519,17 +519,17 @@ while True:
         mg_mouse_x = mg_mouse[0]
         mg_mouse_x += x_add
         # when mouse go to screen border
-        if mg_mouse_x <= 0:
-            mg_mouse_x = w
-        if mg_mouse_x >= w:
-            mg_mouse_x = 0
+        if mg_mouse_x <= 200:
+            mg_mouse_x = w - 200
+        if mg_mouse_x >= w - 200:
+            mg_mouse_x = 200
         mg_mouse_y = mg_mouse[1]
         mg_mouse_y += y_add
         # when mouse go to screen border
-        if mg_mouse_y <= h - 400:
-            mg_mouse_y = h
-        if mg_mouse_y >= h:
-            mg_mouse_y = h - 400
+        if mg_mouse_y <= h - 500:
+            mg_mouse_y = h - 200
+        if mg_mouse_y >= h - 200:
+            mg_mouse_y = h - 500
         mg_mouse = (mg_mouse_x, mg_mouse_y)
 
         # time went off
@@ -547,29 +547,29 @@ while True:
             coin += collected_coin
 
         screen.fill("#96c3d7")
-        btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 350, 150, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
 
+        bg_grass = Img(0, 0, "./Minigame/MG-Background.png", (2000, 800))
+        bg_grass.draw()
+
+        bg_sun = Img(150, 50, "./Minigame/MG-Sun.png", (100, 100))
+        bg_sun.draw()
+
+        bg_cloud_x += 1
+        if bg_cloud_x >= h:
+            bg_cloud_x = 0
+        bg_cloud = Img(bg_cloud_x, 100, "./Minigame/MG-Cloud.png", (1200, 100))
+        bg_cloud.draw()
+        
         text = Txt(300, 100, lang['COLLECTEDCOIN'] + str(collected_coin), "#f06e4b", True, True)
         text.render()
 
         text = Txt(300, 50, lang['TIME'] + str(int(mg_tick / 20)), "#f06e4b", True, True)
         text.render()
 
-        bg_grass = Img(0, h - 1000, "./Minigame/MG-Grass.png", (5000, 1000))
-        bg_grass.draw()
-
-        bg_sun = Img(300, 200, "./Minigame/MG-Sun.png", (100, 100))
-        bg_sun.draw()
-
-        bg_sun_x += 1
-        if bg_sun_x >= h:
-            bg_sun_x = 0
-        bg_sun = Img(bg_sun_x, 300, "./Minigame/MG-Cloud.png", (1600, 100))
-        bg_sun.draw()
-        
         bg_1 = Player(mg_mouse[0], mg_mouse[1], "./Minigame/MG-Mouse.png", (250, 250))
         bg_1.dir_animate(x_add)
         bg_1.draw()
@@ -601,7 +601,7 @@ while True:
 
         # buy ITEM-1
         if lang['ITEM-1'] not in prePlayItems:
-            item_1 = Item(w / 2 - 300, 250, "./Asset/" + lang['ITEM-1'], (100, 100), 10)
+            item_1 = Item(w / 2 - 300, 275, "./Asset/" + lang['ITEM-1'], (100, 100), 10)
             item_1.draw()
             if item_1.isClick():
                 value = item_1.getValue()
@@ -611,7 +611,7 @@ while True:
 
         # buy ITEM-2
         if lang['ITEM-2'] not in prePlayItems:
-            item_2 = Item(w / 2 - 300, 350, "./Asset/" + lang['ITEM-2'], (100, 100), 10)
+            item_2 = Item(w / 2 - 100, 275, "./Asset/" + lang['ITEM-2'], (100, 100), 10)
             item_2.draw()
             if item_2.isClick():
                 value = item_2.getValue()
@@ -621,7 +621,7 @@ while True:
 
         # buy ITEM-3
         if lang['ITEM-3'] not in prePlayItems:
-            item_2 = Item(w / 2 - 300, 450, "./Asset/" + lang['ITEM-3'], (100, 100), 10)
+            item_2 = Item(w / 2 + 100, 275, "./Asset/" + lang['ITEM-3'], (100, 100), 10)
             item_2.draw()
             if item_2.isClick():
                 value = item_2.getValue()
@@ -693,14 +693,14 @@ while True:
         lane_5 = Img(100, car_5.rect.y + 10, "./Asset/RoadBot.png", (w - 200, 100))
         lane_5.draw()
 
-        # 5 car in a race
+        # 5 cars in a race
         car_1.draw()
         car_2.draw()
         car_3.draw()
         car_4.draw()
         car_5.draw()
 
-        # 3 mystery box
+        # 3 mysteries box
         box_1.draw()
         box_2.draw()
         box_3.draw()
@@ -713,7 +713,7 @@ while True:
         text = Txt(300, 120, lang['TIME'] + str(int(mg_tick / 30)), "#f06e4b", True, True)
         text.render()
 
-        # 5 car hit box_1
+        # 5 cars hit box_1
         if car_1.isCollide(box_1.getRect()) and box_1.isShow():
             car_1.hitBox(1) # Object take effect
             box_1.disable() # Hide the box
@@ -735,7 +735,7 @@ while True:
             box_1.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
 
-        # 5 car hit box_2 
+        # 5 cars hit box_2 
         if car_1.isCollide(box_2.getRect()) and box_2.isShow():
             car_1.hitBox(1)
             box_2.disable()
@@ -757,7 +757,7 @@ while True:
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
 
-        # 5 car hit box_3 
+        # 5 cars hit box_3 
         if car_1.isCollide(box_3.getRect()) and box_3.isShow():
             car_1.hitBox(1)
             box_3.disable()

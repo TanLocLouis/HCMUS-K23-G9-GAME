@@ -21,7 +21,8 @@ import time
 
 pygame.init()
 screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE)
-pygame.display.set_caption("Et Bi 99 - NHA CAI DEN TU CHAU A")
+pygame.display.set_caption("BET69 - NHA CAI DEN TU CHAU A")
+pygame.display.set_icon(pygame.image.load("./Asset/BG-Title.png"))
 clock = pygame.time.Clock()
 
 class Car():
