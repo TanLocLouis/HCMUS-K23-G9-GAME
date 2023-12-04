@@ -169,49 +169,53 @@ while True:
         text = Txt(w / 2 - 300, 150, lang['COIN'] + str(coin), "#f06e4b", True)
         text.render()
 
-        btn_play = Button(w / 2 - 350, h / 2, "./Asset/" + lang['BTN-PLAY'], (160, 50))
-        btn_play.draw()
+        if isLogin:
+            btn_play = Button(w / 2 - 350, h / 2, "./Asset/" + lang['BTN-PLAY'], (160, 50))
+            btn_play.draw()
 
-        if btn_play.isClick():
-            game_state = 5
+            if btn_play.isClick():
+                game_state = 5
 
-            pygame.mixer.music.stop()
-            pygame.mixer.music.unload()
+                pygame.mixer.music.stop()
+                pygame.mixer.music.unload()
 
-            pygame.mixer.music.load("./Minigame/MG-Music-1.mp3")
-            pygame.mixer.music.play(-1, 0, 2000)
+                pygame.mixer.music.load("./Minigame/MG-Music-1.mp3")
+                pygame.mixer.music.play(-1, 0, 2000)
 
-        btn_minigame = Button(w / 2 - 350, h / 2 + 75 , "./Asset/" + lang['BTN-MINIGAME'], (160, 50))
-        btn_minigame.draw()
+            btn_minigame = Button(w / 2 - 350, h / 2 + 75 , "./Asset/" + lang['BTN-MINIGAME'], (160, 50))
+            btn_minigame.draw()
 
-        if btn_minigame.isClick():
-            game_state = 3
-            mg_tick = 410
+            if btn_minigame.isClick():
+                if coin <= 30:
+                    game_state = 3
+                    mg_tick = 500
 
-            pygame.mixer.music.stop()
-            pygame.mixer.music.unload()
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.unload()
 
-            pygame.mixer.music.load("./Minigame/MG-Music-1.mp3")
-            pygame.mixer.music.play(-1, 0, 2000)
-            collected_coin = 0
+                    pygame.mixer.music.load("./Minigame/MG-Music-1.mp3")
+                    pygame.mixer.music.play(-1, 0, 2000)
+                    collected_coin = 0
 
-            pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
+                    pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
+                else:
+                    text = Txt(w / 2 - 400, h - 55, lang['MINIGAME-LIMIT'], "RED", True, True)
+                    text.render()
 
+            btn_shop = Button(w / 2 - 350, h / 2 + 150 , "./Asset/" + lang['STORE'], (160, 50))
+            btn_shop.draw()
+
+            if btn_shop.isClick():
+                game_state = 4
+
+                pygame.mixer.music.stop()
+                pygame.mixer.music.unload()
+
+                pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
+                pygame.mixer.music.play(-1, 0, 2000)
 
         text = Txt(w / 2 + 200, 550, lang['LANG'], "WHITE", True, True)
         text.render()
-
-        btn_shop = Button(w / 2 - 350, h / 2 + 150 , "./Asset/" + lang['STORE'], (160, 50))
-        btn_shop.draw()
-
-        if btn_shop.isClick():
-            game_state = 4
-
-            pygame.mixer.music.stop()
-            pygame.mixer.music.unload()
-
-            pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
-            pygame.mixer.music.play(-1, 0, 2000)
 
         if text.isClick():
             game_state = -1
@@ -567,7 +571,7 @@ while True:
         text = Txt(300, 100, lang['COLLECTEDCOIN'] + str(collected_coin), "#f06e4b", True, True)
         text.render()
 
-        text = Txt(300, 50, lang['TIME'] + str(int(mg_tick / 20)), "#f06e4b", True, True)
+        text = Txt(300, 50, lang['TIME'] + str(int(mg_tick / 30)), "#f06e4b", True, True)
         text.render()
 
         bg_1 = Player(mg_mouse[0], mg_mouse[1], "./Minigame/MG-Mouse.png", (250, 250))
@@ -601,17 +605,19 @@ while True:
 
         # buy ITEM-1
         if lang['ITEM-1'] not in prePlayItems:
-            item_1 = Item(w / 2 - 300, 275, "./Asset/" + lang['ITEM-1'], (100, 100), 10)
+            item_1 = Item(w / 2 - 300, 300, "./Asset/" + lang['ITEM-1'], (100, 100), 10)
             item_1.draw()
             if item_1.isClick():
                 value = item_1.getValue()
                 if coin >= value:
                     coin -= value
                     prePlayItems.add(lang['ITEM-1'])
+        item_table = Img(w / 2 - 325, 250, "./Asset/ITEM-Table.png", (700, 300))
+        item_table.draw()
 
         # buy ITEM-2
         if lang['ITEM-2'] not in prePlayItems:
-            item_2 = Item(w / 2 - 100, 275, "./Asset/" + lang['ITEM-2'], (100, 100), 10)
+            item_2 = Item(w / 2 - 50, 300, "./Asset/" + lang['ITEM-2'], (100, 100), 10)
             item_2.draw()
             if item_2.isClick():
                 value = item_2.getValue()
@@ -621,7 +627,7 @@ while True:
 
         # buy ITEM-3
         if lang['ITEM-3'] not in prePlayItems:
-            item_2 = Item(w / 2 + 100, 275, "./Asset/" + lang['ITEM-3'], (100, 100), 10)
+            item_2 = Item(w / 2 + 175, 300, "./Asset/" + lang['ITEM-3'], (100, 100), 10)
             item_2.draw()
             if item_2.isClick():
                 value = item_2.getValue()
@@ -629,13 +635,15 @@ while True:
                     coin -= value
                     prePlayItems.add(lang['ITEM-3'])
 
-        btn_exit = Button(w / 2 + 300, h / 2 + 100, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 400, h / 2 + 130, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
             game_state = -2
 
     elif game_state == 5:
         screen.fill("#96c3d7")
+        text = Txt(300, 100, lang['COIN'] + str(coin), "WHITE", True, True)
+        text.render()
         text = Txt(300, 145, lang['BETCOIN'] + bet_coin, "WHITE", False, True)
         text.render()
         btn_play = Button(700, 130, "./Asset/" + lang['BTN-PLAY'], (160, 50))
@@ -646,7 +654,23 @@ while True:
             game_state = -2
 
         if btn_play.isClick():
-            game_state = 51
+            if bet_coin == "":
+                text = Txt(450, 90, lang['NOT-NULL'], "RED", True, True)
+                text.render()
+            else:
+                if int(bet_coin) <= int(coin):
+                    game_state = 51
+                    minus = int(coin) - int(bet_coin)
+                else:
+                    text = Txt(450, 90, lang['NOT-ENOUGH'], "RED", True, True)
+                    text.render()
+                
+
+        text = Txt(300, 200, lang['BOUGHT'], "GREEN", True, True)
+        text.render()
+        for item in enumerate(prePlayItems):
+            item = Item(item[0] * 100 + 300, 250, "./Asset/" + item[1], (100, 100), 10)
+            item.draw()
 
     # Main game
     elif game_state == 51:
@@ -786,12 +810,16 @@ while True:
             coin += int(bet_coin) 
             game_state = 53
         if car_2.isWin(w):
+            coin -= int(bet_coin)
             game_state = 53
         if car_3.isWin(w):
+            coin -= int(bet_coin)
             game_state = 53
         if car_4.isWin(w):
+            coin -= int(bet_coin)
             game_state = 53
         if car_5.isWin(w):
+            coin -= int(bet_coin)
             game_state = 53
 
     # Show result at the end game stage then go to stage 53
