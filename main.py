@@ -136,6 +136,13 @@ while True:
 
         btn_exit = Button(w / 2 + 325, 97, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
+
+        btn_help = Button(w / 2 + 375, 90, "./Asset/Help.png", (60, 60))
+        btn_help.draw()
+        
+        if btn_help.isClick():
+            game_state = 6
+
         if btn_exit.isClick():
             if isLogin:
                 wb = load_workbook("players.xlsx")
@@ -903,6 +910,17 @@ while True:
         btn_exit.draw()
 
         # Stage -2 will jump to stage 0 (Main menu)
+        if btn_exit.isClick():
+            game_state = -2
+
+    elif game_state == 6:
+        bg = Img(0, 0, "./Asset/BG.png", (w, h))
+        bg.draw()
+        bg_text = Img(w / 2 - 300, h / 5 + 50, "./Asset/" + lang['BG-TITLE'], (700, 125))
+        bg_text.draw()
+        btn_exit = Button(w / 2 + 400, 400, "./Asset/ExitGame.png", (50, 50))
+        btn_exit.draw()
+
         if btn_exit.isClick():
             game_state = -2
 
