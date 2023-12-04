@@ -122,7 +122,7 @@ while True:
 
         bg = Img(0, 0, "./Asset/BG.png", (w, h))
         bg.draw()
-        bg_text = Img(w / 2 - 500, h / 5 + 15, "./Asset/" + lang['BG-TITLE'], (1000, 200))
+        bg_text = Img(w / 2 - 300, h / 5 + 50, "./Asset/" + lang['BG-TITLE'], (700, 125))
         bg_text.draw()
 
         bg_1_x -= 2
@@ -611,7 +611,7 @@ while True:
 
         # buy ITEM-2
         if lang['ITEM-2'] not in prePlayItems:
-            item_2 = Item(w / 2 - 300, 350, "./Asset/" + lang['ITEM-2'], (300, 100), 10)
+            item_2 = Item(w / 2 - 300, 350, "./Asset/" + lang['ITEM-2'], (100, 100), 10)
             item_2.draw()
             if item_2.isClick():
                 value = item_2.getValue()
@@ -621,7 +621,7 @@ while True:
 
         # buy ITEM-3
         if lang['ITEM-3'] not in prePlayItems:
-            item_2 = Item(w / 2 - 300, 450, "./Asset/" + lang['ITEM-3'], (300, 100), 10)
+            item_2 = Item(w / 2 - 300, 450, "./Asset/" + lang['ITEM-3'], (100, 100), 10)
             item_2.draw()
             if item_2.isClick():
                 value = item_2.getValue()
@@ -660,14 +660,14 @@ while True:
         # random position of mystery box
         random.seed(time.time())
         pos_x = random.random() * 500 + 500
-        pos_y = random.random() * 500 + 150
-        box_1 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (100, 100))
+        pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 10
+        box_1 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
         pos_x = random.random() * 500 + 500
-        pos_y = random.random() * 500 + 150
-        box_2 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (100, 100))
+        pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 10
+        box_2 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
         pos_x = random.random() * 500 + 500
-        pos_y = random.random() * 500 + 150
-        box_3 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (100, 100))
+        pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 10
+        box_3 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
         game_state = 52
         mg_tick = 0
 
@@ -678,7 +678,21 @@ while True:
                 car_1.itemSpeed(1)
 
     elif game_state == 52:
-        screen.fill("#96c3d7")
+        bg_race = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg_race.draw()
+
+        # Racing lanes
+        lane_1 = Img(100, car_1.rect.y + 10, "./Asset/RoadTop.png", (w - 200, 100))
+        lane_1.draw()
+        lane_2 = Img(100, car_2.rect.y + 10, "./Asset/Road.png", (w - 200, 100))
+        lane_2.draw()
+        lane_3 = Img(100, car_3.rect.y + 10, "./Asset/Road.png", (w - 200, 100))
+        lane_3.draw()
+        lane_4 = Img(100, car_4.rect.y + 10, "./Asset/Road.png", (w - 200, 100))
+        lane_4.draw()
+        lane_5 = Img(100, car_5.rect.y + 10, "./Asset/RoadBot.png", (w - 200, 100))
+        lane_5.draw()
+
         # 5 car in a race
         car_1.draw()
         car_2.draw()
