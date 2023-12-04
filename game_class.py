@@ -52,16 +52,11 @@ class Car():
     def itemSpeed(self, speed):
         self.speed += speed
 
-    def hitBox(self, speed):
-        option = random.random() * 50 
-
-        if option <= 10:
-            self.speed += speed
-        elif option <= 20:
-            self.speed -= speed
-        elif option <= 30:
-            self.rect.topleft = (200, self.rect.topleft[1])
-
+    def hitBox(self, option):
+        if option == 1:
+            self.speed += 1
+        elif option == 2:
+            self.speed -= 1
          
 class Box():
     def __init__(self, x, y, image, scale):

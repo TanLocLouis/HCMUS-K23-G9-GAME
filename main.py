@@ -704,6 +704,8 @@ while True:
         for value in prePlayItems:
             if value == "ITEM-1.png":
                 car_1.itemSpeed(1)
+            elif value == "ITEM-2.png":
+                car_1.rect.x = 500
 
     elif game_state == 52:
         bg_race = Img(0, 0, "./Asset/BGRace.png", (w, h))
@@ -746,44 +748,64 @@ while True:
             car_1.hitBox(1) # Object take effect
             box_1.disable() # Hide the box
             pygame.mixer.Sound("./Asset/Buy.mp3").play() # Play sound effect
+            boost = Img(car_1.rect.x, car_1.rect.y, "./Asset/MAIN-Boost.png", (200, 200))
+            boost.draw()
         if car_2.isCollide(box_1.getRect()) and box_1.isShow():
             car_2.hitBox(1)
             box_1.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
+            boost = Img(car_2.rect.x, car_2.rect.y, "./Asset/MAIN-Boost.png", (200, 200))
+            boost.draw()
         if car_3.isCollide(box_1.getRect()) and box_1.isShow():
             car_3.hitBox(1)
             box_1.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
+            boost = Img(car_3.rect.x, car_3.rect.y, "./Asset/MAIN-Boost.png", (200, 200))
+            boost.draw()
         if car_4.isCollide(box_1.getRect()) and box_1.isShow():
             car_4.hitBox(1)
             box_1.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
+            boost = Img(car_4.rect.x, car_4.rect.y, "./Asset/MAIN-Boost.png", (200, 200))
+            boost.draw()
         if car_5.isCollide(box_1.getRect()) and box_1.isShow():
             car_4.hitBox(1)
             box_1.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
+            boost = Img(car_5.rect.x, car_5.rect.y, "./Asset/MAIN-Boost.png", (200, 200))
+            boost.draw()
 
         # 5 cars hit box_2 
         if car_1.isCollide(box_2.getRect()) and box_2.isShow():
             car_1.hitBox(1)
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
+            unboost = Img(car_1.rect.x, car_1.rect.y, "./Asset/MAIN-UnBoost.png", (200, 200))
+            unboost.draw()
         if car_2.isCollide(box_2.getRect()) and box_2.isShow():
             car_2.hitBox(1)
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
+            unboost = Img(car_2.rect.x, car_2.rect.y, "./Asset/MAIN-UnBoost.png", (200, 200))
+            unboost.draw()
         if car_3.isCollide(box_2.getRect()) and box_2.isShow():
             car_3.hitBox(1)
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
+            unboost = Img(car_3.rect.x, car_3.rect.y, "./Asset/MAIN-UnBoost.png", (200, 200))
+            unboost.draw()
         if car_4.isCollide(box_2.getRect()) and box_2.isShow():
             car_4.hitBox(1)
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
+            unboost = Img(car_4.rect.x, car_4.rect.y, "./Asset/MAIN-UnBoost.png", (200, 200))
+            unboost.draw()
         if car_5.isCollide(box_2.getRect()) and box_2.isShow():
             car_4.hitBox(1)
             box_2.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
+            unboost = Img(car_5.rect.x, car_5.rect.y, "./Asset/MAIN-UnBoost.png", (200, 200))
+            unboost.draw()
 
         # 5 cars hit box_3 
         if car_1.isCollide(box_3.getRect()) and box_3.isShow():
@@ -812,8 +834,8 @@ while True:
         # stop play game and go to state 52 to show result
         if car_1.isWin(w):
             coin += int(bet_coin)
-            if 'car 1' not in final:
-                final['car 1'] = mg_tick / 30
+            if 'log_name' not in final:
+                final[log_name] = mg_tick / 30
         if car_2.isWin(w):
             if 'car 2' not in final:
                 final['car 2'] = mg_tick / 30
@@ -875,6 +897,8 @@ while True:
     # Go to main menu
     elif game_state == 54:
         prePlayItems.clear()
+        final.clear()
+        played_time.clear()
 
         btn_exit = Button(w / 2 - 200, 60, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
