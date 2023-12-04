@@ -603,6 +603,9 @@ while True:
         text = Txt(w / 2 - 300, 200, lang['BOUGHT'] + str(len(prePlayItems)), "WHITE", True)
         text.render()
 
+        item_table = Img(w / 2 - 325, 250, "./Asset/ITEM-Table.png", (700, 300))
+        item_table.draw()
+
         # buy ITEM-1
         if lang['ITEM-1'] not in prePlayItems:
             item_1 = Item(w / 2 - 300, 300, "./Asset/" + lang['ITEM-1'], (100, 100), 10)
@@ -612,8 +615,6 @@ while True:
                 if coin >= value:
                     coin -= value
                     prePlayItems.add(lang['ITEM-1'])
-        item_table = Img(w / 2 - 325, 250, "./Asset/ITEM-Table.png", (700, 300))
-        item_table.draw()
 
         # buy ITEM-2
         if lang['ITEM-2'] not in prePlayItems:
@@ -718,11 +719,11 @@ while True:
         lane_5.draw()
 
         # 5 cars in a race
-        car_1.draw()
-        car_2.draw()
-        car_3.draw()
-        car_4.draw()
-        car_5.draw()
+        car_1.draw(car_1.isWin(w))
+        car_2.draw(car_2.isWin(w))
+        car_3.draw(car_3.isWin(w))
+        car_4.draw(car_4.isWin(w))
+        car_5.draw(car_5.isWin(w))
 
         # 3 mysteries box
         box_1.draw()
@@ -806,21 +807,33 @@ while True:
         # if car_n win
         # plus coin
         # stop play game and go to state 52 to show result
+        final = {} 
         if car_1.isWin(w):
-            coin += int(bet_coin) 
-            game_state = 53
+            coin += int(bet_coin)
+            final['car 1'] = mg_tick / 30
         if car_2.isWin(w):
-            coin -= int(bet_coin)
-            game_state = 53
+            final['car 2'] = mg_tick / 30
         if car_3.isWin(w):
-            coin -= int(bet_coin)
-            game_state = 53
+            final['car 3'] = mg_tick / 30
         if car_4.isWin(w):
-            coin -= int(bet_coin)
-            game_state = 53
+            final['car 4'] = mg_tick / 30
         if car_5.isWin(w):
-            coin -= int(bet_coin)
+            final['car 5'] = mg_tick / 30
+
+        if len(final) == 5:
             game_state = 53
+
+        keys = [car_1.getPos(), car_2.getPos(), car_3.getPos(), car_4.getPos(), car_5.getPos()]
+        values = [log_name, "car 2", "car 3", "car 4", "car 5"]
+        top = dict(zip(keys, values))
+        top = sorted(top.items(), key=lambda x: x[0], reverse = True)
+
+        rank = Img(w - 250, -10, "./Asset/MAIN-Rank.png", (230, 230))
+        rank.draw()
+
+        for val in enumerate(top):
+            text = Txt(w - 200, 30 * val[0] + 45, str(val[1][1]) + "---" + str(val[1][0]), "BLACK", False)
+            text.render()
 
     # Show result at the end game stage then go to stage 53
     elif game_state == 53:
@@ -831,7 +844,7 @@ while True:
         pygame.mixer.music.play(-1, 0, 2000)
 
         pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
-        text = Txt(w / 2 - 200, 50, lang['WIN'], "WHITE", False)
+        text = Txt(w / 2 - 200, 30, lang['WIN'], "WHITE", False)
         text.render()
 
         # Save result's image and xlsx file to result folder at main directory

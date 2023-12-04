@@ -35,9 +35,16 @@ class Car():
 
         random.seed(time.time())
 
-    def draw(self):
-        self.rect.topleft = (self.rect.topleft[0] + self.speed + random.random() * 2, self.rect.topleft[1])
+    def isWin(self, border):
+        return self.rect.topleft[0] >= border - 200 
+
+    def draw(self, isWin):
+        if not isWin:
+            self.rect.topleft = (self.rect.topleft[0] + self.speed + random.random() * 2, self.rect.topleft[1])
         screen.blit(self.image, (self.rect.x, self.rect.y))
+
+    def getPos(self):
+        return self.rect.x
 
     def isCollide(self, rect):
         return self.rect.collidepoint(rect.topleft[0], rect.topleft[1])
@@ -54,11 +61,7 @@ class Car():
             self.speed -= speed
         elif option <= 30:
             self.rect.topleft = (200, self.rect.topleft[1])
-        elif option <= 40:
-            self.speed *= -1
 
-    def isWin(self, border):
-        return self.rect.topleft[0] >= border - 200 
          
 class Box():
     def __init__(self, x, y, image, scale):
