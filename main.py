@@ -79,6 +79,8 @@ final = {}
 
 # character set
 char_set = 1
+# level
+level = 1
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -665,11 +667,18 @@ while True:
 
         text = Txt(300, 200, lang['CHARSET'] + str(char_set), "WHITE", False, True)
         text.render()
-
         for i in range(1, 6):
             set_i = Button(i * 150 + 200, 250, "./Asset/char_set_" + str(i) + "/set.png", (100, 100))
             if set_i.isClick():
                 char_set = i
+            set_i.draw()
+
+        text = Txt(300, 400, lang['LEVEL'] + str(level), "WHITE", False, True)
+        text.render()
+        for i in range(1, 4):
+            set_i = Button(i * 150 + 200, 450, "./Asset/level_" + str(i) + ".png", (100, 100))
+            if set_i.isClick():
+                level = i
             set_i.draw()
 
         btn_play = Button(700, 600, "./Asset/" + lang['BTN-PLAY'], (160, 50))
