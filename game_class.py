@@ -35,26 +35,32 @@ class Car():
         self.speed = speed
         self.ani = 0
         self.lap = lap - 1
+        self.won = False
 
         random.seed(time.time())
 
     def isWin(self, border):
         if self.rect.topleft[0] >= border - 200:
             if (self.lap > 0):
-                self.rect.x = self.startPos[1]
+                self.rect.x = self.startPos[0]
                 self.lap -= 1
                 return False
             else:
+                self.won = True
                 return True
 
     def draw(self, isWin, img_1, img_2):
-        if int(self.ani / 10) % 2 == 0:
+        if not self.won:
+            if int(self.ani / 10) % 2 == 0:
+                self.image = pygame.image.load(img_1)
+                self.image = pygame.transform.scale(self.image, (100, 100))
+            else:
+                self.image = pygame.image.load(img_2)
+                self.image = pygame.transform.scale(self.image, (100, 100))
+            self.ani += 1
+        else:
             self.image = pygame.image.load(img_1)
             self.image = pygame.transform.scale(self.image, (100, 100))
-        else:
-            self.image = pygame.image.load(img_2)
-            self.image = pygame.transform.scale(self.image, (100, 100))
-        self.ani += 1
 
         if not isWin:
             self.rect.topleft = (self.rect.topleft[0] + self.speed + random.random() * 2, self.rect.topleft[1])
