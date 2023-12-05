@@ -717,13 +717,13 @@ while True:
         # random position of mystery box
         random.seed(time.time())
         pos_x = random.random() * 500 + 500
-        pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 10
+        pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         box_1 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
         pos_x = random.random() * 500 + 500
-        pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 10
+        pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         box_2 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
         pos_x = random.random() * 500 + 500
-        pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 10
+        pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         box_3 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
         game_state = 52
         mg_tick = 0
@@ -743,15 +743,15 @@ while True:
         bg_race.draw()
 
         # Racing lanes
-        lane_1 = Img(100, car_1.rect.y + 10, "./Asset/RoadTop.png", (w - 200, 100))
+        lane_1 = Img(100, car_1.rect.y + 30, "./Asset/RoadTop.png", (w - 200, 100))
         lane_1.draw()
-        lane_2 = Img(100, car_2.rect.y + 10, "./Asset/Road.png", (w - 200, 100))
+        lane_2 = Img(100, car_2.rect.y + 30, "./Asset/Road.png", (w - 200, 100))
         lane_2.draw()
-        lane_3 = Img(100, car_3.rect.y + 10, "./Asset/Road.png", (w - 200, 100))
+        lane_3 = Img(100, car_3.rect.y + 30, "./Asset/Road.png", (w - 200, 100))
         lane_3.draw()
-        lane_4 = Img(100, car_4.rect.y + 10, "./Asset/Road.png", (w - 200, 100))
+        lane_4 = Img(100, car_4.rect.y + 30, "./Asset/Road.png", (w - 200, 100))
         lane_4.draw()
-        lane_5 = Img(100, car_5.rect.y + 10, "./Asset/RoadBot.png", (w - 200, 100))
+        lane_5 = Img(100, car_5.rect.y + 30, "./Asset/RoadBot.png", (w - 200, 100))
         lane_5.draw()
 
         # 5 cars in a race
