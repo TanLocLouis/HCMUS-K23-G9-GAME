@@ -201,7 +201,7 @@ while True:
             btn_minigame.draw()
 
             if btn_minigame.isClick():
-                if coin <= 30:
+                if coin <= 10:
                     game_state = 3
                     mg_tick = 500
 
@@ -693,7 +693,7 @@ while True:
                 text = Txt(450, 675, lang['NOT-NULL'], "RED", True, True)
                 text.render()
             else:
-                if int(bet_coin) <= int(coin):
+                if int(bet_coin) * level <= int(coin):
                     game_state = 51
                     minus = int(coin) - int(bet_coin)
                 else:
@@ -732,9 +732,9 @@ while True:
         # Items that bought in store are in prePlayItems
         for value in prePlayItems:
             if value == "ITEM-1.png":
-                car_1.itemSpeed(1)
+                car_1.itemSpeed(0.2)
             elif value == "ITEM-2.png":
-                car_1.rect.x = 500
+                car_1.rect.x = 200
         # Win effect
         eff = Eff(w - 200, car_1.rect.y - 100, "./Asset/MAIN-EFFECT.png", (100, 100))
 
@@ -878,7 +878,6 @@ while True:
         if car_1.won and len(final) == 1:
             eff.draw()
         if car_1.isWin(w):
-            coin += int(bet_coin)
             if log_name not in final:
                 final[log_name] = mg_tick / 30
         if car_2.isWin(w):
@@ -926,6 +925,12 @@ while True:
         pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
         text = Txt(w / 2 - 200, 30, lang['WIN'], "WHITE", False)
         text.render()
+        # calculate coin
+        key = min(final, key=final.get)
+        if key == log_name:
+            coin += 5 * int(bet_coin) * level
+        else:
+            coin -= int(bet_coin) * level
 
         # Save result's image and xlsx file to result folder at main directory
         img_name = str(time.ctime(time.time()))

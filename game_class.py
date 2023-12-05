@@ -91,9 +91,9 @@ class Car():
 
     def hitBox(self, option):
         if option == 1:
-            self.speed += 1
+            self.speed += 0.2
         elif option == 2 and self.speed > 0.5:
-            self.speed -= 0.5
+            self.speed -= 0.8
          
 class Box():
     def __init__(self, x, y, image, scale):
@@ -117,6 +117,7 @@ class Box():
         return self.rect
     
     def disable(self):
+        self.rect.y = random.random() * 450 + 180
         self.isActive = False
 
     def isShow(self):
@@ -183,8 +184,6 @@ class Img():
 
     def draw(self):
         screen.blit(self.image, (self.rect.x, self.rect.y))
-
-    
 
 # Item Class
 class Item():
