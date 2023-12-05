@@ -875,7 +875,7 @@ while True:
         # if car_n win
         # plus coin
         # stop play game and go to state 52 to show result
-        if car_1.won:
+        if car_1.won and len(final) == 1:
             eff.draw()
         if car_1.isWin(w):
             coin += int(bet_coin)
