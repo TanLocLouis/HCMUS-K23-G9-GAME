@@ -25,6 +25,20 @@ pygame.display.set_caption("BET69 - NHA CAI DEN TU CHAU A")
 pygame.display.set_icon(pygame.image.load("./Asset/BG-Title.png"))
 clock = pygame.time.Clock()
 
+class Eff():
+    def __init__(self, x, y, image, scale):
+        self.image = pygame.image.load(image)
+        self.image = pygame.transform.scale(self.image, scale)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
+        self.frame = 150
+
+    def draw(self):
+        if self.frame > 0:
+            self.rect.topleft = (self.rect.topleft[0], self.rect.topleft[1] + 1)
+            screen.blit(self.image, self.rect)
+            self.frame -= 1
+
 class Car():
     def __init__(self, x, y, image, scale, speed = 0, lap = 1):
         self.image = pygame.image.load(image)
@@ -64,7 +78,7 @@ class Car():
 
         if not isWin:
             self.rect.topleft = (self.rect.topleft[0] + self.speed + random.random() * 2, self.rect.topleft[1])
-        screen.blit(self.image, (self.rect.x, self.rect.y))
+        screen.blit(self.image, self.rect)
 
     def getPos(self):
         return self.rect.x

@@ -735,6 +735,8 @@ while True:
                 car_1.itemSpeed(1)
             elif value == "ITEM-2.png":
                 car_1.rect.x = 500
+        # Win effect
+        eff = Eff(w - 200, car_1.rect.y - 100, "./Asset/MAIN-EFFECT.png", (100, 100))
 
     elif game_state == 52:
         bg_race = Img(0, 0, "./Asset/char_set_" + str(char_set) + "/background.png", (w, h))
@@ -873,6 +875,8 @@ while True:
         # if car_n win
         # plus coin
         # stop play game and go to state 52 to show result
+        if car_1.won:
+            eff.draw()
         if car_1.isWin(w):
             coin += int(bet_coin)
             if log_name not in final:
