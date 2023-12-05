@@ -708,11 +708,11 @@ while True:
     # Main game
     elif game_state == 51:
         # 5 cars
-        car_1 = Car(100, 175, "./Asset/char_set_" + str(char_set) + "/background.png", (100, 100), 1)
-        car_2 = Car(100, 275, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1)
-        car_3 = Car(100, 375, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1)
-        car_4 = Car(100, 475, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1)
-        car_5 = Car(100, 575, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1)
+        car_1 = Car(100, 175, "./Asset/char_set_" + str(char_set) + "/background.png", (100, 100), 1, level)
+        car_2 = Car(100, 275, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1, level)
+        car_3 = Car(100, 375, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1, level)
+        car_4 = Car(100, 475, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1, level)
+        car_5 = Car(100, 575, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1, level)
 
         # random position of mystery box
         random.seed(time.time())
@@ -758,6 +758,18 @@ while True:
         car_3.draw(car_3.isWin(w), "./Asset/char_set_" + str(char_set) + "/player_3_1.png", "./Asset/char_set_" + str(char_set) + "/player_3_2.png")
         car_4.draw(car_4.isWin(w), "./Asset/char_set_" + str(char_set) + "/player_4_1.png", "./Asset/char_set_" + str(char_set) + "/player_4_2.png")
         car_5.draw(car_5.isWin(w), "./Asset/char_set_" + str(char_set) + "/player_5_1.png", "./Asset/char_set_" + str(char_set) + "/player_5_2.png")
+
+        # Lap of players
+        text = Txt(car_1.rect.x, car_1.rect.y, "LAP remaining " + str(car_1.lap), "WHITE", True, False, 10)
+        text.render()
+        text = Txt(car_2.rect.x, car_2.rect.y, "LAP remaining " + str(car_2.lap), "WHITE", True, False, 10)
+        text.render()
+        text = Txt(car_3.rect.x, car_3.rect.y, "LAP remaining " + str(car_3.lap), "WHITE", True, False, 10)
+        text.render()
+        text = Txt(car_4.rect.x, car_4.rect.y, "LAP remaining " + str(car_4.lap), "WHITE", True, False, 10)
+        text.render()
+        text = Txt(car_5.rect.x, car_5.rect.y, "LAP remaining " + str(car_5.lap), "WHITE", True, False, 10)
+        text.render()
 
         # 3 mysteries box
         box_1.draw()

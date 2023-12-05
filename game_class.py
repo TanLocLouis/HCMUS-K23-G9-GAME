@@ -26,18 +26,26 @@ pygame.display.set_icon(pygame.image.load("./Asset/BG-Title.png"))
 clock = pygame.time.Clock()
 
 class Car():
-    def __init__(self, x, y, image, scale, speed = 0):
+    def __init__(self, x, y, image, scale, speed = 0, lap = 1):
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image, scale)
         self.rect = self.image.get_rect()
+        self.startPos = (x, y)
         self.rect.topleft = (x, y)
         self.speed = speed
         self.ani = 0
+        self.lap = lap - 1
 
         random.seed(time.time())
 
     def isWin(self, border):
-        return self.rect.topleft[0] >= border - 200 
+        if self.rect.topleft[0] >= border - 200:
+            if (self.lap > 0):
+                self.rect.x = self.startPos[1]
+                self.lap -= 1
+                return False
+            else:
+                return True
 
     def draw(self, isWin, img_1, img_2):
         if int(self.ani / 10) % 2 == 0:
@@ -64,8 +72,8 @@ class Car():
     def hitBox(self, option):
         if option == 1:
             self.speed += 1
-        elif option == 2:
-            self.speed -= 1
+        elif option == 2 and self.speed > 0.5:
+            self.speed -= 0.5
          
 class Box():
     def __init__(self, x, y, image, scale):
