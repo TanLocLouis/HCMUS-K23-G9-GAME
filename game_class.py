@@ -172,7 +172,7 @@ class Txt():
         if self.rect.collidepoint(pos) and pygame.mouse.get_pressed()[0] == 1:
             return True
         else:
-            return False  
+            return False
 
 # Image Class
 class Img():

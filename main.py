@@ -964,6 +964,9 @@ while True:
         btn_exit = Button(w / 2 + 400, 400, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
 
+        bg_text = Img(w / 2 - 300, 100, "./Asset/" + lang['HELP'], (600, 600))
+        bg_text.draw()
+
         if btn_exit.isClick():
             game_state = -2
 
