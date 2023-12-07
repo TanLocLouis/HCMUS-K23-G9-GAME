@@ -47,7 +47,7 @@ log_password = ""
 isLogin = False
 
 player = ""
-coin = 20
+coin = 0
 
 pos = 1
 
@@ -881,17 +881,17 @@ while True:
             if log_name not in final:
                 final[log_name] = mg_tick / 30
         if car_2.isWin(w):
-            if 'car 2' not in final:
-                final['car 2'] = mg_tick / 30
+            if 'player 2' not in final:
+                final['player 2'] = mg_tick / 30
         if car_3.isWin(w):
-            if 'car 3' not in final:
-                final['car 3'] = mg_tick / 30
+            if 'player 3' not in final:
+                final['player 3'] = mg_tick / 30
         if car_4.isWin(w):
-            if 'car 4' not in final:
-                final['car 4'] = mg_tick / 30
+            if 'player 4' not in final:
+                final['player 4'] = mg_tick / 30
         if car_5.isWin(w):
-            if 'car 5' not in final:
-                final['car 5'] = mg_tick / 30
+            if 'player 5' not in final:
+                final['player 5'] = mg_tick / 30
 
         if len(final) == 5:
             for val in enumerate(final.items()):
@@ -934,12 +934,11 @@ while True:
 
         # Save result's image and xlsx file to result folder at main directory
         img_name = str(time.ctime(time.time()))
-        img_name = img_name.replace(" ", "_")
         img_name = img_name.replace(":", "_")
         pygame.image.save(screen, "./result/" + img_name + ".png")
         wb = load_workbook("./result/results.xlsx")
         sheet = wb.active
-        sheet.append([img_name, player, 30])
+        sheet.append([img_name, player, ])
         wb.save("./result/results.xlsx")
 
         game_state = 54
