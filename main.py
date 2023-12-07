@@ -88,36 +88,53 @@ while True:
             exit
 
         if event.type == pygame.KEYDOWN and game_state == 1:
+            if event.key == pygame.K_RETURN:
+                game_state = 11
+                break
             if event.key == pygame.K_BACKSPACE: 
                 name = name[:-1] 
             else: 
                 name += event.unicode
 
         if event.type == pygame.KEYDOWN and game_state == 11:
+            if event.key == pygame.K_RETURN:
+                game_state = 12
+                break
             if event.key == pygame.K_BACKSPACE: 
                 email = email[:-1] 
             else: 
                 email += event.unicode
     
         if event.type == pygame.KEYDOWN and game_state == 12:
+            if event.key == pygame.K_RETURN:
+                game_state = 13
+                break
             if event.key == pygame.K_BACKSPACE: 
                 password = password[:-1] 
             else: 
                 password += event.unicode
 
         if event.type == pygame.KEYDOWN and game_state == 2:
+            if event.key == pygame.K_RETURN:
+                game_state = 21
+                break
             if event.key == pygame.K_BACKSPACE: 
                 log_name = log_name[:-1] 
             else: 
                 log_name += event.unicode
         
         if event.type == pygame.KEYDOWN and game_state == 22:
+            if event.key == pygame.K_RETURN:
+                break
             if event.key == pygame.K_BACKSPACE: 
                 log_password = log_password[:-1] 
             else: 
                 log_password += event.unicode
 
         if event.type == pygame.KEYDOWN and game_state == 5:
+            if event.key == pygame.K_RETURN:
+                game_state = 51
+                break
             if event.key == pygame.K_BACKSPACE: 
                 bet_coin = bet_coin[:-1] 
             else: 
@@ -609,6 +626,9 @@ while True:
     elif game_state == 4:
         screen.fill("#96c3d7")
 
+        bg_store = Img(0, 0, "./Asset/BG1.png", (w, h))
+        bg_store.draw()
+
         text = Txt(w / 2 - 300, 100, lang['PLAYER'] + player, "#f06e4b", True)
         text.render()
 
@@ -735,6 +755,8 @@ while True:
                 car_1.itemSpeed(0.2)
             elif value == "ITEM-2.png":
                 car_1.rect.x = 200
+            elif value == "ITEM-3.png":
+                car_1.ignoreSlow = True
         # Win effect
         eff = Eff(w - 200, car_1.rect.y - 100, "./Asset/MAIN-EFFECT.png", (100, 100))
 
@@ -852,23 +874,23 @@ while True:
 
         # 5 cars hit box_3 
         if car_1.isCollide(box_3.getRect()) and box_3.isShow():
-            car_1.hitBox(1)
+            car_1.hitBox(3)
             box_3.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_2.isCollide(box_3.getRect()) and box_3.isShow():
-            car_2.hitBox(1)
+            car_2.hitBox(3)
             box_3.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_3.isCollide(box_3.getRect()) and box_3.isShow():
-            car_3.hitBox(1)
+            car_3.hitBox(3)
             box_3.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_4.isCollide(box_3.getRect()) and box_3.isShow():
-            car_4.hitBox(1)
+            car_4.hitBox(3)
             box_3.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
         if car_5.isCollide(box_3.getRect()) and box_3.isShow():
-            car_4.hitBox(1)
+            car_4.hitBox(3)
             box_3.disable()
             pygame.mixer.Sound("./Asset/Buy.mp3").play()
 

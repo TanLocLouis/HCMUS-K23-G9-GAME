@@ -50,6 +50,7 @@ class Car():
         self.ani = 0
         self.lap = lap - 1
         self.won = False
+        self.ignoreSlow = False
 
         random.seed(time.time())
 
@@ -92,8 +93,10 @@ class Car():
     def hitBox(self, option):
         if option == 1:
             self.speed += 0.2
-        elif option == 2 and self.speed > 0.5:
+        elif option == 2 and self.speed > 0.5 and not self.ignoreSlow:
             self.speed -= 0.8
+        elif option == 3:
+            self.rect.x = 900
          
 class Box():
     def __init__(self, x, y, image, scale):
