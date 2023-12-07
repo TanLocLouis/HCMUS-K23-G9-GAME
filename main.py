@@ -81,6 +81,9 @@ final = {}
 char_set = 1
 # level
 level = 1
+# win lost ration
+win = 0
+lost = 0
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -170,6 +173,8 @@ while True:
                 wb = load_workbook("players.xlsx")
                 sheet = wb.active
                 sheet['E' + chr(pos + 48)] = coin
+                sheet['F' + chr(pos + 48)] = win
+                sheet['G' + chr(pos + 48)] = lost
                 wb.save("players.xlsx")
             exit()
 
@@ -195,7 +200,14 @@ while True:
             pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
             pygame.mixer.music.play(-1, 0, 2000)
 
-        text = Txt(w / 2 - 300, 100, lang['PLAYER'] + player, "#f06e4b", True)
+        if isLogin:
+            avata = Button(w / 2 - 305, 85, "./player_img/" + log_name + ".png", (50, 50))
+            avata.draw()
+
+            if avata.isClick():
+                game_state = 7
+
+        text = Txt(w / 2 - 240, 100, player, "#f06e4b", True)
         text.render()
 
         text = Txt(w / 2 - 300, 150, lang['COIN'] + str(coin), "#f06e4b", True)
@@ -358,6 +370,8 @@ while True:
                 info.append(name + ".png")
                 info.append(password)
                 info.append(20) # Give 20 coin to new player
+                info.append(0)
+                info.append(0)
 
                 wb = load_workbook("players.xlsx")
                 sheet = wb.active
@@ -445,6 +459,8 @@ while True:
                     isLogin = True
                     player = log_name
                     coin = row[4]
+                    win = row[5]
+                    lost = row[6]
                     pos = i
                     break
             workbook.close()
@@ -949,18 +965,22 @@ while True:
         text.render()
         # calculate coin
         key = min(final, key=final.get)
+        gain_coin = 0
         if key == log_name:
-            coin += 5 * int(bet_coin) * level
+            win += 1
+            gain_coin = 5 * int(bet_coin) * level
         else:
-            coin -= int(bet_coin) * level
+            lost += 1
+            gain_coin = -int(bet_coin) * level
 
+        coin += gain_coin
         # Save result's image and xlsx file to result folder at main directory
         img_name = str(time.ctime(time.time()))
         img_name = img_name.replace(":", "_")
         pygame.image.save(screen, "./result/" + img_name + ".png")
         wb = load_workbook("./result/results.xlsx")
         sheet = wb.active
-        sheet.append([img_name, player, ])
+        sheet.append([img_name, player, gain_coin])
         wb.save("./result/results.xlsx")
 
         game_state = 54
@@ -988,6 +1008,27 @@ while True:
         bg_text = Img(w / 2 - 300, 100, "./Asset/" + lang['HELP'], (600, 600))
         bg_text.draw()
 
+        if btn_exit.isClick():
+            game_state = -2
+
+    elif game_state == 7:
+        bg = Img(0, 0, "./Asset/BG.png", (w, h))
+        bg.draw()
+        btn_exit = Button(w / 2 + 400, 400, "./Asset/ExitGame.png", (50, 50))
+        btn_exit.draw()
+
+        text = Txt(w / 2 - 300, 120, log_name, "#f06e4b", True)
+        text.render()
+
+        text = Txt(w / 2 - 300, 160, str(coin), "#f06e4b", True)
+        text.render()
+
+        text = Txt(w / 2 - 300, 200, "WIN: " + str(win), "#f06e4b", True)
+        text.render()
+
+        text = Txt(w / 2 - 300, 240, "LOST: " + str(lost), "#f06e4b", True)
+        text.render()
+        
         if btn_exit.isClick():
             game_state = -2
 
