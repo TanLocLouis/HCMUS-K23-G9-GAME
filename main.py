@@ -159,14 +159,18 @@ while True:
         bg_1 = Img(bg_1_x, h - 250, "./Asset/BG3.png", (4000, 250))
         bg_1.draw()
 
-        btn_exit = Button(w / 2 + 325, 97, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 275, 97, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
-
-        btn_help = Button(w / 2 + 375, 90, "./Asset/Help.png", (60, 60))
+        btn_help = Button(w / 2 + 325, 90, "./Asset/Help.png", (60, 60))
         btn_help.draw()
+        btn_rank = Button(w / 2 + 385, 100, "./Asset/Rank.png", (45, 45))
+        btn_rank.draw()
         
         if btn_help.isClick():
             game_state = 6
+
+        if btn_rank.isClick():
+            game_state = 8
 
         if btn_exit.isClick():
             if isLogin:
@@ -175,10 +179,13 @@ while True:
                 sheet['E' + chr(pos + 48)] = coin
                 sheet['F' + chr(pos + 48)] = win
                 sheet['G' + chr(pos + 48)] = lost
+                ratio = int(win) / int(lost)
+                f_ratio = float("{:.2f}".format(ratio))
+                sheet['H' + chr(pos + 48)] = f_ratio
                 wb.save("players.xlsx")
             exit()
 
-        btn_create_account = Button(w / 2 + 150, 98, "./Asset/" + lang['CREATE'], (160, 50))
+        btn_create_account = Button(w / 2 + 100, 98, "./Asset/" + lang['CREATE'], (160, 50))
         btn_create_account.draw()
         if btn_create_account.isClick():
             game_state = 1
@@ -189,7 +196,7 @@ while True:
             pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
             pygame.mixer.music.play(-1, 0, 2000)
 
-        btn_login = Button(w / 2 - 20, 98, "./Asset/" + lang['LOGIN'], (160, 50))
+        btn_login = Button(w / 2 - 70, 98, "./Asset/" + lang['LOGIN'], (160, 50))
         btn_login.draw()
         if btn_login.isClick():
             game_state = 2
@@ -899,7 +906,7 @@ while True:
         pygame.mixer.music.play(-1, 0, 2000)
 
         pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
-        text = Txt(w / 2 - 200, 30, lang['WIN'], "WHITE", False)
+        text = Txt(300, 30, lang['WIN'], "WHITE", False)
         text.render()
         # calculate coin
         key = min(final, key=final.get)
@@ -948,7 +955,7 @@ while True:
 
         if btn_exit.isClick():
             game_state = -2
-
+    # profile
     elif game_state == 7:
         bg = Img(0, 0, "./Asset/BG.png", (w, h))
         bg.draw()
@@ -968,7 +975,47 @@ while True:
             text = Txt(w / 2 - 300, 280, "K/D RATIO: " + str(ratio), "ORANGE")
             text.render()
 
-        
+        if btn_exit.isClick():
+            game_state = -2
+
+    elif game_state == 8:
+        bg = Img(0, 0, "./Asset/BG.png", (w, h))
+        bg.draw()
+        btn_exit = Button(w / 2 + 400, 400, "./Asset/ExitGame.png", (50, 50))
+        btn_exit.draw()
+
+        workbook = openpyxl.load_workbook("players.xlsx")
+        sheet = workbook.active
+        rows = []
+        for row in sheet.iter_rows(values_only=True):
+            rows.append(list(row))
+
+        rows.pop(0)
+        new_rows = sorted(rows, key=lambda x : x[4], reverse=True)
+        for row in enumerate(new_rows):
+            r_name = row[1][0]
+            r_coin = row[1][4]
+            r_win = row[1][5]
+            r_lost = row[1][6]
+            r_ratio = row[1][7]
+
+            text = Txt(w / 2 - 400, 50 * row[0] + 100, str(row[0] + 1), "GREEN")
+            text.render()
+            text = Txt(w / 2 - 360, 50 * row[0] + 100, r_name, "WHITE")
+            text.render()
+            text = Txt(w / 2 - 180, 50 * row[0] + 100, lang['COIN'] + str(r_coin), "WHITE")
+            text.render()
+            text = Txt(w / 2 - 50, 50 * row[0] + 100, "WIN: " + str(r_win), "GREEN")
+            text.render()
+            text = Txt(w / 2 + 50, 50 * row[0] + 100, "LOST: " + str(r_lost), "RED")
+            text.render()
+
+            if int(r_lost):
+                text = Txt(w / 2 + 200, 50 * row[0] + 100, "K/D ratio: " + str(r_ratio), "ORANGE")
+                text.render()
+
+        workbook.close()
+
         if btn_exit.isClick():
             game_state = -2
 
