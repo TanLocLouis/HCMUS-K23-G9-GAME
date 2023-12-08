@@ -1,7 +1,7 @@
 from game_class import *
 
 # Initialize the game
-
+random.seed(time.time())
 # Show coin at the beginning of the game
 collected_coin = 0
 font = pygame.font.Font(None, 50)
@@ -369,7 +369,7 @@ while True:
                 info.append(email)
                 info.append(name + ".png")
                 info.append(password)
-                info.append(20) # Give 20 coin to new player
+                info.append(0) # Give 0 coin to new player
                 info.append(0)
                 info.append(0)
 
@@ -751,18 +751,28 @@ while True:
         car_5 = Car(100, 575, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1, level)
 
         # random position of mystery box
-        random.seed(time.time())
-        pos_x = random.random() * 500 + 500
+        pos_x = random.random() * 700 + 300
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         box_1 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
-        pos_x = random.random() * 500 + 500
+        pos_x = random.random() * 700 + 300
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         box_2 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
-        pos_x = random.random() * 500 + 500
+        pos_x = random.random() * 700 + 300
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         box_3 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
         game_state = 52
         mg_tick = 0
+
+        # rocks
+        pos_x = random.random() * 700 + 300
+        pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
+        rock_1 = Obstacle(pos_x, pos_y, "./Asset/MAIN-Rock.png", (100, 100))
+        pos_x = random.random() * 700 + 300
+        pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
+        rock_2 = Obstacle(pos_x, pos_y, "./Asset/MAIN-Rock.png", (100, 100))
+        pos_x = random.random() * 700 + 300
+        pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
+        rock_3 = Obstacle(pos_x, pos_y, "./Asset/MAIN-Rock.png", (100, 100))
 
         # Use items bought in Store
         # Items that bought in store are in prePlayItems
@@ -780,6 +790,17 @@ while True:
         bg_race = Img(0, 0, "./Asset/char_set_" + str(char_set) + "/background.png", (w, h))
         bg_race.draw()
 
+        # Player name && Time
+        text = Txt(300, 70, lang['PLAYER'] + player, "#f06e4b", True)
+        text.render()
+
+        mg_tick += 1
+        text = Txt(300, 120, lang['TIME'] + str(int(mg_tick / 30)), "#f06e4b", True, True)
+        text.render()
+
+        players_list = [car_1, car_2, car_3, car_4, car_5]
+        boxes = [box_1, box_2, box_3]
+        obstacles = [rock_1, rock_2, rock_3]
         # Racing lanes
         lane_1 = Img(100, car_1.rect.y + 30, "./Asset/RoadTop.png", (w - 200, 100))
         lane_1.draw()
@@ -793,122 +814,39 @@ while True:
         lane_5.draw()
 
         # 5 cars in a race
-        car_1.draw(car_1.isWin(w), "./Asset/char_set_" + str(char_set) + "/player_1_1.png", "./Asset/char_set_" + str(char_set) + "/player_1_2.png")
-        car_2.draw(car_2.isWin(w), "./Asset/char_set_" + str(char_set) + "/player_2_1.png", "./Asset/char_set_" + str(char_set) + "/player_2_2.png")
-        car_3.draw(car_3.isWin(w), "./Asset/char_set_" + str(char_set) + "/player_3_1.png", "./Asset/char_set_" + str(char_set) + "/player_3_2.png")
-        car_4.draw(car_4.isWin(w), "./Asset/char_set_" + str(char_set) + "/player_4_1.png", "./Asset/char_set_" + str(char_set) + "/player_4_2.png")
-        car_5.draw(car_5.isWin(w), "./Asset/char_set_" + str(char_set) + "/player_5_1.png", "./Asset/char_set_" + str(char_set) + "/player_5_2.png")
+        for i in enumerate(players_list):
+            i[1].draw(i[1].isWin(w), "./Asset/char_set_" + str(char_set) + "/player_" + str(i[0] + 1) + "_1.png", "./Asset/char_set_" + str(char_set) + "/player_" + str(i[0] + 1) + "_2.png")
 
         # Lap of players
-        text = Txt(car_1.rect.x, car_1.rect.y, "LAP remaining " + str(car_1.lap), "WHITE", True, False, 10)
-        text.render()
-        text = Txt(car_2.rect.x, car_2.rect.y, "LAP remaining " + str(car_2.lap), "WHITE", True, False, 10)
-        text.render()
-        text = Txt(car_3.rect.x, car_3.rect.y, "LAP remaining " + str(car_3.lap), "WHITE", True, False, 10)
-        text.render()
-        text = Txt(car_4.rect.x, car_4.rect.y, "LAP remaining " + str(car_4.lap), "WHITE", True, False, 10)
-        text.render()
-        text = Txt(car_5.rect.x, car_5.rect.y, "LAP remaining " + str(car_5.lap), "WHITE", True, False, 10)
-        text.render()
+        for i in players_list:
+            text = Txt(i.rect.x, i.rect.y, "LAP remaining " + str(i.lap), "WHITE", True, False, 10)
+            text.render()
 
-        # 3 mysteries box
-        box_1.draw()
-        box_2.draw()
-        box_3.draw()
+        # 3 mysterie boxes
+        for i in boxes:
+            i.draw()
 
-        # Player name && Time
-        text = Txt(300, 70, lang['PLAYER'] + player, "#f06e4b", True)
-        text.render()
+        # 5 cars hit boxs
+        for i in players_list:
+            for j in enumerate(boxes):
+                if i.isCollide(j[1].rect) and j[1].isActive:
+                    i.hitBox(int(random.random() * 3) + 1)
+                    j[1].disable()
+                    pygame.mixer.Sound("./Asset/Buy.mp3").play() # Play sound effect
+                    boost = Eff(i.rect.x, i.rect.y, "./Asset/MAIN-MYSTERY-" + str(j[0] + 1) + ".png", (200, 200))
+                    boost.draw()
 
-        mg_tick += 1
-        text = Txt(300, 120, lang['TIME'] + str(int(mg_tick / 30)), "#f06e4b", True, True)
-        text.render()
+        # 3 rocks
+        for i in obstacles:
+            i.draw()
 
-        # 5 cars hit box_1
-        if car_1.isCollide(box_1.getRect()) and box_1.isShow():
-            car_1.hitBox(1) # Object take effect
-            box_1.disable() # Hide the box
-            pygame.mixer.Sound("./Asset/Buy.mp3").play() # Play sound effect
-            boost = Img(car_1.rect.x, car_1.rect.y, "./Asset/MAIN-Boost.png", (200, 200))
-            boost.draw()
-        if car_2.isCollide(box_1.getRect()) and box_1.isShow():
-            car_2.hitBox(1)
-            box_1.disable()
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
-            boost = Img(car_2.rect.x, car_2.rect.y, "./Asset/MAIN-Boost.png", (200, 200))
-            boost.draw()
-        if car_3.isCollide(box_1.getRect()) and box_1.isShow():
-            car_3.hitBox(1)
-            box_1.disable()
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
-            boost = Img(car_3.rect.x, car_3.rect.y, "./Asset/MAIN-Boost.png", (200, 200))
-            boost.draw()
-        if car_4.isCollide(box_1.getRect()) and box_1.isShow():
-            car_4.hitBox(1)
-            box_1.disable()
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
-            boost = Img(car_4.rect.x, car_4.rect.y, "./Asset/MAIN-Boost.png", (200, 200))
-            boost.draw()
-        if car_5.isCollide(box_1.getRect()) and box_1.isShow():
-            car_4.hitBox(1)
-            box_1.disable()
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
-            boost = Img(car_5.rect.x, car_5.rect.y, "./Asset/MAIN-Boost.png", (200, 200))
-            boost.draw()
-
-        # 5 cars hit box_2 
-        if car_1.isCollide(box_2.getRect()) and box_2.isShow():
-            car_1.hitBox(2)
-            box_2.disable()
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
-            unboost = Img(car_1.rect.x, car_1.rect.y, "./Asset/MAIN-UnBoost.png", (200, 200))
-            unboost.draw()
-        if car_2.isCollide(box_2.getRect()) and box_2.isShow():
-            car_2.hitBox(2)
-            box_2.disable()
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
-            unboost = Img(car_2.rect.x, car_2.rect.y, "./Asset/MAIN-UnBoost.png", (200, 200))
-            unboost.draw()
-        if car_3.isCollide(box_2.getRect()) and box_2.isShow():
-            car_3.hitBox(2)
-            box_2.disable()
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
-            unboost = Img(car_3.rect.x, car_3.rect.y, "./Asset/MAIN-UnBoost.png", (200, 200))
-            unboost.draw()
-        if car_4.isCollide(box_2.getRect()) and box_2.isShow():
-            car_4.hitBox(2)
-            box_2.disable()
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
-            unboost = Img(car_4.rect.x, car_4.rect.y, "./Asset/MAIN-UnBoost.png", (200, 200))
-            unboost.draw()
-        if car_5.isCollide(box_2.getRect()) and box_2.isShow():
-            car_4.hitBox(2)
-            box_2.disable()
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
-            unboost = Img(car_5.rect.x, car_5.rect.y, "./Asset/MAIN-UnBoost.png", (200, 200))
-            unboost.draw()
-
-        # 5 cars hit box_3 
-        if car_1.isCollide(box_3.getRect()) and box_3.isShow():
-            car_1.hitBox(3)
-            box_3.disable()
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
-        if car_2.isCollide(box_3.getRect()) and box_3.isShow():
-            car_2.hitBox(3)
-            box_3.disable()
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
-        if car_3.isCollide(box_3.getRect()) and box_3.isShow():
-            car_3.hitBox(3)
-            box_3.disable()
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
-        if car_4.isCollide(box_3.getRect()) and box_3.isShow():
-            car_4.hitBox(3)
-            box_3.disable()
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
-        if car_5.isCollide(box_3.getRect()) and box_3.isShow():
-            car_4.hitBox(3)
-            box_3.disable()
-            pygame.mixer.Sound("./Asset/Buy.mp3").play()
+        # 5 cars hit boxs
+        for i in players_list:
+            for j in enumerate(obstacles):
+                if i.isCollide(j[1].rect) and j[1].isActive:
+                    i.hitObs(int(random.random() * 3) + 1)
+                    j[1].disable()
+                    pygame.mixer.Sound("./Asset/Buy.mp3").play() # Play sound effect
 
         # if car_n win
         # plus coin
@@ -1017,17 +955,19 @@ while True:
         btn_exit = Button(w / 2 + 400, 400, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
 
-        text = Txt(w / 2 - 300, 120, log_name, "#f06e4b", True)
+        text = Txt(w / 2 - 300, 120, log_name, "WHITE")
         text.render()
+        text = Txt(w / 2 - 300, 160, lang['COIN'] + str(coin), "WHITE")
+        text.render()
+        text = Txt(w / 2 - 300, 200, "WIN: " + str(win), "GREEN")
+        text.render()
+        text = Txt(w / 2 - 300, 240, "LOST: " + str(lost), "RED")
+        text.render()
+        if lost:
+            ratio = float("{:.2f}".format(win / lost))
+            text = Txt(w / 2 - 300, 280, "K/D RATIO: " + str(ratio), "ORANGE")
+            text.render()
 
-        text = Txt(w / 2 - 300, 160, str(coin), "#f06e4b", True)
-        text.render()
-
-        text = Txt(w / 2 - 300, 200, "WIN: " + str(win), "#f06e4b", True)
-        text.render()
-
-        text = Txt(w / 2 - 300, 240, "LOST: " + str(lost), "#f06e4b", True)
-        text.render()
         
         if btn_exit.isClick():
             game_state = -2

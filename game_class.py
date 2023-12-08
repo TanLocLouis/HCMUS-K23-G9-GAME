@@ -96,7 +96,15 @@ class Car():
         elif option == 2 and self.speed > 0.5 and not self.ignoreSlow:
             self.speed -= 0.8
         elif option == 3:
-            self.rect.x = 900
+            self.rect.x = 650
+    
+    def hitObs(self, option):
+        if option == 1:
+            self.rect.x += 200
+        elif option == 2:
+            self.rect.x -= 100
+        elif option == 3:
+            self.rect.x += 0 
          
 class Box():
     def __init__(self, x, y, image, scale):
@@ -110,7 +118,7 @@ class Box():
 
     def draw(self):
         if not self.isActive:
-            if random.random() * 1000 <= 4:
+            if random.random() * 1000 <= 5:
                 self.isActive = True
         
         if self.isActive:
@@ -126,6 +134,33 @@ class Box():
     def isShow(self):
         return self.isActive
 
+class Obstacle():
+    def __init__(self, x, y, image, scale):
+        self.image = pygame.image.load(image)
+        self.image = pygame.transform.scale(self.image, scale)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
+        self.rect = self.image.get_rect(center = self.rect.center)
+        self.isActive = False
+        random.seed(time.time())
+
+    def draw(self):
+        if not self.isActive:
+            if random.random() * 1000 <= 5:
+                self.isActive = True
+        
+        if self.isActive:
+            screen.blit(self.image, (self.rect.x, self.rect.y))
+
+    def getRect(self):
+        return self.rect
+    
+    def disable(self):
+        self.rect.y = random.random() * 450 + 180
+        self.isActive = False
+
+    def isShow(self):
+        return self.isActive
 class Player():
     def __init__(self, x, y, image, scale):
         self.image = pygame.image.load(image)
