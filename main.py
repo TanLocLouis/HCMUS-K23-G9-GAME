@@ -846,7 +846,7 @@ while True:
                 if i.isCollide(j[1].rect) and j[1].isActive:
                     i.hitObs(int(random.random() * 3) + 1)
                     j[1].disable()
-                    pygame.mixer.Sound("./Asset/Buy.mp3").play() # Play sound effect
+                    pygame.mixer.Sound("./Asset/HitObs.mp3").play() # Play sound effect
 
         # if car_n win
         # plus coin
