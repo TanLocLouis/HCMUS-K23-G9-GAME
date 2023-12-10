@@ -165,7 +165,6 @@ while True:
         btn_help.draw()
         btn_rank = Button(w / 2 + 385, 100, "./Asset/Rank.png", (45, 45))
         btn_rank.draw()
-        
         if btn_help.isClick():
             game_state = 6
 
@@ -965,6 +964,8 @@ while True:
     elif game_state == 6:
         bg = Img(0, 0, "./Asset/BG.png", (w, h))
         bg.draw()
+        copyr = Txt(w - 450, h - 35, "Copyright G9-23CTT1-HCMUS", "WHITE")
+        copyr.render()
         bg_text = Img(w / 2 - 300, h / 5 + 50, "./Asset/" + lang['BG-TITLE'], (700, 125))
         bg_text.draw()
         btn_exit = Button(w / 2 + 400, 400, "./Asset/ExitGame.png", (50, 50))
