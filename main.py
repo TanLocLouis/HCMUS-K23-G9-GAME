@@ -173,16 +173,6 @@ while True:
             game_state = 8
 
         if btn_exit.isClick():
-            if isLogin:
-                wb = load_workbook("players.xlsx")
-                sheet = wb.active
-                sheet['E' + chr(pos + 48)] = coin
-                sheet['F' + chr(pos + 48)] = win
-                sheet['G' + chr(pos + 48)] = lost
-                ratio = int(win) / int(lost)
-                f_ratio = float("{:.2f}".format(ratio))
-                sheet['H' + chr(pos + 48)] = f_ratio
-                wb.save("players.xlsx")
             exit()
 
         btn_create_account = Button(w / 2 + 100, 98, "./Asset/" + lang['CREATE'], (160, 50))
@@ -295,6 +285,18 @@ while True:
     elif game_state == -2:
         pygame.mixer.music.stop()
         pygame.mixer.music.unload()
+
+        if isLogin:
+            wb = load_workbook("players.xlsx")
+            sheet = wb.active
+            sheet['E' + chr(pos + 48)] = coin
+            sheet['F' + chr(pos + 48)] = win
+            sheet['G' + chr(pos + 48)] = lost
+            if int(lost):
+                ratio = int(win) / int(lost)
+                f_ratio = float("{:.2f}".format(ratio))
+                sheet['H' + chr(pos + 48)] = f_ratio
+            wb.save("players.xlsx")
 
         pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
         pygame.mixer.music.play(-1, 0, 2000)
@@ -701,6 +703,8 @@ while True:
 
     elif game_state == 5:
         screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BG1.png", (w, h))
+        bg.draw()
         text = Txt(300, 50, lang['COIN'] + str(coin), "WHITE", True, True)
         text.render()
         text = Txt(300, 100, lang['BOUGHT'], "GREEN", True, True)
@@ -877,9 +881,11 @@ while True:
                 final['player 5'] = mg_tick / 30
 
         if len(final) == 5:
+            rank = Img(w / 2 - 200, 180, "./Asset/MAIN-Rank.png", (230, 230))
+            rank.draw()
             for val in enumerate(final.items()):
                 played_time = float("{:.2f}".format(val[1][1]))
-                text = Txt(w - 350, 30 * val[0] + 45, str(val[1][0]) + ": " + str(played_time) + " s", "BLACK", False)
+                text = Txt(w / 2 - 140, 30 * val[0] + 240, str(val[1][0]) + ": " + str(played_time) + " s", "BLACK", False)
                 text.render()
 
             game_state = 53
