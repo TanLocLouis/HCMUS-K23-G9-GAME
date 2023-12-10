@@ -174,11 +174,11 @@ while True:
                 files = {'file': open('players.xlsx', 'rb')}
                 response = requests.post(url, files=files, timeout=0.5)
             except:
-                print("a")
+                print("Server is not reachable.")
             try:
                 url = server_url + 'players.xlsx'
                 response = requests.get(url, timeout=0.5)
-                if response.status_code == 20:
+                if response.status_code == 200:
                     with open('players.xlsx', 'wb') as file:
                         file.write(response.content)
             except:
