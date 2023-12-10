@@ -170,6 +170,21 @@ while True:
             game_state = 6
 
         if btn_rank.isClick():
+            try:
+                url = server_url 
+                files = {'file': open('players.xlsx', 'rb')}
+                response = requests.post(url, files=files, timeout=0.5)
+            except:
+                print("a")
+            try:
+                url = server_url + 'players.xlsx'
+                response = requests.get(url, timeout=0.5)
+                if response.status_code == 20:
+                    with open('players.xlsx', 'wb') as file:
+                        file.write(response.content)
+            except:
+                print("Server is not reachable.")
+
             game_state = 8
 
         if btn_exit.isClick():
@@ -746,7 +761,6 @@ while True:
                 else:
                     text = Txt(450, 90, lang['NOT-ENOUGH'], "RED", True, True)
                     text.render()
-                
 
         for item in enumerate(prePlayItems):
             item = Item(item[0] * 100 + 525, 50, "./Asset/" + item[1], (100, 100), 10)

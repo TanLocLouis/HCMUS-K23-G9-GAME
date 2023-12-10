@@ -19,6 +19,10 @@ import face_recognition
 
 import time
 
+import requests
+import socket
+server_url = 'http://192.168.10.9:80/'
+
 pygame.init()
 screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE)
 pygame.display.set_caption("BET69 - NHA CAI DEN TU CHAU A")
@@ -40,6 +44,9 @@ class Eff():
             self.frame -= 1
 
 class Car():
+    """
+    Game's players class
+    """
     def __init__(self, x, y, image, scale, speed = 0, lap = 1):
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image, scale)
@@ -107,6 +114,9 @@ class Car():
             self.rect.x += 0 
          
 class Box():
+    """
+    Mystery Box to gain valuable items class
+    """
     def __init__(self, x, y, image, scale):
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image, scale)
@@ -135,6 +145,9 @@ class Box():
         return self.isActive
 
 class Obstacle():
+    """
+    Obstacle to slow player class
+    """
     def __init__(self, x, y, image, scale):
         self.image = pygame.image.load(image)
         self.image = pygame.transform.scale(self.image, scale)
