@@ -124,15 +124,19 @@ class Box():
         self.rect.topleft = (x, y)
         self.rect = self.image.get_rect(center = self.rect.center)
         self.isActive = False
+        self.fallPos = 50
         random.seed(time.time())
 
     def draw(self):
         if not self.isActive:
             if random.random() * 1000 <= 5:
                 self.isActive = True
+                self.fallPos = 50
         
         if self.isActive:
-            screen.blit(self.image, (self.rect.x, self.rect.y))
+            if self.fallPos:
+                self.fallPos -= 1
+            screen.blit(self.image, (self.rect.x, self.rect.y - self.fallPos))
 
     def getRect(self):
         return self.rect
@@ -155,15 +159,19 @@ class Obstacle():
         self.rect.topleft = (x, y)
         self.rect = self.image.get_rect(center = self.rect.center)
         self.isActive = False
+        self.fallPos = 50
         random.seed(time.time())
 
     def draw(self):
         if not self.isActive:
             if random.random() * 1000 <= 5:
                 self.isActive = True
+                self.fallPos = 50
         
         if self.isActive:
-            screen.blit(self.image, (self.rect.x, self.rect.y))
+            if self.fallPos >= 0:
+                self.fallPos -= 1
+            screen.blit(self.image, (self.rect.x, self.rect.y + self.fallPos))
 
     def getRect(self):
         return self.rect

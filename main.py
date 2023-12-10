@@ -169,21 +169,6 @@ while True:
             game_state = 6
 
         if btn_rank.isClick():
-            try:
-                url = server_url 
-                files = {'file': open('players.xlsx', 'rb')}
-                response = requests.post(url, files=files, timeout=0.5)
-            except:
-                print("Server is not reachable.")
-            try:
-                url = server_url + 'players.xlsx'
-                response = requests.get(url, timeout=0.5)
-                if response.status_code == 200:
-                    with open('players.xlsx', 'wb') as file:
-                        file.write(response.content)
-            except:
-                print("Server is not reachable.")
-
             game_state = 8
 
         if btn_exit.isClick():
@@ -937,6 +922,22 @@ while True:
             lost += 1
             gain_coin = -int(bet_coin) * level
 
+        # Sync with server
+        try:
+            url = server_url 
+            files = {'file': open('players.xlsx', 'rb')}
+            response = requests.post(url, files=files, timeout=0.5)
+        except:
+            print("Server is not reachable.")
+        try:
+            url = server_url + 'players.xlsx'
+            response = requests.get(url, timeout=0.5)
+            if response.status_code == 200:
+                with open('players.xlsx', 'wb') as file:
+                    file.write(response.content)
+        except:
+            print("Server is not reachable.")
+
         coin += gain_coin
         # Save result's image and xlsx file to result folder at main directory
         img_name = str(time.ctime(time.time()))
@@ -954,13 +955,13 @@ while True:
         prePlayItems.clear()
         final.clear()
 
-        btn_exit = Button(w / 2 + 200, 60, "./Asset/ExitGame.png", (50, 50))
+        btn_exit = Button(w / 2 + 100, 400, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
 
         # Stage -2 will jump to stage 0 (Main menu)
         if btn_exit.isClick():
             game_state = -2
-
+    # help
     elif game_state == 6:
         bg = Img(0, 0, "./Asset/BG.png", (w, h))
         bg.draw()
