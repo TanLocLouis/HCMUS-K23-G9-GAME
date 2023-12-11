@@ -762,7 +762,7 @@ while True:
                 text = Txt(w / 2 - 340, h - 50, lang['NOT-NULL'], "RED", True, True)
                 text.render()
             else:
-                if (bet_coin >= 0) and (int(bet_coin) * level <= int(coin)):
+                if (int(bet_coin) >= 0) and (int(bet_coin) * level <= int(coin)):
                     game_state = 51
                     minus = int(coin) - int(bet_coin)
                 else:

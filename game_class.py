@@ -111,11 +111,11 @@ class Car():
     
     def hitObs(self, option):
         if option == 1:
-            self.rect.x += 200
+            self.rect.x -= 20
         elif option == 2:
-            self.rect.x -= 100
+            self.rect.x -= 50
         elif option == 3:
-            self.rect.x += 0 
+            self.rect.x -= 100 
          
 class Box():
     """
