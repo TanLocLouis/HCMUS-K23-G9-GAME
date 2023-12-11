@@ -84,6 +84,9 @@ level = 1
 # win lost ration
 win = 0
 lost = 0
+
+# sound
+mute = False
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -165,6 +168,19 @@ while True:
         btn_help.draw()
         btn_rank = Button(w / 2 + 385, 100, "./Asset/Rank.png", (45, 45))
         btn_rank.draw()
+
+        btn_sound_mute = soundState(w / 2 + 340, 540, "./Asset/Mute.png", (45, 45))
+        btn_sound_mute.draw()
+        btn_sound_unmute = soundState(w / 2 + 400, 540, "./Asset/UnMute.png", (45, 45))
+        btn_sound_unmute.draw()
+        if btn_sound_mute.isClick():
+            mute = True
+            pygame.mixer.music.stop()
+        if btn_sound_unmute.isClick():
+            mute = False
+            pygame.mixer.music.play()
+
+
         if btn_help.isClick():
             game_state = 6
 
@@ -179,11 +195,12 @@ while True:
         if btn_create_account.isClick():
             game_state = 1
 
-            pygame.mixer.music.stop()
-            pygame.mixer.music.unload()
+            if not mute:
+                pygame.mixer.music.stop()
+                pygame.mixer.music.unload()
 
-            pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
-            pygame.mixer.music.play(-1, 0, 2000)
+                pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
+                pygame.mixer.music.play(-1, 0, 2000)
 
         btn_login = Button(w / 2 - 70, 98, "./Asset/" + lang['LOGIN'], (160, 50))
         btn_login.draw()
@@ -215,12 +232,13 @@ while True:
 
             if btn_play.isClick():
                 game_state = 5
+                
+                if not mute:
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.unload()
 
-                pygame.mixer.music.stop()
-                pygame.mixer.music.unload()
-
-                pygame.mixer.music.load("./Minigame/MG-Music-1.mp3")
-                pygame.mixer.music.play(-1, 0, 2000)
+                    pygame.mixer.music.load("./Minigame/MG-Music-1.mp3")
+                    pygame.mixer.music.play(-1, 0, 2000)
 
             btn_minigame = Button(w / 2 - 350, h / 2 + 75 , "./Asset/" + lang['BTN-MINIGAME'], (160, 50))
             btn_minigame.draw()
@@ -247,12 +265,13 @@ while True:
 
             if btn_shop.isClick():
                 game_state = 4
+                
+                if not mute:
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.unload()
 
-                pygame.mixer.music.stop()
-                pygame.mixer.music.unload()
-
-                pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
-                pygame.mixer.music.play(-1, 0, 2000)
+                    pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
+                    pygame.mixer.music.play(-1, 0, 2000)
 
         text = Txt(w / 2 + 200, 550, lang['LANG'], "WHITE", True, True)
         text.render()
@@ -282,8 +301,9 @@ while True:
         game_state = -2
 
     elif game_state == -2:
-        pygame.mixer.music.stop()
-        pygame.mixer.music.unload()
+        if not mute:
+            pygame.mixer.music.stop()
+            pygame.mixer.music.unload()
 
         if isLogin:
             wb = load_workbook("players.xlsx")
@@ -297,8 +317,9 @@ while True:
                 sheet['H' + chr(pos + 48)] = f_ratio
             wb.save("players.xlsx")
 
-        pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
-        pygame.mixer.music.play(-1, 0, 2000)
+        if not mute:
+            pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
+            pygame.mixer.music.play(-1, 0, 2000)
 
         game_state = 0
 
@@ -595,13 +616,14 @@ while True:
         # time went off
         if (mg_tick == 0):
             game_state = -2
-            pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
+            if not mute:
+                pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
 
-            pygame.mixer.music.stop()
-            pygame.mixer.music.unload()
+                pygame.mixer.music.stop()
+                pygame.mixer.music.unload()
 
-            pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
-            pygame.mixer.music.play(-1, 0, 2000)
+                pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
+                pygame.mixer.music.play(-1, 0, 2000)
 
             # plus gameplay coin to player's coin
             coin += collected_coin
@@ -643,7 +665,8 @@ while True:
         if bg_1.isCollide(mouse_input[0], mouse_input[1]):
             if pygame.mouse.get_pressed()[0]:
                 collected_coin += 1
-                pygame.mixer.Sound("./Minigame/MG-Coin.mp3").play()
+                if not mute:
+                    pygame.mixer.Sound("./Minigame/MG-Coin.mp3").play()
 
                 mg_mouse = (random.random() * (w - 200), h - 500 + random.random() * 300)
     # Store 
@@ -736,14 +759,14 @@ while True:
 
         if btn_play.isClick():
             if bet_coin == "":
-                text = Txt(450, 675, lang['NOT-NULL'], "RED", True, True)
+                text = Txt(w / 2 - 340, h - 50, lang['NOT-NULL'], "RED", True, True)
                 text.render()
             else:
-                if int(bet_coin) * level <= int(coin):
+                if (bet_coin >= 0) and (int(bet_coin) * level <= int(coin)):
                     game_state = 51
                     minus = int(coin) - int(bet_coin)
                 else:
-                    text = Txt(450, 90, lang['NOT-ENOUGH'], "RED", True, True)
+                    text = Txt(w / 2 - 340, h - 50, lang['NOT-ENOUGH'], "RED", True, True)
                     text.render()
 
         for item in enumerate(prePlayItems):
@@ -841,7 +864,8 @@ while True:
                 if i.isCollide(j[1].rect) and j[1].isActive:
                     i.hitBox(int(random.random() * 3) + 1)
                     j[1].disable()
-                    pygame.mixer.Sound("./Asset/Buy.mp3").play() # Play sound effect
+                    if not mute:
+                        pygame.mixer.Sound("./Asset/Buy.mp3").play() # Play sound effect
                     boost = Eff(i.rect.x, i.rect.y, "./Asset/MAIN-MYSTERY-" + str(j[0] + 1) + ".png", (200, 200))
                     boost.draw()
 
@@ -903,13 +927,14 @@ while True:
 
     # Show result at the end game stage then go to stage 53
     elif game_state == 53:
-        pygame.mixer.music.stop()
-        pygame.mixer.music.unload()
+        if not mute:
+            pygame.mixer.music.stop()
+            pygame.mixer.music.unload()
 
-        pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
-        pygame.mixer.music.play(-1, 0, 2000)
+            pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
+            pygame.mixer.music.play(-1, 0, 2000)
 
-        pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
+            pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
         text = Txt(300, 30, lang['WIN'], "WHITE", False)
         text.render()
         # calculate coin
@@ -925,7 +950,7 @@ while True:
         # Sync with server
         try:
             url = server_url + 'players.xlsx'
-            response = requests.get(url, timeout=0.5)
+            response = requests.get(url, timeout=1)
             if response.status_code == 200:
                 with open('players.xlsx', 'wb') as file:
                     file.write(response.content)
@@ -934,7 +959,7 @@ while True:
         try:
             url = server_url 
             files = {'file': open('players.xlsx', 'rb')}
-            response = requests.post(url, files=files, timeout=0.5)
+            response = requests.post(url, files=files, timeout=1)
         except:
             print("Server is not reachable.")
 

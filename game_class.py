@@ -21,7 +21,11 @@ import time
 
 import requests
 import socket
-server_url = 'http://192.168.10.9:80/'
+# for testing
+# server_url = 'http://192.168.10.9:80/'
+
+# for product
+server_url = 'http://game.tltech.asia/'
 
 pygame.init()
 screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE)
@@ -295,6 +299,32 @@ class Button():
             self.rect = self.image.get_rect(center = self.rect.center)
 
         screen.blit(self.image, self.rect)
+
+# Mute and UnMute Class
+class soundState():
+    def __init__(self, x, y, image, scale):
+        self.image = pygame.image.load(image)
+        self.image = pygame.transform.scale(self.image, scale)
+        self.rect = self.image.get_rect()
+        self.rect.topleft = (x, y)
+        self.scale = scale
+
+    def isClick(self):
+        pos = pygame.mouse.get_pos()
+        if self.rect.collidepoint(pos) and pygame.mouse.get_pressed()[0] == 1:
+            return True
+        else:
+            return False  
+
+    def draw(self):
+        pos = pygame.mouse.get_pos()
+
+        if self.rect.collidepoint(pos):
+            self.image = pygame.transform.scale(self.image, (self.image.get_width() * 1.1, self.image.get_height() * 1.1))
+            self.rect = self.image.get_rect(center = self.rect.center)
+
+        screen.blit(self.image, self.rect)
+
 
 # Send mail to player after create account
 def sendMail(sender, password, receiver, subject, body):
