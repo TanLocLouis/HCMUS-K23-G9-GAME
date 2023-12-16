@@ -206,18 +206,18 @@ while True:
 
                 pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
                 pygame.mixer.music.play(-1, 0, 2000)
+        if not isLogin:
+            btn_login = Button(w / 2 - 70, 98, "./Asset/" + lang['LOGIN'], (160, 50))
+            btn_login.draw()
+            if btn_login.isClick():
+                game_state = 2
 
-        btn_login = Button(w / 2 - 70, 98, "./Asset/" + lang['LOGIN'], (160, 50))
-        btn_login.draw()
-        if btn_login.isClick():
-            game_state = 2
+                if not mute:
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.unload()
 
-            if not mute:
-                pygame.mixer.music.stop()
-                pygame.mixer.music.unload()
-
-                pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
-                pygame.mixer.music.play(-1, 0, 2000)
+                    pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
+                    pygame.mixer.music.play(-1, 0, 2000)
 
         if isLogin:
             avata = Button(w / 2 - 305, 85, "./player_img/" + log_name + ".png", (50, 50))
@@ -281,7 +281,7 @@ while True:
 
         # refresh online status in 5s
         if (isLogin):
-            text = Txt(w / 2 - 75, 350, lang['ONLINE'], False, False)
+            text = Txt(w / 2 + 100, 150, lang['ONLINE'], False, False)
             text.render()
             if TICK % 300 == 0:
                 response = requests.get(online_url + 'get_online_players')
@@ -293,7 +293,7 @@ while True:
                 response = requests.post(online_url + 'check_online', json=data, timeout=1)
 
         for online_player in enumerate(online_players.items()):
-            text = Txt(w / 2 - 75, 380 + 30 * online_player[0], str(online_player[1][0]), "WHITE")
+            text = Txt(w / 2 + 100, 180 + 30 * online_player[0], str(online_player[1][0]), "WHITE")
             text.render()
         #----------------------------------------------------
 
@@ -940,7 +940,7 @@ while True:
                 final['player 5'] = mg_tick / 30
 
         if len(final) == 5:
-            rank = Img(w / 2 - 200, 180, "./Asset/MAIN-Rank.png", (230, 230))
+            rank = Img(w / 2 - 200, 180, "./Asset/Cup.png", (440, 230))
             rank.draw()
             for val in enumerate(final.items()):
                 played_time = float("{:.2f}".format(val[1][1]))
@@ -1084,15 +1084,15 @@ while True:
             r_lost = row[1][6]
             r_ratio = row[1][7]
 
-            text = Txt(w / 2 - 400, 50 * row[0] + 100, str(row[0] + 1), "GREEN")
+            text = Txt(w / 2 - 450, 50 * row[0] + 100, str(row[0] + 1), "GREEN")
             text.render()
-            text = Txt(w / 2 - 360, 50 * row[0] + 100, r_name, "WHITE")
+            text = Txt(w / 2 - 420, 50 * row[0] + 100, r_name, "WHITE")
             text.render()
-            text = Txt(w / 2 - 180, 50 * row[0] + 100, lang['COIN'] + str(r_coin), "WHITE")
+            text = Txt(w / 2 - 240, 50 * row[0] + 100, lang['COIN'] + str(r_coin), "WHITE")
             text.render()
-            text = Txt(w / 2 - 50, 50 * row[0] + 100, "WIN: " + str(r_win), "GREEN")
+            text = Txt(w / 2 - 80, 50 * row[0] + 100, "WIN: " + str(r_win), "GREEN")
             text.render()
-            text = Txt(w / 2 + 50, 50 * row[0] + 100, "LOST: " + str(r_lost), "RED")
+            text = Txt(w / 2 + 45, 50 * row[0] + 100, "LOST: " + str(r_lost), "RED")
             text.render()
 
             if int(r_lost):

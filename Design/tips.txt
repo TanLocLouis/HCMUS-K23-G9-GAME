@@ -1,1 +1,3 @@
 Page Rule: Caching Bypass in cloudflare
+Copy _internal, main.exe to root folder
+Added 4 models missing from Github
