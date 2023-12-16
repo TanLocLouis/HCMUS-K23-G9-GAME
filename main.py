@@ -329,7 +329,7 @@ while True:
             pygame.mixer.music.unload()
 
         if isLogin:
-            wb = load_workbook("players.xlsx")
+            wb = load_workbook("./result/results.xlsx")
             sheet = wb.active
             sheet['E' + chr(pos + 48)] = coin
             sheet['F' + chr(pos + 48)] = win
@@ -338,7 +338,7 @@ while True:
                 ratio = int(win) / int(lost)
                 f_ratio = float("{:.2f}".format(ratio))
                 sheet['H' + chr(pos + 48)] = f_ratio
-            wb.save("players.xlsx")
+            wb.save("./result/results.xlsx")
 
         if not mute:
             pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
