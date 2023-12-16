@@ -331,38 +331,12 @@ while True:
 
         # Sync with server
         try:
-            url = server_url + 'players.xlsx'
-            response = requests.get(url, timeout=1)
-            if response.status_code == 200:
-                with open('players.xlsx', 'wb') as file:
-                    file.write(response.content)
-        except:
-            print("Server is not reachable.")
-
-        if isLogin:
-            wb = load_workbook("players.xlsx")
-            sheet = wb.active
-            sheet['A' + chr(pos + 48)] = log_name 
-            sheet['B' + chr(pos + 48)] = EMAIL
-            sheet['C' + chr(pos + 48)] = log_name + '.png'
-            sheet['D' + chr(pos + 48)] = log_password
-            sheet['E' + chr(pos + 48)] = coin
-            sheet['F' + chr(pos + 48)] = win
-            sheet['G' + chr(pos + 48)] = lost
-            if int(lost):
-                ratio = int(win) / int(lost)
-                f_ratio = float("{:.2f}".format(ratio))
-                sheet['H' + chr(pos + 48)] = f_ratio
-            wb.save("players.xlsx")
-
-        try:
             url = server_url 
             files = {'file': open('players.xlsx', 'rb')}
-            response = requests.post(url, files=files, timeout=1)
+            response = requests.post(url, files=files, timeout=3)
         except:
             print("Server is not reachable.")
         #---------------------------------------------------
-
 
         if not mute:
             pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
@@ -814,6 +788,16 @@ while True:
                 elif (bet_coin_int >= 0) and (bet_coin_int * level <= int(coin)):
                     game_state = 51
                     minus = int(coin) - bet_coin_int
+
+                    # sync players's result
+                    try:
+                        url = server_url + 'players.xlsx'
+                        response = requests.get(url, timeout=1)
+                        if response.status_code == 200:
+                            with open('players.xlsx', 'wb') as file:
+                                file.write(response.content)
+                    except:
+                        print("Server is not reachable.")
                 else:
                     text = Txt(w / 2 - 340, h - 50, lang['NOT-ENOUGH'], "RED", True, True)
                     text.render()
@@ -1001,15 +985,6 @@ while True:
             gain_coin = -int(bet_coin) * level
 
         # Sync with server
-        try:
-            url = server_url + 'players.xlsx'
-            response = requests.get(url, timeout=1)
-            if response.status_code == 200:
-                with open('players.xlsx', 'wb') as file:
-                    file.write(response.content)
-        except:
-            print("Server is not reachable.")
-
         coin += gain_coin
         # Save result's image and xlsx file to result folder at main directory
         img_name = str(time.ctime(time.time()))
@@ -1020,19 +995,28 @@ while True:
         sheet.append([img_name, player, gain_coin])
         wb.save("./result/results.xlsx")
 
-        try:
-            url = server_url 
-            files = {'file': open('players.xlsx', 'rb')}
-            response = requests.post(url, files=files, timeout=1)
-        except:
-            print("Server is not reachable.")
-
         game_state = 54
 
     # Go to main menu
     elif game_state == 54:
         prePlayItems.clear()
         final.clear()
+
+        if isLogin:
+            wb = load_workbook("players.xlsx")
+            sheet = wb.active
+            sheet['A' + chr(pos + 48)] = log_name 
+            sheet['B' + chr(pos + 48)] = EMAIL
+            sheet['C' + chr(pos + 48)] = log_name + '.png'
+            sheet['D' + chr(pos + 48)] = log_password
+            sheet['E' + chr(pos + 48)] = coin
+            sheet['F' + chr(pos + 48)] = win
+            sheet['G' + chr(pos + 48)] = lost
+            if int(lost):
+                ratio = int(win) / int(lost)
+                f_ratio = float("{:.2f}".format(ratio))
+                sheet['H' + chr(pos + 48)] = f_ratio
+            wb.save("players.xlsx")
 
         btn_exit = Button(w / 2 + 100, 400, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
