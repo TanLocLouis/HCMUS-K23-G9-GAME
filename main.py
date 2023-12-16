@@ -44,6 +44,7 @@ info = []
 # variables for store players info
 log_name = ""
 log_password = ""
+EMAIL = ""
 isLogin = False
 
 player = ""
@@ -329,8 +330,12 @@ while True:
             pygame.mixer.music.unload()
 
         if isLogin:
-            wb = load_workbook("./result/results.xlsx")
+            wb = load_workbook("players.xlsx")
             sheet = wb.active
+            sheet['A' + chr(pos + 48)] = log_name 
+            sheet['B' + chr(pos + 48)] = EMAIL
+            sheet['C' + chr(pos + 48)] = log_name + '.png'
+            sheet['D' + chr(pos + 48)] = log_password
             sheet['E' + chr(pos + 48)] = coin
             sheet['F' + chr(pos + 48)] = win
             sheet['G' + chr(pos + 48)] = lost
@@ -338,7 +343,7 @@ while True:
                 ratio = int(win) / int(lost)
                 f_ratio = float("{:.2f}".format(ratio))
                 sheet['H' + chr(pos + 48)] = f_ratio
-            wb.save("./result/results.xlsx")
+            wb.save("players.xlsx")
 
         if not mute:
             pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
@@ -509,6 +514,7 @@ while True:
                     game_state = 23
 
                     isLogin = True
+                    EMAIL = row[1]
                     player = log_name
                     coin = row[4]
                     win = row[5]
@@ -781,16 +787,21 @@ while True:
             game_state = -2
 
         if btn_play.isClick():
-            if bet_coin == "":
-                text = Txt(w / 2 - 340, h - 50, lang['NOT-NULL'], "RED", True, True)
-                text.render()
-            else:
-                if (int(bet_coin) >= 0) and (int(bet_coin) * level <= int(coin)):
+            try:
+                bet_coin_int = int(bet_coin)
+                if bet_coin_int < 10:
+                    text = Txt(w / 2 - 340, h - 50, lang['NOT-VALID'], "RED", True, True)
+                    text.render()
+                elif (bet_coin_int >= 0) and (bet_coin_int * level <= int(coin)):
                     game_state = 51
-                    minus = int(coin) - int(bet_coin)
+                    minus = int(coin) - bet_coin_int
                 else:
                     text = Txt(w / 2 - 340, h - 50, lang['NOT-ENOUGH'], "RED", True, True)
                     text.render()
+            except:
+                text = Txt(w / 2 - 340, h - 50, lang['NOT-NULL'], "RED", True, True)
+                text.render()
+                
 
         for item in enumerate(prePlayItems):
             item = Item(item[0] * 100 + 525, 50, "./Asset/" + item[1], (100, 100), 10)
