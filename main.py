@@ -329,6 +329,16 @@ while True:
             pygame.mixer.music.stop()
             pygame.mixer.music.unload()
 
+        # Sync with server
+        try:
+            url = server_url + 'players.xlsx'
+            response = requests.get(url, timeout=1)
+            if response.status_code == 200:
+                with open('players.xlsx', 'wb') as file:
+                    file.write(response.content)
+        except:
+            print("Server is not reachable.")
+
         if isLogin:
             wb = load_workbook("players.xlsx")
             sheet = wb.active
@@ -344,6 +354,15 @@ while True:
                 f_ratio = float("{:.2f}".format(ratio))
                 sheet['H' + chr(pos + 48)] = f_ratio
             wb.save("players.xlsx")
+
+        try:
+            url = server_url 
+            files = {'file': open('players.xlsx', 'rb')}
+            response = requests.post(url, files=files, timeout=1)
+        except:
+            print("Server is not reachable.")
+        #---------------------------------------------------
+
 
         if not mute:
             pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
