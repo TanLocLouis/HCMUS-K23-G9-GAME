@@ -26,6 +26,7 @@ import socket
 
 # for product
 server_url = 'http://game.tltech.asia/'
+online_url = 'http://online.tltech.asia/'
 
 pygame.init()
 screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE)
@@ -62,6 +63,8 @@ class Car():
         self.lap = lap - 1
         self.won = False
         self.ignoreSlow = False
+        self.isFreeze = False
+        self.Freeze = 90
 
         random.seed(time.time())
 
@@ -76,21 +79,33 @@ class Car():
                 return True
 
     def draw(self, isWin, img_1, img_2):
-        if not self.won:
-            if int(self.ani / 10) % 2 == 0:
+        if not self.isFreeze:
+            if not self.won:
+                if int(self.ani / 10) % 2 == 0:
+                    self.image = pygame.image.load(img_1)
+                    self.image = pygame.transform.scale(self.image, (100, 100))
+                else:
+                    self.image = pygame.image.load(img_2)
+                    self.image = pygame.transform.scale(self.image, (100, 100))
+                self.ani += 1
+            else:
                 self.image = pygame.image.load(img_1)
                 self.image = pygame.transform.scale(self.image, (100, 100))
-            else:
-                self.image = pygame.image.load(img_2)
-                self.image = pygame.transform.scale(self.image, (100, 100))
-            self.ani += 1
+
+            if not isWin:
+                self.rect.topleft = (self.rect.topleft[0] + self.speed + random.random() * 2, self.rect.topleft[1])
+            screen.blit(self.image, self.rect)
         else:
-            self.image = pygame.image.load(img_1)
+            self.Freeze -= 1
+            self.image = pygame.image.load("./Asset/Glacier.png")
             self.image = pygame.transform.scale(self.image, (100, 100))
 
-        if not isWin:
-            self.rect.topleft = (self.rect.topleft[0] + self.speed + random.random() * 2, self.rect.topleft[1])
-        screen.blit(self.image, self.rect)
+            self.rect.topleft = (self.rect.topleft[0], self.rect.topleft[1])
+            screen.blit(self.image, self.rect)
+
+        if self.Freeze == 0:
+            self.isFreeze = False
+            self.Freeze = 90
 
     def getPos(self):
         return self.rect.x
@@ -103,19 +118,19 @@ class Car():
 
     def hitBox(self, option):
         if option == 1:
-            self.speed += 0.2
-        elif option == 2 and self.speed > 0.5 and not self.ignoreSlow:
-            self.speed -= 0.8
+            self.speed += 0.2 # increase 0.2 speed
+        elif option == 2 and self.speed > 0.5:
+            self.speed -= 0.5 # slow down 0.5 speed
         elif option == 3:
-            self.rect.x = 650
+            self.rect.x = 650 # go to end
     
     def hitObs(self, option):
-        if option == 1:
-            self.rect.x -= 20
-        elif option == 2:
-            self.rect.x -= 50
-        elif option == 3:
-            self.rect.x -= 100 
+        if option == 1: 
+            self.rect.x -= 20 # go back 20
+        elif option == 2 and not self.ignoreSlow: 
+            self.rect.x -= 50 # go back 50, but NOT EFFECT WHEN USED IGNORE ITEM 3 IN STORE
+        elif option == 3: 
+            self.isFreeze = True # Freeze 3 seconds
          
 class Box():
     """

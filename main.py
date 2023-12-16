@@ -87,6 +87,10 @@ lost = 0
 
 # sound
 mute = False
+
+# online players list
+online_players = {}
+TICK = 0
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -207,11 +211,12 @@ while True:
         if btn_login.isClick():
             game_state = 2
 
-            pygame.mixer.music.stop()
-            pygame.mixer.music.unload()
+            if not mute:
+                pygame.mixer.music.stop()
+                pygame.mixer.music.unload()
 
-            pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
-            pygame.mixer.music.play(-1, 0, 2000)
+                pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
+                pygame.mixer.music.play(-1, 0, 2000)
 
         if isLogin:
             avata = Button(w / 2 - 305, 85, "./player_img/" + log_name + ".png", (50, 50))
@@ -272,6 +277,24 @@ while True:
 
                     pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
                     pygame.mixer.music.play(-1, 0, 2000)
+
+        # refresh online status in 5s
+        if (isLogin):
+            text = Txt(w / 2 - 75, 350, lang['ONLINE'], False, False)
+            text.render()
+            if TICK % 300 == 0:
+                response = requests.get(online_url + 'get_online_players')
+                if response.status_code == 200:
+                    online_players = response.json()
+            if TICK % 300 == 150:
+                timestamp = time.time()
+                data = {'player_id': log_name, 'timestamp': timestamp}
+                response = requests.post(online_url + 'check_online', json=data, timeout=1)
+
+        for online_player in enumerate(online_players.items()):
+            text = Txt(w / 2 - 75, 380 + 30 * online_player[0], str(online_player[1][0]), "WHITE")
+            text.render()
+        #----------------------------------------------------
 
         text = Txt(w / 2 + 200, 550, lang['LANG'], "WHITE", True, True)
         text.render()
@@ -862,7 +885,7 @@ while True:
         for i in players_list:
             for j in enumerate(boxes):
                 if i.isCollide(j[1].rect) and j[1].isActive:
-                    i.hitBox(int(random.random() * 3) + 1)
+                    i.hitBox(j[0] + 1)
                     j[1].disable()
                     if not mute:
                         pygame.mixer.Sound("./Asset/Buy.mp3").play() # Play sound effect
@@ -877,7 +900,7 @@ while True:
         for i in players_list:
             for j in enumerate(obstacles):
                 if i.isCollide(j[1].rect) and j[1].isActive:
-                    i.hitObs(int(random.random() * 3) + 1)
+                    i.hitObs(j[0] + 1)
                     j[1].disable()
                     pygame.mixer.Sound("./Asset/HitObs.mp3").play() # Play sound effect
 
@@ -1065,6 +1088,8 @@ while True:
 
         if btn_exit.isClick():
             game_state = -2
+
+    TICK += 1
 
     pygame.display.update()
     clock.tick(30)
