@@ -979,12 +979,6 @@ while True:
                     file.write(response.content)
         except:
             print("Server is not reachable.")
-        try:
-            url = server_url 
-            files = {'file': open('players.xlsx', 'rb')}
-            response = requests.post(url, files=files, timeout=1)
-        except:
-            print("Server is not reachable.")
 
         coin += gain_coin
         # Save result's image and xlsx file to result folder at main directory
@@ -995,6 +989,13 @@ while True:
         sheet = wb.active
         sheet.append([img_name, player, gain_coin])
         wb.save("./result/results.xlsx")
+
+        try:
+            url = server_url 
+            files = {'file': open('players.xlsx', 'rb')}
+            response = requests.post(url, files=files, timeout=1)
+        except:
+            print("Server is not reachable.")
 
         game_state = 54
 
