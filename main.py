@@ -829,27 +829,27 @@ while True:
         car_4 = Car(100, 475, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1, level)
         car_5 = Car(100, 575, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1, level)
 
-        # random position of mystery box
-        pos_x = random.random() * 700 + 300
+        # random position of mystery boxes
+        pos_x = random.random() * 600 + 200
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         box_1 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
-        pos_x = random.random() * 700 + 300
+        pos_x = random.random() * 600 + 200
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         box_2 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
-        pos_x = random.random() * 700 + 300
+        pos_x = random.random() * 600 + 200
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         box_3 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
         game_state = 52
         mg_tick = 0
 
-        # rocks
-        pos_x = random.random() * 700 + 300
+        # random position of rocks
+        pos_x = random.random() * 600 + 200
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         rock_1 = Obstacle(pos_x, pos_y, "./Asset/MAIN-Rock.png", (100, 100))
-        pos_x = random.random() * 700 + 300
+        pos_x = random.random() * 600 + 200
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         rock_2 = Obstacle(pos_x, pos_y, "./Asset/MAIN-Rock.png", (100, 100))
-        pos_x = random.random() * 700 + 300
+        pos_x = random.random() * 600 + 200
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         rock_3 = Obstacle(pos_x, pos_y, "./Asset/MAIN-Rock.png", (100, 100))
 

@@ -127,7 +127,7 @@ class Car():
     def hitObs(self, option):
         if option == 1 and not self.ignoreSlow: 
             self.rect.x -= 50 # go back 20 but NOT EFFECT WHEN USED IGNORE ITEM 3 IN STORE
-        elif option == 2 and not self.ignoreSlow: 
+        elif option == 2: 
             self.isFreeze = True # Freeze 1 seconds
             self.Freeze = 30
         elif option == 3: 
