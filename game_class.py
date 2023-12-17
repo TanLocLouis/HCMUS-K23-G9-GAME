@@ -64,7 +64,7 @@ class Car():
         self.won = False
         self.ignoreSlow = False
         self.isFreeze = False
-        self.Freeze = 90
+        self.Freeze = 30
 
         random.seed(time.time())
 
@@ -105,7 +105,7 @@ class Car():
 
         if self.Freeze == 0:
             self.isFreeze = False
-            self.Freeze = 90
+            self.Freeze = 30
 
     def getPos(self):
         return self.rect.x
@@ -125,12 +125,14 @@ class Car():
             self.rect.x = 650 # go to end
     
     def hitObs(self, option):
-        if option == 1: 
-            self.rect.x -= 20 # go back 20
-        elif option == 2 and not self.ignoreSlow: 
-            self.rect.x -= 50 # go back 50, but NOT EFFECT WHEN USED IGNORE ITEM 3 IN STORE
+        if option == 1 and not self.ignoreSlow: 
+            self.rect.x -= 50 # go back 20 but NOT EFFECT WHEN USED IGNORE ITEM 3 IN STORE
+        elif option == 2: 
+            self.isFreeze = True # Freeze 1 seconds
+            self.Freeze = 30
         elif option == 3: 
-            self.isFreeze = True # Freeze 3 seconds
+            self.isFreeze = True # Freeze 2 seconds
+            self.Freeze = 60
          
 class Box():
     """

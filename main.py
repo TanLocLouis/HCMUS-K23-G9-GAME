@@ -44,6 +44,7 @@ info = []
 # variables for store players info
 log_name = ""
 log_password = ""
+EMAIL = ""
 isLogin = False
 
 player = ""
@@ -70,6 +71,18 @@ lang = dict()
 for row in rows:
     lang[row[0]] = row[LANG]
 #--------------------------------
+    
+#-----------------------------------------
+# Sync with server
+try:
+    url = server_url + 'players.xlsx'
+    response = requests.get(url, timeout=1)
+    if response.status_code == 200:
+        with open('players.xlsx', 'wb') as file:
+            file.write(response.content)
+except:
+    print("Server is not reachable.")
+#----------------------------------------------
 
 # Coin that you want to play
 bet_coin = "" 
@@ -206,18 +219,6 @@ while True:
                 pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
                 pygame.mixer.music.play(-1, 0, 2000)
 
-        btn_login = Button(w / 2 - 70, 98, "./Asset/" + lang['LOGIN'], (160, 50))
-        btn_login.draw()
-        if btn_login.isClick():
-            game_state = 2
-
-            if not mute:
-                pygame.mixer.music.stop()
-                pygame.mixer.music.unload()
-
-                pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
-                pygame.mixer.music.play(-1, 0, 2000)
-
         if isLogin:
             avata = Button(w / 2 - 305, 85, "./player_img/" + log_name + ".png", (50, 50))
             avata.draw()
@@ -225,13 +226,12 @@ while True:
             if avata.isClick():
                 game_state = 7
 
-        text = Txt(w / 2 - 240, 100, player, "#f06e4b", True)
-        text.render()
+            text = Txt(w / 2 - 240, 100, player, "#f06e4b", True)
+            text.render()
 
-        text = Txt(w / 2 - 300, 150, lang['COIN'] + str(coin), "#f06e4b", True)
-        text.render()
+            text = Txt(w / 2 - 300, 150, lang['COIN'] + str(coin), "#f06e4b")
+            text.render()
 
-        if isLogin:
             btn_play = Button(w / 2 - 350, h / 2, "./Asset/" + lang['BTN-PLAY'], (160, 50))
             btn_play.draw()
 
@@ -277,10 +277,22 @@ while True:
 
                     pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
                     pygame.mixer.music.play(-1, 0, 2000)
+        else:
+            btn_login = Button(w / 2 - 70, 98, "./Asset/" + lang['LOGIN'], (160, 50))
+            btn_login.draw()
+            if btn_login.isClick():
+                game_state = 2
+
+                if not mute:
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.unload()
+
+                    pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
+                    pygame.mixer.music.play(-1, 0, 2000)
 
         # refresh online status in 5s
         if (isLogin):
-            text = Txt(w / 2 - 75, 350, lang['ONLINE'], False, False)
+            text = Txt(w / 2 + 100, 150, lang['ONLINE'], False, False)
             text.render()
             if TICK % 300 == 0:
                 response = requests.get(online_url + 'get_online_players')
@@ -292,11 +304,11 @@ while True:
                 response = requests.post(online_url + 'check_online', json=data, timeout=1)
 
         for online_player in enumerate(online_players.items()):
-            text = Txt(w / 2 - 75, 380 + 30 * online_player[0], str(online_player[1][0]), "WHITE")
+            text = Txt(w / 2 + 100, 180 + 30 * online_player[0], str(online_player[1][0]), "WHITE")
             text.render()
         #----------------------------------------------------
 
-        text = Txt(w / 2 + 200, 550, lang['LANG'], "WHITE", True, True)
+        text = Txt(w / 2 + 175, 550, lang['LANG'], "WHITE", True, True)
         text.render()
 
         if text.isClick():
@@ -328,17 +340,14 @@ while True:
             pygame.mixer.music.stop()
             pygame.mixer.music.unload()
 
-        if isLogin:
-            wb = load_workbook("./result/results.xlsx")
-            sheet = wb.active
-            sheet['E' + chr(pos + 48)] = coin
-            sheet['F' + chr(pos + 48)] = win
-            sheet['G' + chr(pos + 48)] = lost
-            if int(lost):
-                ratio = int(win) / int(lost)
-                f_ratio = float("{:.2f}".format(ratio))
-                sheet['H' + chr(pos + 48)] = f_ratio
-            wb.save("./result/results.xlsx")
+        # Sync with server
+        try:
+            url = server_url 
+            files = {'file': open('players.xlsx', 'rb')}
+            response = requests.post(url, files=files, timeout=3)
+        except:
+            print("Server is not reachable.")
+        #---------------------------------------------------
 
         if not mute:
             pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
@@ -348,7 +357,8 @@ while True:
 
     # Create account state
     elif game_state == 1:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['ENTERYOURNAME'] + name, "WHITE")
         text.render()
@@ -364,7 +374,8 @@ while True:
             game_state = -2
        
     elif game_state == 11:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['ENTERYOUREMAIL'] + email, "WHITE")
         text.render()
@@ -380,8 +391,9 @@ while True:
             game_state = -2
 
     elif game_state == 12:
-        screen.fill("#96c3d7")
-
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
+        
         text = Txt(w / 2 - 450, 200, lang['ENTERYOURPASSWORD'] + password, "WHITE")
         text.render()
 
@@ -396,7 +408,8 @@ while True:
             game_state = -2
 
     elif game_state == 13:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['TAKEYOURPICTURE'], "WHITE")
         text.render()
@@ -440,7 +453,8 @@ while True:
             game_state = -2
 
     elif game_state == 14:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['CREATESUCCESSFULLY'], "WHITE")
         text.render()
@@ -451,7 +465,8 @@ while True:
             game_state = -2
 
     elif game_state == 2:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['ENTERYOURNAME'] + log_name, "WHITE")
         text.render()
@@ -467,7 +482,8 @@ while True:
             game_state = -2
 
     elif game_state == 21:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['USERANDPASSWORD'], "WHITE", True, True)
         text.render()
@@ -485,7 +501,8 @@ while True:
             game_state = -2
 
     elif game_state == 22:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang["ENTERYOURPASSWORD"] + log_password, "WHITE")
         text.render()
@@ -509,6 +526,7 @@ while True:
                     game_state = 23
 
                     isLogin = True
+                    EMAIL = row[1]
                     player = log_name
                     coin = row[4]
                     win = row[5]
@@ -523,7 +541,8 @@ while True:
             game_state = -2
 
     elif game_state == 23:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['LOGINSUCCESSFULLY'], "WHITE")
         text.render()
@@ -534,7 +553,8 @@ while True:
             game_state = -2 
 
     elif game_state == 24:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['LOGINFAIL'], "WHITE")
         text.render()
@@ -545,7 +565,8 @@ while True:
             game_state = -2 
 
     elif game_state == 25:
-        screen.fill("#96c3d7")
+        g = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, "CHECKING YOUR FACE", "WHITE")
         text.render()
@@ -781,16 +802,31 @@ while True:
             game_state = -2
 
         if btn_play.isClick():
-            if bet_coin == "":
-                text = Txt(w / 2 - 340, h - 50, lang['NOT-NULL'], "RED", True, True)
-                text.render()
-            else:
-                if (int(bet_coin) >= 10) and (int(bet_coin) <= int(coin)):
+            try:
+                bet_coin_int = int(bet_coin)
+                if bet_coin_int < 10:
+                    text = Txt(w / 2 - 340, h - 50, lang['NOT-VALID'], "RED", True, True)
+                    text.render()
+                elif (bet_coin_int >= 0) and (bet_coin_int * level <= int(coin)):
                     game_state = 51
-                    minus = int(coin) - int(bet_coin)
+                    minus = int(coin) - bet_coin_int
+
+                    # sync players's result
+                    try:
+                        url = server_url + 'players.xlsx'
+                        response = requests.get(url, timeout=1)
+                        if response.status_code == 200:
+                            with open('players.xlsx', 'wb') as file:
+                                file.write(response.content)
+                    except:
+                        print("Server is not reachable.")
                 else:
                     text = Txt(w / 2 - 340, h - 50, lang['NOT-ENOUGH'], "RED", True, True)
                     text.render()
+            except:
+                text = Txt(w / 2 - 340, h - 50, lang['NOT-NULL'], "RED", True, True)
+                text.render()
+                
 
         for item in enumerate(prePlayItems):
             item = Item(item[0] * 100 + 525, 50, "./Asset/" + item[1], (100, 100), 10)
@@ -805,27 +841,27 @@ while True:
         car_4 = Car(100, 475, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1, level)
         car_5 = Car(100, 575, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1, level)
 
-        # random position of mystery box
-        pos_x = random.random() * 700 + 300
+        # random position of mystery boxes
+        pos_x = random.random() * 600 + 200
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         box_1 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
-        pos_x = random.random() * 700 + 300
+        pos_x = random.random() * 600 + 200
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         box_2 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
-        pos_x = random.random() * 700 + 300
+        pos_x = random.random() * 600 + 200
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         box_3 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
         game_state = 52
         mg_tick = 0
 
-        # rocks
-        pos_x = random.random() * 700 + 300
+        # random position of rocks
+        pos_x = random.random() * 600 + 200
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         rock_1 = Obstacle(pos_x, pos_y, "./Asset/MAIN-Rock.png", (100, 100))
-        pos_x = random.random() * 700 + 300
+        pos_x = random.random() * 600 + 200
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         rock_2 = Obstacle(pos_x, pos_y, "./Asset/MAIN-Rock.png", (100, 100))
-        pos_x = random.random() * 700 + 300
+        pos_x = random.random() * 600 + 200
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         rock_3 = Obstacle(pos_x, pos_y, "./Asset/MAIN-Rock.png", (100, 100))
 
@@ -926,7 +962,7 @@ while True:
                 final['player 5'] = mg_tick / 30
 
         if len(final) == 5:
-            rank = Img(w / 2 - 200, 180, "./Asset/MAIN-Rank.png", (300, 240))
+            rank = Img(w / 2 - 200, 180, "./Asset/Cup.png", (440, 230))
             rank.draw()
             for val in enumerate(final.items()):
                 played_time = float("{:.2f}".format(val[1][1]))
@@ -967,15 +1003,6 @@ while True:
             win += 1
             gain_coin = 5 * int(bet_coin)
         # Sync with server
-        try:
-            url = server_url + 'players.xlsx'
-            response = requests.get(url, timeout=1)
-            if response.status_code == 200:
-                with open('players.xlsx', 'wb') as file:
-                    file.write(response.content)
-        except:
-            print("Server is not reachable.")
-
         coin += gain_coin
         # Save result's image and xlsx file to result folder at main directory
         img_name = str(time.ctime(time.time()))
@@ -986,19 +1013,28 @@ while True:
         sheet.append([img_name, player, gain_coin])
         wb.save("./result/results.xlsx")
 
-        try:
-            url = server_url 
-            files = {'file': open('players.xlsx', 'rb')}
-            response = requests.post(url, files=files, timeout=1)
-        except:
-            print("Server is not reachable.")
-
         game_state = 54
 
     # Go to main menu
     elif game_state == 54:
         prePlayItems.clear()
         final.clear()
+
+        if isLogin:
+            wb = load_workbook("players.xlsx")
+            sheet = wb.active
+            sheet['A' + chr(pos + 48)] = log_name 
+            sheet['B' + chr(pos + 48)] = EMAIL
+            sheet['C' + chr(pos + 48)] = log_name + '.png'
+            sheet['D' + chr(pos + 48)] = log_password
+            sheet['E' + chr(pos + 48)] = coin
+            sheet['F' + chr(pos + 48)] = win
+            sheet['G' + chr(pos + 48)] = lost
+            if int(lost):
+                ratio = int(win) / int(lost)
+                f_ratio = float("{:.2f}".format(ratio))
+                sheet['H' + chr(pos + 48)] = f_ratio
+            wb.save("players.xlsx")
 
         btn_exit = Button(w / 2 + 100, 400, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
@@ -1008,12 +1044,10 @@ while True:
             game_state = -2
     # help
     elif game_state == 6:
-        bg = Img(0, 0, "./Asset/BG.png", (w, h))
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
         bg.draw()
         copyr = Txt(w - 450, h - 35, "Copyright G9-23CTT1-HCMUS", "WHITE")
         copyr.render()
-        bg_text = Img(w / 2 - 300, h / 5 + 50, "./Asset/" + lang['BG-TITLE'], (700, 125))
-        bg_text.draw()
         btn_exit = Button(w / 2 + 400, 400, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
 
@@ -1066,15 +1100,15 @@ while True:
             r_lost = row[1][6]
             r_ratio = row[1][7]
 
-            text = Txt(w / 2 - 400, 50 * row[0] + 100, str(row[0] + 1), "GREEN")
+            text = Txt(w / 2 - 450, 50 * row[0] + 100, str(row[0] + 1), "GREEN")
             text.render()
-            text = Txt(w / 2 - 360, 50 * row[0] + 100, r_name, "WHITE")
+            text = Txt(w / 2 - 420, 50 * row[0] + 100, r_name, "WHITE")
             text.render()
-            text = Txt(w / 2 - 180, 50 * row[0] + 100, lang['COIN'] + str(r_coin), "WHITE")
+            text = Txt(w / 2 - 240, 50 * row[0] + 100, lang['COIN'] + str(r_coin), "WHITE")
             text.render()
-            text = Txt(w / 2 - 50, 50 * row[0] + 100, "WIN: " + str(r_win), "GREEN")
+            text = Txt(w / 2 - 80, 50 * row[0] + 100, "WIN: " + str(r_win), "GREEN")
             text.render()
-            text = Txt(w / 2 + 50, 50 * row[0] + 100, "LOST: " + str(r_lost), "RED")
+            text = Txt(w / 2 + 45, 50 * row[0] + 100, "LOST: " + str(r_lost), "RED")
             text.render()
 
             if int(r_lost):
