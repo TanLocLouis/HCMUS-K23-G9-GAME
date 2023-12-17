@@ -71,6 +71,18 @@ lang = dict()
 for row in rows:
     lang[row[0]] = row[LANG]
 #--------------------------------
+    
+#----------------------------------
+# Sync with server
+try:
+    url = server_url + 'players.xlsx'
+    response = requests.get(url, timeout=1)
+    if response.status_code == 200:
+        with open('players.xlsx', 'wb') as file:
+            file.write(response.content)
+except:
+    print("Server is not reachable.")
+#------------------------------------
 
 # Coin that you want to play
 bet_coin = "" 
