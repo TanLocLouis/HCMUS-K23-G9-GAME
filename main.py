@@ -251,7 +251,7 @@ while True:
             if btn_minigame.isClick():
                 if coin <= 10:
                     game_state = 3
-                    mg_tick = 500
+                    mg_tick = 300
 
                     pygame.mixer.music.stop()
                     pygame.mixer.music.unload()
@@ -658,7 +658,7 @@ while True:
         mg_mouse = (mg_mouse_x, mg_mouse_y)
 
         # time went off
-        if (mg_tick == 0):
+        if (mg_tick == 0 or collected_coin == 20):
             game_state = -2
             if not mute:
                 pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
@@ -976,7 +976,7 @@ while True:
         top = dict(zip(keys, values))
         top = sorted(top.items(), key=lambda x: x[0], reverse = True)
 
-        rank = Img(w - 400, -10, "./Asset/MAIN-Rank.png", (230, 230))
+        rank = Img(w - 400, -10, "./Asset/MAIN-Rank.png", (290, 230))
         rank.draw()
 
         if len(final) == 0:
@@ -1001,11 +1001,7 @@ while True:
         gain_coin = 0
         if key == log_name:
             win += 1
-            gain_coin = 5 * int(bet_coin) * level
-        else:
-            lost += 1
-            gain_coin = -int(bet_coin) * level
-
+            gain_coin = 5 * int(bet_coin)
         # Sync with server
         coin += gain_coin
         # Save result's image and xlsx file to result folder at main directory
