@@ -251,7 +251,7 @@ while True:
             if btn_minigame.isClick():
                 if coin <= 10:
                     game_state = 3
-                    mg_tick = 500
+                    mg_tick = 300
 
                     pygame.mixer.music.stop()
                     pygame.mixer.music.unload()
@@ -637,7 +637,7 @@ while True:
         mg_mouse = (mg_mouse_x, mg_mouse_y)
 
         # time went off
-        if (mg_tick == 0):
+        if (mg_tick == 0 or collected_coin == 20):
             game_state = -2
             if not mute:
                 pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
@@ -785,7 +785,7 @@ while True:
                 text = Txt(w / 2 - 340, h - 50, lang['NOT-NULL'], "RED", True, True)
                 text.render()
             else:
-                if (int(bet_coin) >= 0) and (int(bet_coin) * level <= int(coin)):
+                if (int(bet_coin) >= 10) and (int(bet_coin) <= int(coin)):
                     game_state = 51
                     minus = int(coin) - int(bet_coin)
                 else:
@@ -926,7 +926,7 @@ while True:
                 final['player 5'] = mg_tick / 30
 
         if len(final) == 5:
-            rank = Img(w / 2 - 200, 180, "./Asset/MAIN-Rank.png", (230, 230))
+            rank = Img(w / 2 - 200, 180, "./Asset/MAIN-Rank.png", (300, 240))
             rank.draw()
             for val in enumerate(final.items()):
                 played_time = float("{:.2f}".format(val[1][1]))
@@ -940,7 +940,7 @@ while True:
         top = dict(zip(keys, values))
         top = sorted(top.items(), key=lambda x: x[0], reverse = True)
 
-        rank = Img(w - 400, -10, "./Asset/MAIN-Rank.png", (230, 230))
+        rank = Img(w - 400, -10, "./Asset/MAIN-Rank.png", (290, 230))
         rank.draw()
 
         if len(final) == 0:
@@ -965,11 +965,7 @@ while True:
         gain_coin = 0
         if key == log_name:
             win += 1
-            gain_coin = 5 * int(bet_coin) * level
-        else:
-            lost += 1
-            gain_coin = -int(bet_coin) * level
-
+            gain_coin = 5 * int(bet_coin)
         # Sync with server
         try:
             url = server_url + 'players.xlsx'
