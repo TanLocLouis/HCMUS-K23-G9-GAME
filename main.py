@@ -206,18 +206,6 @@ while True:
 
                 pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
                 pygame.mixer.music.play(-1, 0, 2000)
-        if not isLogin:
-            btn_login = Button(w / 2 - 70, 98, "./Asset/" + lang['LOGIN'], (160, 50))
-            btn_login.draw()
-            if btn_login.isClick():
-                game_state = 2
-
-                if not mute:
-                    pygame.mixer.music.stop()
-                    pygame.mixer.music.unload()
-
-                    pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
-                    pygame.mixer.music.play(-1, 0, 2000)
 
         if isLogin:
             avata = Button(w / 2 - 305, 85, "./player_img/" + log_name + ".png", (50, 50))
@@ -226,13 +214,12 @@ while True:
             if avata.isClick():
                 game_state = 7
 
-        text = Txt(w / 2 - 240, 100, player, "#f06e4b", True)
-        text.render()
+            text = Txt(w / 2 - 240, 100, player, "#f06e4b", True)
+            text.render()
 
-        text = Txt(w / 2 - 300, 150, lang['COIN'] + str(coin), "#f06e4b", True)
-        text.render()
+            text = Txt(w / 2 - 300, 150, lang['COIN'] + str(coin), "#f06e4b")
+            text.render()
 
-        if isLogin:
             btn_play = Button(w / 2 - 350, h / 2, "./Asset/" + lang['BTN-PLAY'], (160, 50))
             btn_play.draw()
 
@@ -278,6 +265,18 @@ while True:
 
                     pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
                     pygame.mixer.music.play(-1, 0, 2000)
+        else:
+            btn_login = Button(w / 2 - 70, 98, "./Asset/" + lang['LOGIN'], (160, 50))
+            btn_login.draw()
+            if btn_login.isClick():
+                game_state = 2
+
+                if not mute:
+                    pygame.mixer.music.stop()
+                    pygame.mixer.music.unload()
+
+                    pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
+                    pygame.mixer.music.play(-1, 0, 2000)
 
         # refresh online status in 5s
         if (isLogin):
@@ -297,7 +296,7 @@ while True:
             text.render()
         #----------------------------------------------------
 
-        text = Txt(w / 2 + 200, 550, lang['LANG'], "WHITE", True, True)
+        text = Txt(w / 2 + 175, 550, lang['LANG'], "WHITE", True, True)
         text.render()
 
         if text.isClick():
@@ -346,7 +345,8 @@ while True:
 
     # Create account state
     elif game_state == 1:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['ENTERYOURNAME'] + name, "WHITE")
         text.render()
@@ -362,7 +362,8 @@ while True:
             game_state = -2
        
     elif game_state == 11:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['ENTERYOUREMAIL'] + email, "WHITE")
         text.render()
@@ -378,8 +379,9 @@ while True:
             game_state = -2
 
     elif game_state == 12:
-        screen.fill("#96c3d7")
-
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
+        
         text = Txt(w / 2 - 450, 200, lang['ENTERYOURPASSWORD'] + password, "WHITE")
         text.render()
 
@@ -394,7 +396,8 @@ while True:
             game_state = -2
 
     elif game_state == 13:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['TAKEYOURPICTURE'], "WHITE")
         text.render()
@@ -438,7 +441,8 @@ while True:
             game_state = -2
 
     elif game_state == 14:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['CREATESUCCESSFULLY'], "WHITE")
         text.render()
@@ -449,7 +453,8 @@ while True:
             game_state = -2
 
     elif game_state == 2:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['ENTERYOURNAME'] + log_name, "WHITE")
         text.render()
@@ -465,7 +470,8 @@ while True:
             game_state = -2
 
     elif game_state == 21:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['USERANDPASSWORD'], "WHITE", True, True)
         text.render()
@@ -483,7 +489,8 @@ while True:
             game_state = -2
 
     elif game_state == 22:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang["ENTERYOURPASSWORD"] + log_password, "WHITE")
         text.render()
@@ -522,7 +529,8 @@ while True:
             game_state = -2
 
     elif game_state == 23:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['LOGINSUCCESSFULLY'], "WHITE")
         text.render()
@@ -533,7 +541,8 @@ while True:
             game_state = -2 
 
     elif game_state == 24:
-        screen.fill("#96c3d7")
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang['LOGINFAIL'], "WHITE")
         text.render()
@@ -544,7 +553,8 @@ while True:
             game_state = -2 
 
     elif game_state == 25:
-        screen.fill("#96c3d7")
+        g = Img(0, 0, "./Asset/BGRace.png", (w, h))
+        bg.draw()
 
         text = Txt(w / 2 - 450, 200, "CHECKING YOUR FACE", "WHITE")
         text.render()
@@ -1026,12 +1036,10 @@ while True:
             game_state = -2
     # help
     elif game_state == 6:
-        bg = Img(0, 0, "./Asset/BG.png", (w, h))
+        bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
         bg.draw()
         copyr = Txt(w - 450, h - 35, "Copyright G9-23CTT1-HCMUS", "WHITE")
         copyr.render()
-        bg_text = Img(w / 2 - 300, h / 5 + 50, "./Asset/" + lang['BG-TITLE'], (700, 125))
-        bg_text.draw()
         btn_exit = Button(w / 2 + 400, 400, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
 
