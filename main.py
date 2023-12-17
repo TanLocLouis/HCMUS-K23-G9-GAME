@@ -72,7 +72,7 @@ for row in rows:
     lang[row[0]] = row[LANG]
 #--------------------------------
     
-#----------------------------------
+#-----------------------------------------
 # Sync with server
 try:
     url = server_url + 'players.xlsx'
@@ -82,7 +82,7 @@ try:
             file.write(response.content)
 except:
     print("Server is not reachable.")
-#------------------------------------
+#----------------------------------------------
 
 # Coin that you want to play
 bet_coin = "" 
