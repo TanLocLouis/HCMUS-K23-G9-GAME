@@ -1002,6 +1002,8 @@ while True:
         if key == log_name:
             win += 1
             gain_coin = 5 * int(bet_coin)
+        else:
+            gain_coin = -int(bet_coin)
         # Sync with server
         coin += gain_coin
         # Save result's image and xlsx file to result folder at main directory
