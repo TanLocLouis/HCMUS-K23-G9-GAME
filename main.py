@@ -722,7 +722,7 @@ while True:
 
         # buy ITEM-1
         if lang['ITEM-1'] not in prePlayItems:
-            item_1 = Item(w / 2 - 300, 300, "./Asset/" + lang['ITEM-1'], (100, 100), 10)
+            item_1 = Item(w / 2 - 300, 300, "./Asset/" + lang['ITEM-1'], (100, 100), 40)
             item_1.draw()
             if item_1.isClick():
                 value = item_1.getValue()
@@ -732,7 +732,7 @@ while True:
 
         # buy ITEM-2
         if lang['ITEM-2'] not in prePlayItems:
-            item_2 = Item(w / 2 - 50, 300, "./Asset/" + lang['ITEM-2'], (100, 100), 10)
+            item_2 = Item(w / 2 - 50, 300, "./Asset/" + lang['ITEM-2'], (100, 100), 30)
             item_2.draw()
             if item_2.isClick():
                 value = item_2.getValue()
@@ -742,7 +742,7 @@ while True:
 
         # buy ITEM-3
         if lang['ITEM-3'] not in prePlayItems:
-            item_2 = Item(w / 2 + 175, 300, "./Asset/" + lang['ITEM-3'], (100, 100), 10)
+            item_2 = Item(w / 2 + 175, 300, "./Asset/" + lang['ITEM-3'], (100, 100), 20)
             item_2.draw()
             if item_2.isClick():
                 value = item_2.getValue()
@@ -857,7 +857,7 @@ while True:
         # Items that bought in store are in prePlayItems
         for value in prePlayItems:
             if value == "ITEM-1.png":
-                car_1.itemSpeed(0.2)
+                car_1.itemSpeed(0.15)
             elif value == "ITEM-2.png":
                 car_1.rect.x = 200
             elif value == "ITEM-3.png":
