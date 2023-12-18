@@ -92,6 +92,9 @@ mute = False
 # online players list
 online_players = {}
 TICK = 0
+
+hittedType = 0
+hittedTime = 0
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -282,14 +285,17 @@ while True:
         if (isLogin):
             text = Txt(w / 2 + 100, 150, lang['ONLINE'], False, False)
             text.render()
-            if TICK % 300 == 0:
-                response = requests.get(online_url + 'get_online_players')
-                if response.status_code == 200:
-                    online_players = response.json()
-            if TICK % 300 == 150:
-                timestamp = time.time()
-                data = {'player_id': log_name, 'timestamp': timestamp}
-                response = requests.post(online_url + 'check_online', json=data, timeout=1)
+            try:
+                if TICK % 300 == 0:
+                    response = requests.get(online_url + 'get_online_players')
+                    if response.status_code == 200:
+                        online_players = response.json()
+                if TICK % 300 == 150:
+                    timestamp = time.time()
+                    data = {'player_id': log_name, 'timestamp': timestamp}
+                    response = requests.post(online_url + 'check_online', json=data, timeout=1)
+            except:
+                print("Error connecting to server")
 
         for online_player in enumerate(online_players.items()):
             text = Txt(w / 2 + 100, 180 + 30 * online_player[0], str(online_player[1][0]), "WHITE")
@@ -327,15 +333,6 @@ while True:
         if not mute:
             pygame.mixer.music.stop()
             pygame.mixer.music.unload()
-
-        # Sync with server
-        try:
-            url = server_url 
-            files = {'file': open('players.xlsx', 'rb')}
-            response = requests.post(url, files=files, timeout=3)
-        except:
-            print("Server is not reachable.")
-        #---------------------------------------------------
 
         if not mute:
             pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
@@ -422,7 +419,7 @@ while True:
                 info.append(email)
                 info.append(name + ".png")
                 info.append(password)
-                info.append(0) # Give 0 coin to new player
+                info.append(10) # Give 10 coin to new player
                 info.append(0)
                 info.append(0)
 
@@ -795,19 +792,8 @@ while True:
                 if bet_coin_int < 10:
                     text = Txt(w / 2 - 340, h - 50, lang['NOT-VALID'], "RED", True, True)
                     text.render()
-                elif (bet_coin_int >= 0) and (bet_coin_int * level <= int(coin)):
+                elif (bet_coin_int >= 0) and (bet_coin_int < int(coin)):
                     game_state = 51
-                    minus = int(coin) - bet_coin_int
-
-                    # sync players's result
-                    try:
-                        url = server_url + 'players.xlsx'
-                        response = requests.get(url, timeout=1)
-                        if response.status_code == 200:
-                            with open('players.xlsx', 'wb') as file:
-                                file.write(response.content)
-                    except:
-                        print("Server is not reachable.")
                 else:
                     text = Txt(w / 2 - 340, h - 50, lang['NOT-ENOUGH'], "RED", True, True)
                     text.render()
@@ -913,8 +899,14 @@ while True:
                     j[1].disable()
                     if not mute:
                         pygame.mixer.Sound("./Asset/Buy.mp3").play() # Play sound effect
-                    boost = Eff(i.rect.x, i.rect.y, "./Asset/MAIN-MYSTERY-" + str(j[0] + 1) + ".png", (200, 200))
-                    boost.draw()
+
+                    hittedType = j[0] + 1
+                    hittedTime = 50
+
+        if hittedTime > 0:
+            hittedTime -= 1
+            boost = Eff(i.rect.x, i.rect.y, "./Asset/MAIN-MYSTERY-" + str(hittedType) + ".png", (200, 200))
+            boost.draw()
 
         # 3 rocks
         for i in obstacles:
@@ -950,7 +942,7 @@ while True:
                 final['player 5'] = mg_tick / 30
 
         if len(final) == 5:
-            rank = Img(w / 2 - 200, 180, "./Asset/Cup.png", (440, 230))
+            rank = Img(w / 2 - 200, 180, "./Asset/MAIN-RANK.png", (440, 230))
             rank.draw()
             for val in enumerate(final.items()):
                 played_time = float("{:.2f}".format(val[1][1]))
@@ -991,7 +983,7 @@ while True:
             win += 1
             gain_coin = 5 * int(bet_coin)
         else:
-            win -= 1
+            lost += 1
             gain_coin = -int(bet_coin)
         # Sync with server
         coin += gain_coin

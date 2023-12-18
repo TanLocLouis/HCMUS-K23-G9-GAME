@@ -345,13 +345,16 @@ class soundState():
 
 # Send mail to player after create account
 def sendMail(sender, password, receiver, subject, body):
-    mail = EmailMessage()
-    mail['From'] = sender
-    mail['To'] = receiver
-    mail['Subject'] = subject
-    mail.set_content(body)
+    try:
+        mail = EmailMessage()
+        mail['From'] = sender
+        mail['To'] = receiver
+        mail['Subject'] = subject
+        mail.set_content(body)
 
-    context = ssl.create_default_context()
-    with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
-        smtp.login(sender, password)
-        smtp.sendmail(sender, receiver, mail.as_string())
+        context = ssl.create_default_context()
+        with smtplib.SMTP_SSL('smtp.gmail.com', 465, context=context) as smtp:
+            smtp.login(sender, password)
+            smtp.sendmail(sender, receiver, mail.as_string())
+    except:
+        print("Error")
