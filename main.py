@@ -1,32 +1,14 @@
 from game_class import *
 
 # Initialize the game
-random.seed(time.time())
 # Show coin at the beginning of the game
 collected_coin = 0
 font = pygame.font.Font(None, 50)
 text = font.render("COIN: ", True,  "#f06e4b")
 text_rect = text.get_rect(center = (100, 50))
 
-# -----To switch between scence
-# 0: Main menu
-# 1: Create account
-# 2: Login
-# 3: Mini game
-# 4: Store
-# 5: Main game
-# -----Each stage has sub stage
-# Ex: 11 12 13 14
-game_state = 0
-
-pygame.mixer.init()
-pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
-pygame.mixer.music.play(-1, 0, 2000)
-
 # Main background Grass moving animation
 bg_1_x = 0
-# Random mouse position in minigame
-mg_mouse = (random.random() * 1500, 720)
 # Game tick to calculate time in minigame
 mg_tick = 0
 # Cloud pos x to animate in minigame
@@ -51,12 +33,10 @@ player = ""
 coin = 0
 
 pos = 1
-
 # Default language
 # 1: Eng
 # 2: Vie
 LANG = 1
-
 #-------------------------------
 # set of items that bought in Store
 prePlayItems = set()
@@ -71,13 +51,10 @@ lang = dict()
 for row in rows:
     lang[row[0]] = row[LANG]
 #--------------------------------
-
 # Coin that you want to play
 bet_coin = "" 
-
 # Show time result after played
 final = {}
-
 # character set
 char_set = 1
 # level
@@ -85,59 +62,61 @@ level = 1
 # win lost ration
 win = 0
 lost = 0
-
 # sound
 mute = False
-
 # online players list
 online_players = {}
 TICK = 0
-
+# effect
 hittedType = 0
 hittedTime = 0
+# init game_state
+game_state = "MAINMENU"
+# init sound
+SOUND = soundClass()
 while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
             exit
 
-        if event.type == pygame.KEYDOWN and game_state == 1:
+        if event.type == pygame.KEYDOWN and game_state == "CREATE":
             if event.key == pygame.K_RETURN:
-                game_state = 11
+                game_state = "CREATE_1" 
                 break
             if event.key == pygame.K_BACKSPACE: 
                 name = name[:-1] 
             else: 
                 name += event.unicode
 
-        if event.type == pygame.KEYDOWN and game_state == 11:
+        if event.type == pygame.KEYDOWN and game_state == "CREATE_1":
             if event.key == pygame.K_RETURN:
-                game_state = 12
+                game_state = "CREATE_2" 
                 break
             if event.key == pygame.K_BACKSPACE: 
                 email = email[:-1] 
             else: 
                 email += event.unicode
     
-        if event.type == pygame.KEYDOWN and game_state == 12:
+        if event.type == pygame.KEYDOWN and game_state == "CREATE_2":
             if event.key == pygame.K_RETURN:
-                game_state = 13
+                game_state = "CREATE_3" 
                 break
             if event.key == pygame.K_BACKSPACE: 
                 password = password[:-1] 
             else: 
                 password += event.unicode
 
-        if event.type == pygame.KEYDOWN and game_state == 2:
+        if event.type == pygame.KEYDOWN and game_state == "LOGIN":
             if event.key == pygame.K_RETURN:
-                game_state = 21
+                game_state = "LOGIN_1" 
                 break
             if event.key == pygame.K_BACKSPACE: 
                 log_name = log_name[:-1] 
             else: 
                 log_name += event.unicode
         
-        if event.type == pygame.KEYDOWN and game_state == 22:
+        if event.type == pygame.KEYDOWN and game_state == "LOGIN_2":
             if event.key == pygame.K_RETURN:
                 break
             if event.key == pygame.K_BACKSPACE: 
@@ -145,9 +124,9 @@ while True:
             else: 
                 log_password += event.unicode
 
-        if event.type == pygame.KEYDOWN and game_state == 5:
+        if event.type == pygame.KEYDOWN and game_state == "MAINGAME":
             if event.key == pygame.K_RETURN:
-                game_state = 51
+                game_state = "MAINGAME_1" 
                 break
             if event.key == pygame.K_BACKSPACE: 
                 bet_coin = bet_coin[:-1] 
@@ -157,7 +136,7 @@ while True:
     w, h = pygame.display.get_surface().get_size()
 
     # Load main menu
-    if game_state == 0:
+    if game_state == "MAINMENU":
 
         bg = Img(0, 0, "./Asset/BG.png", (w, h))
         bg.draw()
@@ -182,18 +161,16 @@ while True:
         btn_sound_unmute = soundState(w / 2 + 400, 540, "./Asset/UnMute.png", (45, 45))
         btn_sound_unmute.draw()
         if btn_sound_mute.isClick():
-            mute = True
-            pygame.mixer.music.stop()
+            SOUND.setMute()
         if btn_sound_unmute.isClick():
-            mute = False
-            pygame.mixer.music.play()
+            SOUND.setUnMute()
 
 
         if btn_help.isClick():
-            game_state = 6
+            game_state = "HELP"
 
         if btn_rank.isClick():
-            game_state = 8
+            game_state = "RANK" 
 
         if btn_exit.isClick():
             exit()
@@ -201,56 +178,33 @@ while True:
         btn_create_account = Button(w / 2 + 100, 98, "./Asset/" + lang['CREATE'], (160, 50))
         btn_create_account.draw()
         if btn_create_account.isClick():
-            game_state = 1
-
-            if not mute:
-                pygame.mixer.music.stop()
-                pygame.mixer.music.unload()
-
-                pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
-                pygame.mixer.music.play(-1, 0, 2000)
+            game_state = "CREATE" 
+            SOUND.changeSound("./Asset/BG-Music-1.mp3")
 
         if isLogin:
             avata = Button(w / 2 - 305, 85, "./player_img/" + log_name + ".png", (50, 50))
             avata.draw()
-
             if avata.isClick():
-                game_state = 7
+                game_state = "PROFILE" 
 
             text = Txt(w / 2 - 240, 100, player, "#f06e4b", True)
             text.render()
-
             text = Txt(w / 2 - 300, 150, lang['COIN'] + str(coin), "#f06e4b")
             text.render()
-
             btn_play = Button(w / 2 - 350, h / 2, "./Asset/" + lang['BTN-PLAY'], (160, 50))
             btn_play.draw()
-
             if btn_play.isClick():
-                game_state = 5
-                
-                if not mute:
-                    pygame.mixer.music.stop()
-                    pygame.mixer.music.unload()
-
-                    pygame.mixer.music.load("./Minigame/MG-Music-1.mp3")
-                    pygame.mixer.music.play(-1, 0, 2000)
+                game_state = "MAINGAME" 
+                SOUND.changeSound("./Asset/BG-Music-1.mp3")
 
             btn_minigame = Button(w / 2 - 350, h / 2 + 75 , "./Asset/" + lang['BTN-MINIGAME'], (160, 50))
             btn_minigame.draw()
-
             if btn_minigame.isClick():
                 if coin <= 10:
-                    game_state = 3
+                    game_state = "MINIGAME" 
                     mg_tick = 300
-
-                    pygame.mixer.music.stop()
-                    pygame.mixer.music.unload()
-
-                    pygame.mixer.music.load("./Minigame/MG-Music-1.mp3")
-                    pygame.mixer.music.play(-1, 0, 2000)
                     collected_coin = 0
-
+                    SOUND.changeSound("./Asset/BG-Music-1.mp3")
                     pygame.mouse.set_cursor(pygame.SYSTEM_CURSOR_CROSSHAIR)
                 else:
                     text = Txt(w / 2 - 400, h - 55, lang['MINIGAME-LIMIT'], "RED", True, True)
@@ -258,28 +212,15 @@ while True:
 
             btn_shop = Button(w / 2 - 350, h / 2 + 150 , "./Asset/" + lang['STORE'], (160, 50))
             btn_shop.draw()
-
             if btn_shop.isClick():
-                game_state = 4
-                
-                if not mute:
-                    pygame.mixer.music.stop()
-                    pygame.mixer.music.unload()
-
-                    pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
-                    pygame.mixer.music.play(-1, 0, 2000)
+                game_state = "STORE" 
+                SOUND.changeSound("./Asset/BG-Music-1.mp3")
         else:
             btn_login = Button(w / 2 - 70, 98, "./Asset/" + lang['LOGIN'], (160, 50))
             btn_login.draw()
             if btn_login.isClick():
-                game_state = 2
-
-                if not mute:
-                    pygame.mixer.music.stop()
-                    pygame.mixer.music.unload()
-
-                    pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
-                    pygame.mixer.music.play(-1, 0, 2000)
+                game_state = "LOGIN" 
+                SOUND.changeSound("./Asset/BG-Music-1.mp3")
 
         # refresh online status in 5s
         if (isLogin):
@@ -306,10 +247,10 @@ while True:
         text.render()
 
         if text.isClick():
-            game_state = -1
+            game_state = "REFRESH"  # -1
 
     # Change language state
-    elif game_state == -1:
+    elif game_state == "REFRESH":
         if LANG == 1:
             LANG = 2
         else:
@@ -321,100 +262,81 @@ while True:
         rows = []
         for row in sheet.iter_rows(values_only=True):
             rows.append(list(row))
-
         lang = dict()
         for row in rows:
             lang[row[0]] = row[LANG]
         # End Language for game
 
-        game_state = -2
+        game_state = "EXIT" 
 
-    elif game_state == -2:
-        if not mute:
-            pygame.mixer.music.stop()
-            pygame.mixer.music.unload()
-
-        if not mute:
-            pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
-            pygame.mixer.music.play(-1, 0, 2000)
-
-        game_state = 0
+    elif game_state == "EXIT": # -2
+        game_state = "MAINMENU" 
+        SOUND.changeSound("./Asset/BG-Music-2.mp3")
 
     # Create account state
-    elif game_state == 1:
+    elif game_state == "CREATE":
         bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
         bg.draw()
-
         text = Txt(w / 2 - 450, 200, lang['ENTERYOURNAME'] + name, "WHITE")
         text.render()
-
         text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
-            game_state = 11
+            game_state = "CREATE_1" 
         
         btn_exit = Button(w / 2 + 275, 250, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
-            game_state = -2
+            game_state = "EXIT"
        
-    elif game_state == 11:
+    elif game_state == "CREATE_1":
         bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
         bg.draw()
-
         text = Txt(w / 2 - 450, 200, lang['ENTERYOUREMAIL'] + email, "WHITE")
         text.render()
-
         text = Txt(w / 2 + 350, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
-            game_state = 12
+            game_state = "CREATE_2" 
     
         btn_exit = Button(w / 2 + 275, 250, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
-            game_state = -2
+            game_state = "EXIT" 
 
-    elif game_state == 12:
+    elif game_state == "CREATE_2":
         bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
         bg.draw()
-        
         text = Txt(w / 2 - 450, 200, lang['ENTERYOURPASSWORD'] + password, "WHITE")
         text.render()
-
         text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
-            game_state = 13
+            game_state = "CREATE_3" 
 
         btn_exit = Button(w / 2 + 275, 250, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
-            game_state = -2
+            game_state = "EXIT" 
 
-    elif game_state == 13:
+    elif game_state == "CREATE_3":
         bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
         bg.draw()
-
         text = Txt(w / 2 - 450, 200, lang['TAKEYOURPICTURE'], "WHITE")
         text.render()
-
         text = Txt(w / 2 + 350, 260, lang["TAKE"], "WHITE", True, True)
         text.render()
 
         if text.isClick():
-            game_state = -2
-
+            game_state = "EXIT"
             cam_port = 0
             cam = VideoCapture(cam_port)
 
             result, image = cam.read()
             if result:
-                game_state = 14
-
+                game_state = "CREATE_4" 
                 imshow("Taken Picture", image)
                 imwrite("./player_img/" + name + ".png", image)
-
                 info.append(name)
                 info.append(email)
                 info.append(name + ".png")
@@ -428,70 +350,62 @@ while True:
                 sheet.append(info)
                 wb.save("players.xlsx")
 
-                sendMail("ltloc05samsunggalaxyj3pro@gmail.com", "rodq twhi tmme gypg", info[1]
-                , "Welcome to my game"
-                , "Chuc mung ban " + info[0] + " tao tai khoan game ca cuoc thanh cong :)) From Nhom 9 - 23CTT1 - NMCNTT - HCMUS with love")
+                sendMail(GAME_EMAIL, GAME_TOKEN, info[1], GAME_SUBJECT , GAME_CONTENT) 
 
         btn_exit = Button(w / 2 + 275, 250, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
-            game_state = -2
+            game_state = "EXIT" 
 
-    elif game_state == 14:
+    elif game_state == "CREATE_4":
         bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
         bg.draw()
-
         text = Txt(w / 2 - 450, 200, lang['CREATESUCCESSFULLY'], "WHITE")
         text.render()
-
         text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
-            game_state = -2
+            game_state = "EXIT"
 
-    elif game_state == 2:
+    elif game_state == "LOGIN":
         bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
         bg.draw()
-
         text = Txt(w / 2 - 450, 200, lang['ENTERYOURNAME'] + log_name, "WHITE")
         text.render()
-
         text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
-            game_state = 21 
+            game_state = "LOGIN_1" 
 
         btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
-            game_state = -2
+            game_state = "EXIT" 
 
-    elif game_state == 21:
+    elif game_state == "LOGIN_1":
         bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
         bg.draw()
-
         text = Txt(w / 2 - 450, 200, lang['USERANDPASSWORD'], "WHITE", True, True)
         text.render()
         if text.isClick():
-            game_state = 22
+            game_state = "LOGIN_2"
 
         text = Txt(w / 2 - 450, 250, lang['FACERECOGNITION'], "WHITE", True, True)
         text.render()
         if text.isClick():
-            game_state = 25
+            game_state = "LOGIN_3" 
 
         btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
-            game_state = -2
+            game_state = "EXIT" 
 
-    elif game_state == 22:
+    elif game_state == "LOGIN_2":
         bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
         bg.draw()
 
         text = Txt(w / 2 - 450, 200, lang["ENTERYOURPASSWORD"] + log_password, "WHITE")
         text.render()
-
         text = Txt(w / 2 + 250, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
 
@@ -501,15 +415,12 @@ while True:
             rows = []
             for row in sheet.iter_rows(values_only=True):
                 rows.append(list(row))
-            
-            game_state = 24
-
+            game_state = "LOGIN_4"
             i = 0
             for row in rows:
                 i += 1
                 if (row[0] == log_name and row[3] == log_password):
-                    game_state = 23
-
+                    game_state = "LOGIN_3" 
                     isLogin = True
                     EMAIL = row[1]
                     player = log_name
@@ -523,44 +434,37 @@ while True:
         btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
-            game_state = -2
+            game_state = "EXIT" 
 
-    elif game_state == 23:
+    elif game_state == "LOGIN_3":
         bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
         bg.draw()
-
         text = Txt(w / 2 - 450, 200, lang['LOGINSUCCESSFULLY'], "WHITE")
         text.render()
-
         text = Txt(w / 2 + 100, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
-            game_state = -2 
+            game_state = "EXIT" 
 
-    elif game_state == 24:
+    elif game_state == "LOGIN_4":
         bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
         bg.draw()
-
         text = Txt(w / 2 - 450, 200, lang['LOGINFAIL'], "WHITE")
         text.render()
-
         text = Txt(w / 2 + 100, 200, lang['NEXT'], "WHITE", True, True)
         text.render()
         if text.isClick():
-            game_state = -2 
+            game_state = "EXIT"
 
-    elif game_state == 25:
+    elif game_state == "LOGIN_5":
         g = Img(0, 0, "./Asset/BGRace.png", (w, h))
         bg.draw()
-
         text = Txt(w / 2 - 450, 200, "CHECKING YOUR FACE", "WHITE")
         text.render()
-
         # Load player image path to check
         known_image_path = "./player_img/" + log_name + ".png"
         known_image = face_recognition.load_image_file(known_image_path)
         known_face_encoding = face_recognition.face_encodings(known_image)[0]
-
         # Open the video capture
         cam_port = 0
         cam = cv2.VideoCapture(cam_port)  # Use 0 for default camera
@@ -588,7 +492,7 @@ while True:
                     for row in sheet.iter_rows(values_only=True):
                         rows.append(list(row))
 
-                    game_state = 23
+                    game_state = "LOGIN_3"
 
                     i = 0
                     for row in rows:
@@ -616,10 +520,10 @@ while True:
         btn_exit = Button(w / 2 + 350, 190, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
-            game_state = -2
+            game_state = "EXIT"
 
     # Minigame
-    elif game_state == 3:
+    elif game_state == "MINIGAME":
         mg_tick -= 1
 
         # change mouse pos after 0.5s
@@ -644,15 +548,8 @@ while True:
 
         # time went off
         if (mg_tick == 0 or collected_coin == 20):
-            game_state = -2
-            if not mute:
-                pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
-
-                pygame.mixer.music.stop()
-                pygame.mixer.music.unload()
-
-                pygame.mixer.music.load("./Asset/BG-Music-1.mp3")
-                pygame.mixer.music.play(-1, 0, 2000)
+            game_state = "EXIT"
+            SOUND.changeSound("./Asset/BG-Music-1.mp3")
 
             # plus gameplay coin to player's coin
             coin += collected_coin
@@ -661,7 +558,7 @@ while True:
         btn_exit = Button(w / 2 + 350, 150, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
-            game_state = -2
+            game_state = "EXIT"
 
         bg_grass = Img(0, 0, "./Minigame/MG-Background.png", (2000, 800))
         bg_grass.draw()
@@ -694,12 +591,12 @@ while True:
         if bg_1.isCollide(mouse_input[0], mouse_input[1]):
             if pygame.mouse.get_pressed()[0]:
                 collected_coin += 1
-                if not mute:
-                    pygame.mixer.Sound("./Minigame/MG-Coin.mp3").play()
+                if not SOUND.isMute:
+                    SOUND.playeEffect("./Minigame/MG-Coin.mp3")
 
                 mg_mouse = (random.random() * (w - 200), h - 500 + random.random() * 300)
     # Store 
-    elif game_state == 4:
+    elif game_state == "STORE":
         screen.fill("#96c3d7")
 
         bg_store = Img(0, 0, "./Asset/BG1.png", (w, h))
@@ -750,9 +647,9 @@ while True:
         btn_exit = Button(w / 2 + 400, h / 2 + 130, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
-            game_state = -2
+            game_state = "EXIT"
 
-    elif game_state == 5:
+    elif game_state == "MAINGAME":
         screen.fill("#96c3d7")
         bg = Img(0, 0, "./Asset/BG1.png", (w, h))
         bg.draw()
@@ -784,7 +681,7 @@ while True:
         btn_exit = Button(w / 2 + 240, 600, "./Asset/ExitGame.png", (50, 50))
         btn_exit.draw()
         if btn_exit.isClick():
-            game_state = -2
+            game_state = "EXIT"
 
         if btn_play.isClick():
             try:
@@ -793,7 +690,7 @@ while True:
                     text = Txt(w / 2 - 340, h - 50, lang['NOT-VALID'], "RED", True, True)
                     text.render()
                 elif (bet_coin_int >= 0) and (bet_coin_int < int(coin)):
-                    game_state = 51
+                    game_state = "MAINGAME_1" 
                 else:
                     text = Txt(w / 2 - 340, h - 50, lang['NOT-ENOUGH'], "RED", True, True)
                     text.render()
@@ -807,7 +704,7 @@ while True:
             item.draw()
 
     # Main game
-    elif game_state == 51:
+    elif game_state == "MAINGAME_1":
         # 5 cars
         car_1 = Car(100, 175, "./Asset/char_set_" + str(char_set) + "/background.png", (100, 100), 1, level)
         car_2 = Car(100, 275, "./Asset/char_set_" + str(char_set) + "/player_1_1.png", (100, 100), 1, level)
@@ -825,7 +722,7 @@ while True:
         pos_x = random.random() * 600 + 200
         pos_y = random.choice([car_1.rect.y, car_2.rect.y, car_3.rect.y, car_4.rect.y, car_5.rect.y]) + 20
         box_3 = Box(pos_x, pos_y, "./Asset/MAIN-MYSTERY.png", (80, 80))
-        game_state = 52
+        game_state = "MAINGAME_2" 
         mg_tick = 0
 
         # random position of rocks
@@ -851,7 +748,7 @@ while True:
         # Win effect
         eff = Eff(w - 200, car_1.rect.y - 100, "./Asset/MAIN-EFFECT.png", (100, 100))
 
-    elif game_state == 52:
+    elif game_state == "MAINGAME_2":
         bg_race = Img(0, 0, "./Asset/char_set_" + str(char_set) + "/background.png", (w, h))
         bg_race.draw()
 
@@ -897,8 +794,8 @@ while True:
                 if i.isCollide(j[1].rect) and j[1].isActive:
                     i.hitBox(j[0] + 1)
                     j[1].disable()
-                    if not mute:
-                        pygame.mixer.Sound("./Asset/Buy.mp3").play() # Play sound effect
+                    if not SOUND.isMute:
+                        SOUND.playEffect("./Asset/Buy.mp3")
 
                     hittedType = j[0] + 1
                     hittedTime = 50
@@ -949,7 +846,7 @@ while True:
                 text = Txt(w / 2 - 140, 30 * val[0] + 240, str(val[1][0]) + ": " + str(played_time) + " s", "BLACK", False)
                 text.render()
 
-            game_state = 53
+            game_state = "MAINGAME_3" 
 
         keys = [car_1.getPos(), car_2.getPos(), car_3.getPos(), car_4.getPos(), car_5.getPos()]
         values = [log_name, "player 2", "player 3", "player 4", "player 5"]
@@ -965,15 +862,8 @@ while True:
                 text.render()
 
     # Show result at the end game stage then go to stage 53
-    elif game_state == 53:
-        if not mute:
-            pygame.mixer.music.stop()
-            pygame.mixer.music.unload()
-
-            pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
-            pygame.mixer.music.play(-1, 0, 2000)
-
-            pygame.mixer.Sound("./Minigame/MG-Win.mp3").play()
+    elif game_state == "MAINGAME_3":
+        SOUND.changeSound("./Asset/BG-Music-1.mp3")
         text = Txt(300, 30, lang['WIN'], "WHITE", False)
         text.render()
         # calculate coin
@@ -996,10 +886,10 @@ while True:
         sheet.append([img_name, player, gain_coin])
         wb.save("./result/results.xlsx")
 
-        game_state = 54
+        game_state = "MAINGAME_4" 
 
     # Go to main menu
-    elif game_state == 54:
+    elif game_state == "MAINGAME_4":
         prePlayItems.clear()
         final.clear()
 
@@ -1024,9 +914,9 @@ while True:
 
         # Stage -2 will jump to stage 0 (Main menu)
         if btn_exit.isClick():
-            game_state = -2
+            game_state = "EXIT"
     # help
-    elif game_state == 6:
+    elif game_state == "HELP":
         bg = Img(0, 0, "./Asset/BGRace.png", (w, h))
         bg.draw()
         copyr = Txt(w - 450, h - 35, "Copyright G9-23CTT1-HCMUS", "WHITE")
@@ -1038,9 +928,9 @@ while True:
         bg_text.draw()
 
         if btn_exit.isClick():
-            game_state = -2
+            game_state = "EXIT"
     # profile
-    elif game_state == 7:
+    elif game_state == "PROFILE":
         bg = Img(0, 0, "./Asset/BG.png", (w, h))
         bg.draw()
         btn_exit = Button(w / 2 + 400, 400, "./Asset/ExitGame.png", (50, 50))
@@ -1060,9 +950,9 @@ while True:
             text.render()
 
         if btn_exit.isClick():
-            game_state = -2
+            game_state = "EXIT"
 
-    elif game_state == 8:
+    elif game_state == "RANK":
         bg = Img(0, 0, "./Asset/BG.png", (w, h))
         bg.draw()
         btn_exit = Button(w / 2 + 400, 400, "./Asset/ExitGame.png", (50, 50))
@@ -1101,9 +991,8 @@ while True:
         workbook.close()
 
         if btn_exit.isClick():
-            game_state = -2
-
+            game_state = "EXIT"
+            
     TICK += 1
-
     pygame.display.update()
     clock.tick(30)

@@ -1,39 +1,51 @@
 import pygame
 
 import random
-
+# opencv
 from cv2 import VideoCapture
 from cv2 import imshow
 from cv2 import imwrite
-
+# excel
 from openpyxl import Workbook
 from openpyxl import load_workbook
 import openpyxl
-
+# send mail
 from email.message import EmailMessage
 import ssl
 import smtplib
-
+# face recognition
 import cv2
 import face_recognition
-
+# time
 import time
-
+# server connection
 import requests
 import socket
 # for testing
 # server_url = 'http://192.168.10.9:80/'
-
-# for product
+# for production
 server_url = 'http://game.tltech.asia/'
 online_url = 'http://online.tltech.asia/'
 
+GAME_NAME = "EBET69 - NHA CAI DEN TU CHAU A"
+GAME_ICON = "./Asset/Logo.png"
+GAME_FONT = 'BDLifelessGrotesk-Bold.otf'
+GAME_TEXT_COLOR = '#726f6f'
+# init display
 pygame.init()
 screen = pygame.display.set_mode((1280, 720), pygame.RESIZABLE)
-pygame.display.set_caption("EBET69 - NHA CAI DEN TU CHAU A")
-pygame.display.set_icon(pygame.image.load("./Asset/Logo.png"))
+pygame.display.set_caption(GAME_NAME)
+pygame.display.set_icon(pygame.image.load(GAME_ICON))
 clock = pygame.time.Clock()
 
+# init random
+random.seed(time.time())
+
+# email info
+GAME_EMAIL = "ltloc05samsunggalaxyj3pro@gmail.com"
+GAME_TOKEN = "rodq twhi tmme gypg"
+GAME_SUBJECT = "Welcome to my game" 
+GAME_CONTENT = "Chuc mung ban tao tai khoan game ca cuoc thanh cong :)) From Nhom 9 - 23CTT1 - NMCNTT - HCMUS with love"
 class Eff():
     def __init__(self, x, y, image, scale):
         self.image = pygame.image.load(image)
@@ -223,7 +235,7 @@ class Player():
 # Text Class
 class Txt():
     def __init__(self, x, y, content, color, isBorder = False, isClickable = False, size = 30):
-        font = pygame.font.Font('BDLifelessGrotesk-Bold.otf', size)
+        font = pygame.font.Font(GAME_FONT, size)
         self.text = font.render(content, True, color)
         self.rect = self.text.get_rect()
         self.rect.topleft = (x, y)
@@ -232,7 +244,7 @@ class Txt():
 
     def render(self):
         if self.isBorder:
-            rect_color = "#726f6f"
+            rect_color = GAME_TEXT_COLOR
             rect_position = (self.rect.x - 5, self.rect.y - 5)
             rect_size = (self.text.get_width() + 10, self.text.get_height() + 10)
             
@@ -317,6 +329,34 @@ class Button():
 
         screen.blit(self.image, self.rect)
 
+# Sound Class
+class soundClass():
+    def __init__(self):
+        pygame.mixer.init()
+        pygame.mixer.music.load("./Asset/BG-Music-2.mp3")
+        pygame.mixer.music.play(-1, 0, 2000)
+        self.isMute = False
+
+    def setMute(self):
+        self.isMute = True
+        pygame.mixer.music.stop()
+
+    def setUnMute(self):
+        self.isMute = False
+        pygame.mixer.music.play()
+
+    def changeSound(self, music):
+        pygame.mixer.music.stop()
+        pygame.mixer.music.unload()
+
+        if not self.isMute:
+            pygame.mixer.music.load(music)
+            pygame.mixer.music.play(-1, 0, 2000)
+    
+    def playEffect(self, sound):
+        pygame.mixer.Sound(sound).play()
+
+
 # Mute and UnMute Class
 class soundState():
     def __init__(self, x, y, image, scale):
@@ -357,4 +397,4 @@ def sendMail(sender, password, receiver, subject, body):
             smtp.login(sender, password)
             smtp.sendmail(sender, receiver, mail.as_string())
     except:
-        print("Error")
+        print("ERROR: email sending fail")
